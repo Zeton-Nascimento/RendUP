@@ -30,5 +30,5 @@ Existem diversos tipos de investimentos, cada um com características, níveis d
 | Integrante           | Papel                 |  Sigla |
 | :------------------- | :-------------------- | :----: |
 |**Alissom Silva**     | Scrum Master          | **SM** |
-|**Jose Lucas**        | Product Owner         | **PO** |
+|**Jose Lucas**        | Product Owner         | **PO/DevOps** |
 |**Zeton**             | Analista de Qualidade | **QA** |
