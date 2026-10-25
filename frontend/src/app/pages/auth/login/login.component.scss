@@ -1,0 +1,117 @@
+.auth-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: min(520px, 100%);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 16px 16px;
+  backdrop-filter: blur(10px);
+}
+
+.auth-header {
+  padding: 6px 6px 14px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-brand-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.auth-brand-icon {
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.auth-brand-logo {
+  height: 60px;
+  object-fit: contain;
+  max-width: 280px;
+}
+
+.auth-subtitle-text {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.auth-heading {
+  margin: 24px 0 0;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.auth-title {
+  margin: 0;
+  font-weight: 720;
+  letter-spacing: 0.2px;
+}
+
+.auth-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+  padding: 6px;
+}
+
+.auth-label {
+  display: inline-block;
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+
+.auth-field-error {
+  color: #ff5a5f;
+  font-size: 0.85em;
+  margin: 4px 0 0;
+}
+
+.auth-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 90, 95, 0.5);
+  background: rgba(140, 20, 25, 0.7);
+  color: #ffffff;
+}
+
+#login-submit {
+  border: 1px solid var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-secondary) 100%);
+  color: var(--primary-contrast, #111827);
+  transition: transform 0.2s, background 0.2s;
+
+  &:hover:not([disabled]) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+  }
+}
+
+.auth-footer {
+  padding: 10px 6px 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 6px;
+}
+
+.auth-cta {
+  margin: 0;
+  color: var(--muted);
+}

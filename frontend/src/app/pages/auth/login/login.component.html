@@ -1,0 +1,49 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <header class="auth-header">
+      <div class="auth-brand-container">
+        <img src="assets/Bolinha recortada.png" alt="RendUP Icon" class="auth-brand-icon" />
+        <img src="assets/Nome recortado.png" alt="RendUP Logo" class="auth-brand-logo" />
+      </div>
+      <div class="auth-subtitle-text">Plataforma de investimentos</div>
+      <h2 class="auth-heading">Faça seu Login</h2>
+    </header>
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="entrar()">
+      <div class="auth-row">
+        <label class="auth-label" for="login-email">Email</label>
+        <input id="login-email" type="email" inputmode="email" autocomplete="username" formControlName="email" />
+        @if (form.get('email')?.touched && form.get('email')?.invalid) {
+        @if (form.get('email')?.hasError('required')) {
+        <p class="auth-field-error">Email é obrigatório</p>
+        } @else if (form.get('email')?.hasError('email')) {
+        <p class="auth-field-error">Email inválido</p>
+        }
+        }
+      </div>
+
+      <div class="auth-row">
+        <label class="auth-label" for="login-senha">Senha</label>
+        <input id="login-senha" type="password" autocomplete="current-password" formControlName="senha" />
+        @if (form.get('senha')?.invalid && form.get('senha')?.touched) {
+        <p class="auth-field-error">Senha inválida (mínimo 4 caracteres)</p>
+        }
+      </div>
+
+      @if (error(); as err) {
+      <p class="auth-error">{{ err }}</p>
+      }
+
+      <button id="login-submit" type="submit" [disabled]="form.invalid || loading()">
+        {{ loading() ? "Entrando..." : "Entrar" }}
+      </button>
+    </form>
+
+    <footer class="auth-footer">
+      <p class="auth-cta">
+        Ainda não tem conta?
+        <a id="login-go-registro" routerLink="/registro">Criar conta</a>
+      </p>
+    </footer>
+  </section>
+</main>

@@ -1,0 +1,145 @@
+:root {
+  --bg: #0b0d12;
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-2: rgba(255, 255, 255, 0.1);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.68);
+  --danger: #ff5a5f;
+  --ok: #3ef39a;
+  --accent: #a78bfa;
+  --ring: rgba(167, 139, 250, 0.45);
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  --radius: 16px;
+  --primary: #f97316;
+  --primary-secondary: #ea580c;
+  --primary-contrast: rgba(255, 255, 255, 0.92);
+  --tipo-cdb: #79a6ff;
+  --tipo-lci: #37c9ba;
+  --tipo-lca: #4cc575;
+  --tipo-lc: #3692ff;
+  --tipo-tesouro-selic: #f5c449;
+  --tipo-poupanca: #3ef39a;
+  --tipo-fundo: #a78bfa;
+  --tipo-acao: #ffa500;
+  --tipo-badge-text: #111827;
+  --tipo-badge-border: rgba(11, 18, 32, 0.24);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(167, 139, 250, 0.12), transparent 55%),
+    radial-gradient(900px 500px at 90% 30%, rgba(62, 243, 154, 0.06), transparent 55%),
+    radial-gradient(700px 500px at 60% 95%, rgba(249, 115, 22, 0.08), transparent 55%), var(--bg);
+  color: var(--text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+input,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+
+  option {
+    background: #1a1d26;
+    color: var(--text);
+  }
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.badge-tipo-default {
+  background: rgba(121, 166, 255, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(121, 166, 255, 0.25);
+}
+
+.tipo-cdb,
+.tipo-lci,
+.tipo-lca,
+.tipo-lc,
+.tipo-tesouro-selic,
+.tipo-poupanca,
+.tipo-fundo,
+.tipo-acao {
+  color: var(--tipo-badge-text);
+  border: 1px solid var(--tipo-badge-border);
+}
+
+.tipo-cdb {
+  background: var(--tipo-cdb);
+}
+.tipo-lci {
+  background: var(--tipo-lci);
+}
+.tipo-lca {
+  background: var(--tipo-lca);
+}
+.tipo-lc {
+  background: var(--tipo-lc);
+}
+.tipo-tesouro-selic {
+  background: var(--tipo-tesouro-selic);
+}
+.tipo-poupanca {
+  background: var(--tipo-poupanca);
+}
+.tipo-fundo {
+  background: var(--tipo-fundo);
+}
+.tipo-acao {
+  background: var(--tipo-acao);
+}
