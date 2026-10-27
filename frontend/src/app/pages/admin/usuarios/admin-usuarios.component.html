@@ -1,0 +1,67 @@
+<main class="admin-users-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ADMINISTRAÇÃO</span>
+      <h1>Usuários</h1>
+      <p>Inative contas</p>
+    </div>
+    <button type="button" class="secondary-button" (click)="recarregar()" [disabled]="carregando()">
+      Atualizar lista
+    </button>
+  </header>
+
+  @if (carregando()) {
+    <section class="status" role="status">Carregando usuários...</section>
+  }
+
+  @if (erro(); as mensagem) {
+    <section class="status error" role="alert">{{ mensagem }}</section>
+  }
+
+  @if (sucesso(); as mensagem) {
+    <section class="status success" role="status">{{ mensagem }}</section>
+  }
+
+  <section class="users-card">
+    <div class="card-heading">
+      <div>
+        <span class="section-kicker">CONTAS CADASTRADAS</span>
+        <h2>Gerenciar acesso</h2>
+      </div>
+      <span class="user-count">{{ usuarios().length }} usuários</span>
+    </div>
+
+    @if (!carregando() && usuarios().length === 0) {
+      <p class="empty-state">Nenhum usuário encontrado.</p>
+    } @else {
+      <div class="user-list">
+        @for (usuario of usuarios(); track usuario.id) {
+          <article class="user-row">
+            <div class="user-avatar" aria-hidden="true">{{ (usuario.nome || "U").charAt(0).toUpperCase() }}</div>
+            <div class="user-data">
+              <strong>{{ usuario.nome }}</strong>
+              <span>{{ usuario.email }}</span>
+            </div>
+            <span class="status-badge" [class.inactive]="!usuario.ativo">
+              {{ usuario.ativo ? "Ativo" : "Inativo" }}
+            </span>
+            @if (ehUsuarioAtual(usuario)) {
+              <span class="preserved-label">Sua conta</span>
+            } @else if (usuario.ativo) {
+              <button
+                type="button"
+                class="danger-button"
+                [disabled]="inativandoId() === usuario.id"
+                (click)="inativar(usuario)"
+              >
+                {{ inativandoId() === usuario.id ? "Inativando..." : "Inativar" }}
+              </button>
+            } @else {
+              <span class="preserved-label">Histórico preservado</span>
+            }
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>

@@ -1,9 +1,11 @@
 <main class="perfil-page">
   <header class="page-header">
     <div>
-      <span class="eyebrow">ÁREA DO INVESTIDOR</span>
+      <span class="eyebrow">{{ ehAdministrador() ? "ÁREA ADMINISTRATIVA" : "ÁREA DO INVESTIDOR" }}</span>
       <h1>Meu perfil</h1>
-      <p>Consulte e atualize os dados da sua conta.</p>
+      <p>
+        {{ ehAdministrador() ? "Gerencie usuários e consulte os dados da sua conta." : "Consulte e atualize somente os dados permitidos da sua conta." }}
+      </p>
     </div>
   </header>
 
@@ -99,7 +101,7 @@
             <span class="section-kicker">VISÃO GERAL</span>
             <h3>Dados pessoais</h3>
           </div>
-          <span class="profile-badge">{{ formatarPerfil(user.perfilInvestidor) }}</span>
+          <span class="profile-badge">{{ ehAdministrador() ? "Administrador" : formatarPerfil(user.perfilInvestidor) }}</span>
         </div>
 
         <dl class="profile-list">

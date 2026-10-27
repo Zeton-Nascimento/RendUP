@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class TokenService {
 
-    private static final long EXPIRES_IN_SECONDS = 86400L;
+    private static final long EXPIRES_IN_SECONDS = 1200L;
 
     private final JwtEncoder jwtEncoder;
 
@@ -33,14 +33,19 @@ public class TokenService {
         }
 
         Instant now = Instant.now();
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("investimentos-api")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(EXPIRES_IN_SECONDS))
                 .subject(usuario.getId().toString())
                 .claim("email", usuario.getEmail())
-                .claim("authorities", authorities)
-                .build();
+                .claim("authorities", authorities);
+
+        if (usuario.getPerfilUsuario() != null) {
+            claimsBuilder.claim("perfilUsuario", usuario.getPerfilUsuario());
+        }
+
+        JwtClaimsSet claims = claimsBuilder.build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
