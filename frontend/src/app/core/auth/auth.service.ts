@@ -7,6 +7,7 @@ import {
   AuthUsuario,
   LoginRequest,
   LoginResponse,
+  PerfilUsuario,
   RegistroRequest,
   UsuarioResponse,
 } from "../../models/auth.models";
@@ -17,6 +18,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
   private readonly authState = inject(AuthState);
+  private expirationTimer: number | null = null;
 
   constructor() {
     this.hydrateUsuarioFromTokenIfNeeded();
@@ -34,7 +36,15 @@ export class AuthService {
     return Date.now() >= exp * 1000;
   }
 
+  hasRole(role: "ROLE_INVESTIDOR" | "ROLE_ADMIN"): boolean {
+    const usuario = this.authState.usuario();
+    if (usuario?.permissoes?.includes(role)) return true;
+    if (role === "ROLE_ADMIN") return usuario?.perfilUsuario === "ADMIN";
+    return usuario?.perfilUsuario === "INVESTIDOR";
+  }
+
   logout(): void {
+    this.cancelExpirationTimer();
     this.authState.logout();
   }
 
@@ -42,6 +52,8 @@ export class AuthService {
     if (this.authState.usuario()) return;
     const token = this.getToken();
     if (!token) return;
+    this.scheduleTokenExpiration(token);
+    if (!this.authState.accessToken()) return;
     this.hydrateUsuarioFromToken(token);
   }
 
@@ -51,6 +63,7 @@ export class AuthService {
 
     const nome = this.coalesceString(payload["nome"], payload["name"]);
     const email = this.coalesceString(payload["email"], payload["sub"]);
+    const perfilUsuario = this.coalesceString(payload["perfilUsuario"], payload["tipoUsuario"]);
     const perfilInvestidor = this.coalesceString(payload["perfilInvestidor"], payload["perfil"]);
     const permissoes = this.coalesceArray(
       payload["permissoes"],
@@ -63,6 +76,9 @@ export class AuthService {
 
     if (nome) usuario.nome = nome;
     if (email) usuario.email = email;
+    if (perfilUsuario === "ADMIN" || perfilUsuario === "INVESTIDOR") {
+      usuario.perfilUsuario = perfilUsuario as PerfilUsuario;
+    }
     if (
       perfilInvestidor === "CONSERVADOR" ||
       perfilInvestidor === "MODERADO" ||
@@ -115,6 +131,7 @@ export class AuthService {
           if (!token) throw new Error("Resposta de login sem token.");
 
           this.authState.setAccessToken(token);
+          this.scheduleTokenExpiration(token);
           this.authState.setUsuario(resp.usuario ?? null);
           this.hydrateUsuarioFromToken(token);
         }),
@@ -134,5 +151,31 @@ export class AuthService {
 
   registro(request: RegistroRequest) {
     return this.registrar(request);
+  }
+
+  private scheduleTokenExpiration(token: string): void {
+    this.cancelExpirationTimer();
+
+    const payload = this.decodeJwtPayload(token);
+    const expRaw = payload ? payload["exp"] : null;
+    const exp = typeof expRaw === "number" ? expRaw : null;
+    if (!exp) return;
+
+    const delay = exp * 1000 - Date.now();
+    if (delay <= 0) {
+      this.logout();
+      return;
+    }
+
+    this.expirationTimer = window.setTimeout(() => {
+      this.expirationTimer = null;
+      if (this.authState.accessToken() === token) this.logout();
+    }, delay);
+  }
+
+  private cancelExpirationTimer(): void {
+    if (this.expirationTimer === null) return;
+    window.clearTimeout(this.expirationTimer);
+    this.expirationTimer = null;
   }
 }

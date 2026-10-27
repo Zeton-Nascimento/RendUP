@@ -137,6 +137,11 @@ export class PerfilComponent implements OnInit {
     return "Não definido";
   }
 
+  ehAdministrador(): boolean {
+    const usuario = this.authState.usuario();
+    return usuario?.perfilUsuario === "ADMIN" || usuario?.permissoes?.includes("ROLE_ADMIN") === true;
+  }
+
   formatarData(dataIso?: string): string {
     if (!dataIso) return "-";
     const date = new Date(`${dataIso}T00:00:00`);

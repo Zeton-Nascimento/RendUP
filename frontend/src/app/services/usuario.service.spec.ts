@@ -26,6 +26,14 @@ describe('UsuarioService', () => {
       .flush({ id: 'u1', nome: 'Gabriel', email: 'g@email.com', permissoes: ['ROLE_INVESTIDOR'] });
   });
 
+  it('listarTodos deve fazer GET /v1/usuarios', () => {
+    service.listarTodos().subscribe((usuarios) => expect(usuarios.length).toBe(1));
+
+    const req = http.expectOne(`${environment.apiUrl}/v1/usuarios`);
+    expect(req.request.method).toBe('GET');
+    req.flush([{ id: 'u1', nome: 'Gabriel', email: 'g@email.com', ativo: true, permissoes: [] }]);
+  });
+
   it('atualizarMe deve fazer PUT /v1/usuarios/me', () => {
     const request = {
       nome: 'Gabriel Atualizado',
@@ -46,5 +54,13 @@ describe('UsuarioService', () => {
       cpf: '12345678901',
       permissoes: ['ROLE_INVESTIDOR'],
     });
+  });
+
+  it('inativar deve fazer DELETE /v1/usuarios/{id}', () => {
+    service.inativar('u1').subscribe((u) => expect(u.ativo).toBe(false));
+
+    const req = http.expectOne(`${environment.apiUrl}/v1/usuarios/u1?confirmar=true`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ id: 'u1', nome: 'Gabriel', email: 'g@email.com', ativo: false, permissoes: [] });
   });
 });

@@ -13,7 +13,17 @@ export class UsuarioService {
     return this.http.get<UsuarioResponse>(`${this.base}/me`);
   }
 
+  listarTodos() {
+    return this.http.get<UsuarioResponse[]>(this.base);
+  }
+
   atualizarMe(request: AtualizarUsuarioRequest) {
     return this.http.put<UsuarioResponse>(`${this.base}/me`, request);
+  }
+
+  inativar(id: string) {
+    return this.http.delete<UsuarioResponse>(`${this.base}/${id}`, {
+      params: { confirmar: true },
+    });
   }
 }

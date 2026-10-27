@@ -19,6 +19,10 @@ public class UsuarioResponse {
 
     private String email;
 
+    private boolean ativo;
+
+    private String perfilUsuario;
+
     private String perfilInvestidor;
 
     private String cpf;

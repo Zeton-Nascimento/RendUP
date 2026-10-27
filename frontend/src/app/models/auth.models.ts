@@ -1,9 +1,12 @@
 export type PerfilInvestidor = "CONSERVADOR" | "MODERADO" | "ARROJADO";
+export type PerfilUsuario = "INVESTIDOR" | "ADMIN";
 
 export interface AuthUsuario {
   id?: string;
   nome?: string;
   email?: string;
+  ativo?: boolean;
+  perfilUsuario?: PerfilUsuario | null;
   perfilInvestidor?: PerfilInvestidor;
   cpf?: string;
   telefone?: string;
@@ -51,6 +54,8 @@ export interface UsuarioResponse {
   id: string;
   nome: string;
   email: string;
+  ativo: boolean;
+  perfilUsuario: PerfilUsuario | null;
   perfilInvestidor: PerfilInvestidor;
   cpf: string;
   telefone: string;

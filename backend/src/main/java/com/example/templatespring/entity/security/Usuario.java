@@ -84,6 +84,20 @@ public class Usuario {
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public String getPerfilUsuario() {
+        if (possuiCargo("ADMIN")) {
+            return "ADMIN";
+        }
+        if (possuiCargo("INVESTIDOR")) {
+            return "INVESTIDOR";
+        }
+        return null;
+    }
+
+    private boolean possuiCargo(String nomeCargo) {
+        return cargos.stream().anyMatch(cargo -> nomeCargo.equalsIgnoreCase(cargo.getNome()));
+    }
+
     public void adicionarCargo(Cargo cargo) {
         this.cargos.add(cargo);
     }

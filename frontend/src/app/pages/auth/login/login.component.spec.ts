@@ -17,6 +17,7 @@ describe('LoginComponent', () => {
     login: vi.fn(),
     getToken: vi.fn().mockReturnValue(null),
     isTokenExpired: vi.fn().mockReturnValue(false),
+    hasRole: vi.fn().mockReturnValue(false),
   };
   const loading = signal(false);
   const authStateMock = { loading: loading.asReadonly() };
@@ -24,6 +25,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     loading.set(false);
+    authService.hasRole.mockReturnValue(false);
     authService.login.mockReturnValue(of({}));
 
     await TestBed.configureTestingModule({
@@ -52,6 +54,15 @@ describe('LoginComponent', () => {
     component.entrar();
     expect(authService.login).toHaveBeenCalledWith({ email: 'user@email.com', senha: 'senha123' });
     expect(router.navigateByUrl).toHaveBeenCalledWith('/perfil');
+  });
+
+  it('deve navegar para a area administrativa apos login de administrador', () => {
+    authService.hasRole.mockReturnValue(true);
+    component.form.setValue({ email: 'admin@email.com', senha: 'senha123' });
+
+    component.entrar();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/admin/usuarios');
   });
 
   it('deve exibir erro quando login falha', () => {

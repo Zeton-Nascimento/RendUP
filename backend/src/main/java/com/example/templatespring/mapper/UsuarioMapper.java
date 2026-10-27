@@ -41,6 +41,8 @@ public class UsuarioMapper {
                 .id(entity.getId())
                 .nome(entity.getNome())
                 .email(entity.getEmail())
+                .ativo(entity.isAtivo())
+                .perfilUsuario(entity.getPerfilUsuario())
                 .perfilInvestidor(entity.getPerfilInvestidor() == null ? null : entity.getPerfilInvestidor().toString())
                 .cpf(dadosPessoais == null ? null : dadosPessoais.getCpf())
                 .telefone(dadosPessoais == null ? null : dadosPessoais.getTelefone())
