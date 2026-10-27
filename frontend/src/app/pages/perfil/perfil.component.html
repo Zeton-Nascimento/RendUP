@@ -1,0 +1,134 @@
+<main class="perfil-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ÁREA DO INVESTIDOR</span>
+      <h1>Meu perfil</h1>
+      <p>Consulte e atualize os dados da sua conta.</p>
+    </div>
+  </header>
+
+  @if (carregando()) {
+    <section class="status" role="status">Carregando seu perfil...</section>
+  } @else if (erro()) {
+    <section class="status error" role="alert">{{ erro() }}</section>
+  }
+
+  @if (sucessoAtualizacao(); as sucesso) {
+    <section class="status success" role="status">{{ sucesso }}</section>
+  }
+
+  @if (erroAtualizacao(); as erroAtualizacao) {
+    <section class="status error" role="alert">{{ erroAtualizacao }}</section>
+  }
+
+  @if (usuarioPerfil(); as user) {
+    <section class="card">
+      <div class="card-header">
+        <div class="identity">
+          <div class="avatar" aria-hidden="true">{{ (user.nome || "U").charAt(0).toUpperCase() }}</div>
+          <div>
+            <h2>{{ user.nome || "Usuário" }}</h2>
+            <p>{{ user.email || "E-mail não informado" }}</p>
+          </div>
+        </div>
+        @if (!editando()) {
+          <button type="button" class="primary-button edit-button" (click)="abrirEdicao()">
+            <span aria-hidden="true">✎</span>
+            Editar perfil
+          </button>
+        }
+      </div>
+
+      @if (editando()) {
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">DADOS EDITÁVEIS</span>
+            <h3>Atualize suas informações</h3>
+          </div>
+          <span class="readonly-note">E-mail e CPF não podem ser alterados</span>
+        </div>
+
+        <form class="profile-form" [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <div class="form-grid">
+            <label>
+              Nome completo
+              <input type="text" formControlName="nome" autocomplete="name" />
+              @if (mensagemErro("nome"); as mensagem) {
+                <small class="field-error">{{ mensagem }}</small>
+              }
+            </label>
+
+            <label>
+              Telefone
+              <input type="tel" formControlName="telefone" autocomplete="tel" />
+              @if (mensagemErro("telefone"); as mensagem) {
+                <small class="field-error">{{ mensagem }}</small>
+              }
+            </label>
+
+            <label>
+              Data de nascimento
+              <input type="date" formControlName="dataNascimento" />
+              @if (mensagemErro("dataNascimento"); as mensagem) {
+                <small class="field-error">{{ mensagem }}</small>
+              }
+            </label>
+
+            <label>
+              Perfil do investidor
+              <select formControlName="perfilInvestidor">
+                @for (perfil of perfis; track perfil.value) {
+                  <option [value]="perfil.value">{{ perfil.label }}</option>
+                }
+              </select>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="secondary-button" [disabled]="salvando()" (click)="cancelarEdicao()">
+              Cancelar
+            </button>
+            <button type="submit" class="primary-button" [disabled]="salvando()">
+              {{ salvando() ? "Salvando..." : "Salvar alterações" }}
+            </button>
+          </div>
+        </form>
+      } @else {
+        <div class="section-heading overview-heading">
+          <div>
+            <span class="section-kicker">VISÃO GERAL</span>
+            <h3>Dados pessoais</h3>
+          </div>
+          <span class="profile-badge">{{ formatarPerfil(user.perfilInvestidor) }}</span>
+        </div>
+
+        <dl class="profile-list">
+          <div class="profile-item">
+            <dt>Nome completo</dt>
+            <dd>{{ user.nome || "-" }}</dd>
+          </div>
+          <div class="profile-item">
+            <dt>CPF</dt>
+            <dd>{{ mascararCpf(user.cpf) }} <span class="readonly-label">Somente leitura</span></dd>
+          </div>
+          <div class="profile-item">
+            <dt>E-mail</dt>
+            <dd>{{ user.email || "-" }} <span class="readonly-label">Somente leitura</span></dd>
+          </div>
+          <div class="profile-item">
+            <dt>Telefone</dt>
+            <dd>{{ formatarTelefone(user.telefone) }}</dd>
+          </div>
+          <div class="profile-item">
+            <dt>Data de nascimento</dt>
+            <dd>{{ formatarData(user.dataNascimento) }}</dd>
+          </div>
+          <div class="profile-item">
+            <dt>Perfil do investidor</dt>
+            <dd>{{ formatarPerfil(user.perfilInvestidor) }}</dd>
+          </div>
+        </dl>
+      }
+    </section>
+  }
+</main>

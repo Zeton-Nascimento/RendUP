@@ -1,0 +1,158 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <header class="auth-header">
+      <div class="brand-container">
+        <img src="assets/Bolinha recortada.png" alt="RendUP Icon" class="brand-icon" />
+        <img src="assets/Nome recortado.png" alt="RendUP Logo" class="brand-logo" />
+      </div>
+      <p class="brand-subtitle">Plataforma de investimentos</p>
+      <h2 class="auth-title">Crie sua conta com dados pessoais e bancários</h2>
+    </header>
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="criarConta()">
+      <div class="auth-grid">
+        <div class="auth-row">
+          <label class="auth-label" for="registro-nome">Nome</label>
+          <input id="registro-nome" type="text" autocomplete="name" formControlName="nome" placeholder="Ex.: Ana Souza" />
+          @if (mensagemErro("nome"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-email">Email</label>
+          <input
+            id="registro-email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            formControlName="email"
+            placeholder="Ex.: ana.souza@email.com"
+          />
+          @if (mensagemErro("email"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-senha">Senha</label>
+          <input
+            id="registro-senha"
+            type="password"
+            autocomplete="new-password"
+            formControlName="senha"
+            placeholder="Ex.: Ana12345"
+          />
+          @if (mensagemErro("senha"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          } @else if (mensagemAjuda("senha"); as ajudaCampo) {
+            <p class="auth-field-hint">{{ ajudaCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-cpf">CPF</label>
+          <input
+            id="registro-cpf"
+            type="text"
+            inputmode="numeric"
+            maxlength="14"
+            formControlName="cpf"
+            placeholder="Ex.: 12345678901"
+          />
+          @if (mensagemErro("cpf"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-telefone">Telefone</label>
+          <input
+            id="registro-telefone"
+            type="text"
+            inputmode="numeric"
+            maxlength="15"
+            formControlName="telefone"
+            placeholder="Ex.: 51993333333"
+          />
+          @if (mensagemErro("telefone"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-data-nascimento">Data de nascimento</label>
+          <input id="registro-data-nascimento" type="date" formControlName="dataNascimento" />
+          @if (mensagemErro("dataNascimento"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-banco">Banco</label>
+          <input id="registro-banco" type="text" formControlName="banco" placeholder="Ex.: Banco Renda" />
+          @if (mensagemErro("banco"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-agencia">Agência</label>
+          <input
+            id="registro-agencia"
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            formControlName="agencia"
+            placeholder="Ex.: 1234"
+          />
+          @if (mensagemErro("agencia"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-numero-conta">Número da conta</label>
+          <input
+            id="registro-numero-conta"
+            type="text"
+            inputmode="numeric"
+            maxlength="12"
+            formControlName="numeroConta"
+            placeholder="Ex.: 1234567"
+          />
+          @if (mensagemErro("numeroConta"); as erroCampo) {
+            <p class="auth-field-error">{{ erroCampo }}</p>
+          }
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="registro-perfil">Perfil do investidor</label>
+          <select id="registro-perfil" formControlName="perfilInvestidor">
+            @for (p of perfis; track p.value) {
+              <option [value]="p.value">{{ p.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (error(); as err) {
+        <p class="auth-error">{{ err }}</p>
+      }
+      @if (sucesso(); as ok) {
+        <p class="auth-success">{{ ok }}</p>
+      }
+
+      <button id="registro-submit" type="submit" [disabled]="loading()">
+        {{ loading() ? "Criando..." : "Criar conta" }}
+      </button>
+    </form>
+
+    <footer class="auth-footer">
+      <p class="auth-cta">
+        Já tem conta?
+        <a id="registro-go-login" routerLink="/login">Ir para login</a>
+      </p>
+    </footer>
+  </section>
+</main>
