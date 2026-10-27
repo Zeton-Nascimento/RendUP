@@ -21,7 +21,12 @@ public class UsuarioAutenticadoService {
 
     public String getEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof Jwt jwt)) {
+            throw new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado");
+        }
+
         String email = jwt.getClaimAsString("email");
         if (email == null || email.isBlank()) {
             email = jwt.getSubject();
@@ -37,4 +42,3 @@ public class UsuarioAutenticadoService {
                 .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado"));
     }
 }
-

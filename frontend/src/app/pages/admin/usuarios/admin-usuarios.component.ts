@@ -22,6 +22,8 @@ export class AdminUsuariosComponent implements OnInit {
   readonly erro = signal<string | null>(null);
   readonly sucesso = signal<string | null>(null);
   readonly inativandoId = signal<string | null>(null);
+  readonly consultandoId = signal<string | null>(null);
+  readonly usuarioSelecionado = signal<UsuarioResponse | null>(null);
 
   ngOnInit(): void {
     this.carregarUsuarios();
@@ -53,6 +55,48 @@ export class AdminUsuariosComponent implements OnInit {
           this.erro.set(String(err?.error?.message ?? err?.error?.erro ?? "Não foi possível inativar o usuário."));
         },
       });
+  }
+
+  consultar(usuario: UsuarioResponse): void {
+    if (this.consultandoId()) return;
+
+    this.consultandoId.set(usuario.id);
+    this.erro.set(null);
+    this.usuarioService
+      .obterPorId(usuario.id)
+      .pipe(finalize(() => this.consultandoId.set(null)))
+      .subscribe({
+        next: (usuarioConsultado) => this.usuarioSelecionado.set(usuarioConsultado),
+        error: (err) => {
+          this.erro.set(String(err?.error?.message ?? err?.error?.erro ?? "Não foi possível consultar o usuário."));
+        },
+      });
+  }
+
+  fecharConsulta(): void {
+    this.usuarioSelecionado.set(null);
+  }
+
+  formatarData(dataIso?: string): string {
+    if (!dataIso) return "-";
+    const date = new Date(`${dataIso}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return "-";
+    return new Intl.DateTimeFormat("pt-BR").format(date);
+  }
+
+  formatarTelefone(telefone?: string): string {
+    if (!telefone) return "-";
+    const digitos = telefone.replaceAll(/\D/g, "");
+    if (digitos.length === 11) return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 7)}-${digitos.slice(7)}`;
+    if (digitos.length === 10) return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 6)}-${digitos.slice(6)}`;
+    return telefone;
+  }
+
+  mascararCpf(cpf?: string): string {
+    if (!cpf) return "-";
+    const digitos = cpf.replaceAll(/\D/g, "");
+    if (digitos.length !== 11) return cpf;
+    return `***.***.${digitos.slice(6, 9)}-${digitos.slice(9)}`;
   }
 
   recarregar(): void {

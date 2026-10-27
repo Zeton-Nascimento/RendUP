@@ -42,6 +42,14 @@
               <strong>{{ usuario.nome }}</strong>
               <span>{{ usuario.email }}</span>
             </div>
+            <button
+              type="button"
+              class="secondary-button consult-button"
+              [disabled]="consultandoId() === usuario.id"
+              (click)="consultar(usuario)"
+            >
+              {{ consultandoId() === usuario.id ? "Consultando..." : "Consultar" }}
+            </button>
             <span class="status-badge" [class.inactive]="!usuario.ativo">
               {{ usuario.ativo ? "Ativo" : "Inativo" }}
             </span>
@@ -64,4 +72,27 @@
       </div>
     }
   </section>
+
+  @if (usuarioSelecionado(); as usuario) {
+    <section class="user-detail-card" aria-labelledby="user-detail-title">
+      <div class="detail-heading">
+        <div>
+          <span class="section-kicker">CONSULTA AUTORIZADA</span>
+          <h2 id="user-detail-title">Dados do usuário</h2>
+        </div>
+        <button type="button" class="secondary-button" (click)="fecharConsulta()">Fechar</button>
+      </div>
+
+      <dl class="user-detail-list">
+        <div><dt>Nome</dt><dd>{{ usuario.nome || "-" }}</dd></div>
+        <div><dt>E-mail</dt><dd>{{ usuario.email || "-" }}</dd></div>
+        <div><dt>CPF</dt><dd>{{ mascararCpf(usuario.cpf) }}</dd></div>
+        <div><dt>Telefone</dt><dd>{{ formatarTelefone(usuario.telefone) }}</dd></div>
+        <div><dt>Data de nascimento</dt><dd>{{ formatarData(usuario.dataNascimento) }}</dd></div>
+        <div><dt>Perfil de risco</dt><dd>{{ usuario.perfilInvestidor || "-" }}</dd></div>
+        <div><dt>Perfil de usuário</dt><dd>{{ usuario.perfilUsuario || "Não reconhecido" }}</dd></div>
+        <div><dt>Status</dt><dd>{{ usuario.ativo ? "Ativo" : "Inativo" }}</dd></div>
+      </dl>
+    </section>
+  }
 </main>

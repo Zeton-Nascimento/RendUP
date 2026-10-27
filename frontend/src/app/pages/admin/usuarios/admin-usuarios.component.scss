@@ -59,6 +59,12 @@ h1 {
   font-weight: 750;
 }
 
+.consult-button {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  font-size: 12px;
+}
+
 .secondary-button {
   border: 1px solid var(--border);
   color: var(--text);
@@ -77,12 +83,55 @@ h1 {
 }
 
 .users-card,
+.user-detail-card,
 .status {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
   box-shadow: var(--shadow);
   backdrop-filter: blur(14px);
+}
+
+.user-detail-card {
+  flex: 0 0 auto;
+  padding: 24px 28px;
+}
+
+.detail-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.detail-heading h2 {
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 17px;
+}
+
+.user-detail-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  margin: 0;
+}
+
+.user-detail-list div {
+  display: grid;
+  gap: 4px;
+}
+
+.user-detail-list dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.user-detail-list dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
 }
 
 .status {
@@ -214,7 +263,8 @@ button:disabled {
 
   .page-header,
   .card-heading,
-  .user-row {
+  .user-row,
+  .detail-heading {
     align-items: flex-start;
     flex-wrap: wrap;
   }
@@ -226,8 +276,17 @@ button:disabled {
   }
 
   .user-row .danger-button,
-  .user-row .preserved-label {
+  .user-row .preserved-label,
+  .user-row .consult-button {
     width: 100%;
     margin-left: 58px;
+  }
+
+  .user-detail-card {
+    padding: 20px 18px;
+  }
+
+  .user-detail-list {
+    grid-template-columns: 1fr;
   }
 }
