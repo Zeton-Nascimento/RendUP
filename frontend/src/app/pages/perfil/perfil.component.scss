@@ -52,6 +52,10 @@
 }
 
 .status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   padding: 14px 16px;
   color: var(--muted);
 }
@@ -66,6 +70,14 @@
   border-color: rgba(62, 243, 154, 0.45);
   color: #c5ffe2;
   background: rgba(10, 100, 55, 0.45);
+}
+
+.empty-state {
+  flex-wrap: wrap;
+}
+
+.empty-state span {
+  color: var(--muted);
 }
 
 .card {

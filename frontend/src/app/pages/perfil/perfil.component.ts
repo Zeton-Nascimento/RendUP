@@ -71,6 +71,10 @@ export class PerfilComponent implements OnInit {
     this.editando.set(false);
   }
 
+  recarregar(): void {
+    this.carregarPerfil();
+  }
+
   salvar(): void {
     if (this.salvando()) return;
 
@@ -167,8 +171,13 @@ export class PerfilComponent implements OnInit {
   private carregarPerfil(): void {
     this.carregando.set(true);
     this.erro.set(null);
-    this.usuarioService.obterMe().subscribe({
+    this.usuarioService.obterMe().pipe(finalize(() => this.carregando.set(false))).subscribe({
       next: (usuario) => {
+        if (!usuario) {
+          this.usuarioPerfil.set(null);
+          return;
+        }
+
         const permissoesAtuais = this.authState.usuario()?.permissoes ?? [];
         const usuarioCompleto: AuthUsuario = {
           ...usuario,
@@ -181,7 +190,6 @@ export class PerfilComponent implements OnInit {
       error: () => {
         this.erro.set("Não foi possível carregar seu perfil.");
       },
-      complete: () => this.carregando.set(false),
     });
   }
 

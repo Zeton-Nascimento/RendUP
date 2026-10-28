@@ -140,9 +140,17 @@ h1 {
 }
 
 .status.error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   border-color: rgba(255, 90, 95, 0.5);
   color: #ffd8da;
   background: rgba(140, 20, 25, 0.55);
+}
+
+.status.error .secondary-button {
+  flex: 0 0 auto;
 }
 
 .status.success {

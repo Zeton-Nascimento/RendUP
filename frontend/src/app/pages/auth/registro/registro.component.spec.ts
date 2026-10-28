@@ -87,6 +87,11 @@ describe('RegistroComponent', () => {
       numeroConta: '0012345',
       perfilInvestidor: 'MODERADO',
     });
+    expect(navigateByUrlSpy).not.toHaveBeenCalled();
+    expect(component.cadastroConcluido()).toBe(true);
+    expect(component.sucesso()).toContain('Conta criada');
+
+    component.irParaLogin();
     expect(navigateByUrlSpy).toHaveBeenCalledWith('/login');
   });
 

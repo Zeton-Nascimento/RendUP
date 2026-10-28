@@ -18,6 +18,15 @@
     <section class="status error" role="alert">{{ mensagem }}</section>
   }
 
+  @if (erroConsulta(); as mensagem) {
+    <section class="status error" role="alert">
+      <span>{{ mensagem }}</span>
+      <button type="button" class="secondary-button" (click)="tentarConsultarNovamente()">
+        Tentar consulta novamente
+      </button>
+    </section>
+  }
+
   @if (sucesso(); as mensagem) {
     <section class="status success" role="status">{{ mensagem }}</section>
   }
