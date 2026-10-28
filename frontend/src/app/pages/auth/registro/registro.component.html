@@ -137,14 +137,19 @@
       </div>
 
       @if (error(); as err) {
-        <p class="auth-error">{{ err }}</p>
+        <p class="auth-error" role="alert">{{ err }}</p>
       }
       @if (sucesso(); as ok) {
-        <p class="auth-success">{{ ok }}</p>
+        <div class="auth-success" role="status">
+          <span>{{ ok }}</span>
+          <button id="registro-success-login" type="button" (click)="irParaLogin()">
+            Ir para login
+          </button>
+        </div>
       }
 
-      <button id="registro-submit" type="submit" [disabled]="loading()">
-        {{ loading() ? "Criando..." : "Criar conta" }}
+      <button id="registro-submit" type="submit" [disabled]="loading() || cadastroConcluido()">
+        {{ loading() ? "Criando..." : cadastroConcluido() ? "Cadastro concluído" : "Criar conta" }}
       </button>
     </form>
 

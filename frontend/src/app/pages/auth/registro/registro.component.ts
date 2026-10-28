@@ -39,6 +39,7 @@ export class RegistroComponent implements OnInit {
   readonly loading = this.authState.loading;
   readonly error = signal<string | null>(null);
   readonly sucesso = signal<string | null>(null);
+  readonly cadastroConcluido = signal(false);
 
   readonly perfis: ReadonlyArray<{ value: PerfilInvestidor; label: string }> = [
     { value: "CONSERVADOR", label: "Conservador" },
@@ -149,7 +150,7 @@ export class RegistroComponent implements OnInit {
       .subscribe({
         next: () => {
           this.sucesso.set("Conta criada. Agora e so fazer login.");
-          this.router.navigateByUrl("/login");
+          this.cadastroConcluido.set(true);
         },
         error: (err) => {
           const msg = String(err?.error?.message ?? err?.error ?? "").toLowerCase();
@@ -160,6 +161,10 @@ export class RegistroComponent implements OnInit {
           this.error.set("Não foi possível criar a conta. Revise os dados e tente novamente.");
         },
       });
+  }
+
+  irParaLogin(): void {
+    this.router.navigateByUrl("/login");
   }
 
   mensagemErro(campo: string): string | null {

@@ -1,6 +1,6 @@
 import { signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { vi } from "vitest";
 
 import { AuthState } from "../../core/state/auth.state";
@@ -70,6 +70,36 @@ describe("PerfilComponent", () => {
     });
     expect(component.editando()).toBe(false);
     expect(component.sucessoAtualizacao()).toBe("Dados atualizados com sucesso.");
+  });
+
+  it("deve exibir erro de consulta e permitir tentar novamente", () => {
+    usuarioService.obterMe.mockReturnValueOnce(
+      throwError(() => new Error("falha de conexão")),
+    );
+
+    component.recarregar();
+    fixture.detectChanges();
+
+    expect(component.carregando()).toBe(false);
+    expect(component.erro()).toBe("Não foi possível carregar seu perfil.");
+    expect(fixture.nativeElement.textContent).toContain("Tentar novamente");
+
+    usuarioService.obterMe.mockReturnValueOnce(of(criarUsuario()));
+    component.recarregar();
+    fixture.detectChanges();
+
+    expect(component.erro()).toBeNull();
+    expect(component.usuarioPerfil()?.email).toBe("gabriel@email.com");
+  });
+
+  it("deve exibir estado vazio quando a consulta não retorna perfil", () => {
+    usuarioService.obterMe.mockReturnValueOnce(of(null));
+
+    component.recarregar();
+    fixture.detectChanges();
+
+    expect(component.usuarioPerfil()).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain("Nenhum dado de perfil encontrado.");
   });
 
   function criarUsuario(): AuthUsuario {

@@ -96,6 +96,26 @@ describe('AuthService', () => {
     expect(service.isTokenExpired(tokenWithoutExp)).toBe(false);
   });
 
+  it('encerra a sessao automaticamente quando o token expira', () => {
+    vi.useFakeTimers();
+
+    try {
+      service = TestBed.inject(AuthService);
+      const exp = Math.floor(Date.now() / 1000) + 1200;
+      const token = makeJwt({ exp, email: 'tempo@email.com' });
+
+      service.login({ email: 'tempo@email.com', senha: 'senha123' }).subscribe();
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/auth/login');
+      req.flush({ token });
+
+      vi.advanceTimersByTime(1200 * 1000);
+
+      expect(authStateMock.logout).toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('faz login, salva o token e hidrata o usuario a partir do JWT quando o backend nao envia usuario', () => {
     service = TestBed.inject(AuthService);
     const token = makeJwt({

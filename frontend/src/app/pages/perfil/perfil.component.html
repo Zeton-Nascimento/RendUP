@@ -11,8 +11,17 @@
 
   @if (carregando()) {
     <section class="status" role="status">Carregando seu perfil...</section>
-  } @else if (erro()) {
-    <section class="status error" role="alert">{{ erro() }}</section>
+  } @else if (erro(); as mensagem) {
+    <section class="status error" role="alert">
+      <span>{{ mensagem }}</span>
+      <button type="button" class="secondary-button" (click)="recarregar()">Tentar novamente</button>
+    </section>
+  } @else if (!usuarioPerfil()) {
+    <section class="status empty-state" role="status">
+      <strong>Nenhum dado de perfil encontrado.</strong>
+      <span>Tente carregar seu perfil novamente.</span>
+      <button type="button" class="secondary-button" (click)="recarregar()">Carregar novamente</button>
+    </section>
   }
 
   @if (sucessoAtualizacao(); as sucesso) {

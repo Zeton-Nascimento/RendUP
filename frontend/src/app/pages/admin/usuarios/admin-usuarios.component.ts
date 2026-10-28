@@ -24,6 +24,8 @@ export class AdminUsuariosComponent implements OnInit {
   readonly inativandoId = signal<string | null>(null);
   readonly consultandoId = signal<string | null>(null);
   readonly usuarioSelecionado = signal<UsuarioResponse | null>(null);
+  readonly usuarioEmConsulta = signal<UsuarioResponse | null>(null);
+  readonly erroConsulta = signal<string | null>(null);
 
   ngOnInit(): void {
     this.carregarUsuarios();
@@ -60,6 +62,8 @@ export class AdminUsuariosComponent implements OnInit {
   consultar(usuario: UsuarioResponse): void {
     if (this.consultandoId()) return;
 
+    this.usuarioEmConsulta.set(usuario);
+    this.erroConsulta.set(null);
     this.consultandoId.set(usuario.id);
     this.erro.set(null);
     this.usuarioService
@@ -68,13 +72,20 @@ export class AdminUsuariosComponent implements OnInit {
       .subscribe({
         next: (usuarioConsultado) => this.usuarioSelecionado.set(usuarioConsultado),
         error: (err) => {
-          this.erro.set(String(err?.error?.message ?? err?.error?.erro ?? "Não foi possível consultar o usuário."));
+          this.erroConsulta.set(String(err?.error?.message ?? err?.error?.erro ?? "Não foi possível consultar o usuário."));
         },
       });
   }
 
+  tentarConsultarNovamente(): void {
+    const usuario = this.usuarioEmConsulta();
+    if (usuario) this.consultar(usuario);
+  }
+
   fecharConsulta(): void {
     this.usuarioSelecionado.set(null);
+    this.usuarioEmConsulta.set(null);
+    this.erroConsulta.set(null);
   }
 
   formatarData(dataIso?: string): string {
