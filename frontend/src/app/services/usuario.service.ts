@@ -17,6 +17,10 @@ export class UsuarioService {
     return this.http.get<UsuarioResponse[]>(this.base);
   }
 
+  obterPorId(id: string) {
+    return this.http.get<UsuarioResponse>(`${this.base}/${id}`);
+  }
+
   atualizarMe(request: AtualizarUsuarioRequest) {
     return this.http.put<UsuarioResponse>(`${this.base}/me`, request);
   }

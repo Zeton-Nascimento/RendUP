@@ -63,12 +63,12 @@ export class LoginComponent implements OnInit {
     const email = this.form.controls.email.value;
     const senha = this.form.controls.senha.value;
 
-    const destinoPadrao = this.authApi.hasRole("ROLE_ADMIN") ? "/admin/usuarios" : "/perfil";
-    const returnUrl = this.route.snapshot.queryParamMap.get("returnUrl") ?? destinoPadrao;
+    const returnUrl = this.route.snapshot.queryParamMap.get("returnUrl");
 
     this.authApi.login({ email, senha }).subscribe({
       next: () => {
-        this.router.navigateByUrl(returnUrl);
+        const destinoPadrao = this.authApi.hasRole("ROLE_ADMIN") ? "/admin/usuarios" : "/perfil";
+        this.router.navigateByUrl(returnUrl ?? destinoPadrao);
       },
       error: (err) => {
         const msg = String(err?.error?.message ?? err?.error?.erro ?? err?.error ?? "");

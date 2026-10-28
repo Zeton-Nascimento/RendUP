@@ -48,6 +48,12 @@ public class UsuarioController {
         return buscarUsuarioService.listarTodos();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/{id}")
+    public UsuarioResponse buscarPorId(@PathVariable UUID id) {
+        return buscarUsuarioService.buscarPorId(id);
+    }
+
     @PreAuthorize("hasAnyAuthority('ROLE_INVESTIDOR', 'ROLE_ADMIN')")
     @PutMapping("/me")
     public UsuarioResponse atualizarProprioPerfil(@Valid @RequestBody AtualizarUsuarioRequest request) {

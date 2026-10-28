@@ -2,10 +2,12 @@ package com.example.templatespring.service;
 
 import com.example.templatespring.dto.usuario.response.UsuarioResponse;
 import com.example.templatespring.entity.security.Usuario;
+import com.example.templatespring.exception.RecursoNaoEncontradoException;
 import com.example.templatespring.mapper.UsuarioMapper;
 import com.example.templatespring.repository.UsuarioRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,13 @@ public class BuscarUsuarioService {
     public UsuarioResponse buscar() {
         Usuario usuarioAutenticado = usuarioAutenticadoService.get();
         return UsuarioMapper.toResponse(usuarioAutenticado);
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioResponse buscarPorId(UUID usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
+        return UsuarioMapper.toResponse(usuario);
     }
 
     public Optional<Usuario> buscarPorEmail(String email) {

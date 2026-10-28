@@ -34,6 +34,14 @@ describe('UsuarioService', () => {
     req.flush([{ id: 'u1', nome: 'Gabriel', email: 'g@email.com', ativo: true, permissoes: [] }]);
   });
 
+  it('obterPorId deve fazer GET /v1/usuarios/{id}', () => {
+    service.obterPorId('u1').subscribe((u) => expect(u.nome).toBe('Gabriel'));
+
+    const req = http.expectOne(`${environment.apiUrl}/v1/usuarios/u1`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 'u1', nome: 'Gabriel', email: 'g@email.com', ativo: true, permissoes: [] });
+  });
+
   it('atualizarMe deve fazer PUT /v1/usuarios/me', () => {
     const request = {
       nome: 'Gabriel Atualizado',
