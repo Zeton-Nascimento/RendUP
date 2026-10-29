@@ -35,4 +35,5 @@ public class AuthController {
     public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
+
 }

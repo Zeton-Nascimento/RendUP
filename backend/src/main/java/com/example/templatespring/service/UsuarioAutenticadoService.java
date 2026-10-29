@@ -38,7 +38,12 @@ public class UsuarioAutenticadoService {
     }
 
     public Usuario get() {
-        return usuarioRepository.findByEmailComCargosEPermissoes(getEmail())
+        Usuario usuario = usuarioRepository.findByEmailComCargosEPermissoes(getEmail())
                 .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado"));
+        if (!usuario.isAtivo()) {
+            throw new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado");
+        }
+        return usuario;
     }
 }
+

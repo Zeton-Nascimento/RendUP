@@ -1,7 +1,9 @@
 package com.example.templatespring.controller;
 
 import com.example.templatespring.dto.usuario.request.AtualizarUsuarioRequest;
+import com.example.templatespring.dto.usuario.request.AlterarSenhaRequest;
 import com.example.templatespring.dto.usuario.response.UsuarioResponse;
+import com.example.templatespring.service.AlterarSenhaService;
 import com.example.templatespring.service.AtualizarUsuarioService;
 import com.example.templatespring.service.BuscarUsuarioService;
 import com.example.templatespring.service.InativarUsuarioService;
@@ -26,14 +28,17 @@ public class UsuarioController {
     private final BuscarUsuarioService buscarUsuarioService;
     private final AtualizarUsuarioService atualizarUsuarioService;
     private final InativarUsuarioService inativarUsuarioService;
+    private final AlterarSenhaService alterarSenhaService;
 
     public UsuarioController(
             BuscarUsuarioService buscarUsuarioService,
             AtualizarUsuarioService atualizarUsuarioService,
-            InativarUsuarioService inativarUsuarioService) {
+            InativarUsuarioService inativarUsuarioService,
+            AlterarSenhaService alterarSenhaService) {
         this.buscarUsuarioService = buscarUsuarioService;
         this.atualizarUsuarioService = atualizarUsuarioService;
         this.inativarUsuarioService = inativarUsuarioService;
+        this.alterarSenhaService = alterarSenhaService;
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_INVESTIDOR', 'ROLE_ADMIN')")
@@ -58,6 +63,13 @@ public class UsuarioController {
     @PutMapping("/me")
     public UsuarioResponse atualizarProprioPerfil(@Valid @RequestBody AtualizarUsuarioRequest request) {
         return atualizarUsuarioService.atualizarProprioPerfil(request);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_INVESTIDOR', 'ROLE_ADMIN')")
+    @PutMapping("/me/senha")
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NO_CONTENT)
+    public void alterarSenha(@Valid @RequestBody AlterarSenhaRequest request) {
+        alterarSenhaService.alterar(request);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
