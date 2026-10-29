@@ -50,6 +50,11 @@ export interface AtualizarUsuarioRequest {
   perfilInvestidor: PerfilInvestidor;
 }
 
+export interface AlterarSenhaRequest {
+  senhaAtual: string;
+  novaSenha: string;
+}
+
 export interface UsuarioResponse {
   id: string;
   nome: string;

@@ -80,7 +80,8 @@ function handleUnauthorizedError(
 
   auth.logout();
   const onAuthPage =
-    router.url?.startsWith("/login") || router.url?.startsWith("/registro");
+    router.url?.startsWith("/login")
+    || router.url?.startsWith("/registro");
   if (!onAuthPage) {
     router.navigateByUrl("/login");
   }

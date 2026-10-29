@@ -32,7 +32,7 @@ export class AuthService {
     const payload = this.decodeJwtPayload(token);
     const expRaw = payload ? payload["exp"] : null;
     const exp = typeof expRaw === "number" ? expRaw : null;
-    if (!exp) return false;
+    if (!exp) return true;
     return Date.now() >= exp * 1000;
   }
 

@@ -42,11 +42,14 @@
             <p>{{ user.email || "E-mail não informado" }}</p>
           </div>
         </div>
-        @if (!editando()) {
-          <button type="button" class="primary-button edit-button" (click)="abrirEdicao()">
-            <span aria-hidden="true">✎</span>
-            Editar perfil
-          </button>
+        @if (!editando() && !alterandoSenha()) {
+          <div class="header-actions">
+            <button type="button" class="secondary-button" (click)="abrirAlteracaoSenha()">Alterar senha</button>
+            <button type="button" class="primary-button edit-button" (click)="abrirEdicao()">
+              <span aria-hidden="true">✎</span>
+              Editar perfil
+            </button>
+          </div>
         }
       </div>
 
@@ -101,6 +104,60 @@
             </button>
             <button type="submit" class="primary-button" [disabled]="salvando()">
               {{ salvando() ? "Salvando..." : "Salvar alterações" }}
+            </button>
+          </div>
+        </form>
+      } @else if (alterandoSenha()) {
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">ACESSO SEGURO</span>
+            <h3>Alterar senha</h3>
+          </div>
+          <span class="readonly-note">Não é necessário usar e-mail</span>
+        </div>
+
+        @if (erroSenha(); as mensagem) {
+          <section class="status error password-status" role="alert">{{ mensagem }}</section>
+        }
+        @if (sucessoSenha(); as mensagem) {
+          <section class="status success password-status" role="status">
+            <span>{{ mensagem }}</span>
+            <button type="button" class="secondary-button" (click)="sairDepoisDaSenha()">Ir para o login</button>
+          </section>
+        }
+
+        <form class="profile-form" [formGroup]="senhaForm" (ngSubmit)="salvarSenha()" novalidate>
+          <p class="password-help">Informe sua senha atual e escolha uma nova senha com pelo menos 8 caracteres, uma letra e um número.</p>
+          <div class="form-grid">
+            <label>
+              Senha atual
+              <input type="password" autocomplete="current-password" formControlName="senhaAtual" />
+              @if (senhaForm.controls.senhaAtual.touched && senhaForm.controls.senhaAtual.invalid) {
+                <small class="field-error">Informe sua senha atual.</small>
+              }
+            </label>
+            <label>
+              Nova senha
+              <input type="password" autocomplete="new-password" formControlName="novaSenha" />
+              @if (senhaForm.controls.novaSenha.touched && senhaForm.controls.novaSenha.invalid) {
+                <small class="field-error">Use pelo menos 8 caracteres, com uma letra e um número.</small>
+              }
+            </label>
+            <label>
+              Confirmar nova senha
+              <input type="password" autocomplete="new-password" formControlName="confirmarSenha" />
+              @if (senhaForm.controls.confirmarSenha.touched && senhaForm.controls.confirmarSenha.invalid) {
+                <small class="field-error">Confirme a nova senha.</small>
+              }
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="secondary-button" [disabled]="salvandoSenha()" (click)="cancelarAlteracaoSenha()">
+              Cancelar
+            </button>
+            <button type="submit" class="primary-button" [disabled]="salvandoSenha()">
+              {{ salvandoSenha() ? "Salvando..." : "Alterar senha" }}
             </button>
           </div>
         </form>

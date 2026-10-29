@@ -100,6 +100,29 @@
   text-align: center;
 }
 
+.auth-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.auth-success {
+  display: grid;
+  gap: 8px;
+  margin: 0 6px;
+  padding: 12px;
+  border: 1px solid rgba(62, 243, 154, 0.5);
+  border-radius: 12px;
+  background: rgba(13, 92, 53, 0.45);
+  color: #ffffff;
+  line-height: 1.45;
+}
+
+.auth-cta a {
+  color: var(--primary);
+}
+
 #login-submit {
   border: 1px solid var(--primary);
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-secondary) 100%);
