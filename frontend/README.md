@@ -1,59 +1,51 @@
-# Frontend
+# Frontend — RendUP
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.28.
+Frontend da plataforma RendUP, desenvolvido com Angular.
 
-## Development server
+## Requisitos
 
-To start a local development server, run:
+- Node.js instalado;
+- npm instalado;
+- Backend do RendUP em execução em `http://localhost:8080` para utilizar as funcionalidades que acessam a API.
 
-```bash
-ng serve
-```
+## Instalação
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+No diretório raiz do projeto, execute:
 
 ```bash
-ng generate component component-name
+cd frontend
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+O comando `npm install` instala as dependências do projeto e deve ser executado novamente quando o arquivo `package.json` for alterado.
+
+## Executar em modo de desenvolvimento
+
+Ainda dentro do diretório `frontend`, execute:
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Depois, acesse [http://localhost:4200] no navegador.
 
-To build the project run:
+Para executar o projeto completo, consulte as instruções do [backend](../backend/README.md) e mantenha o backend e o frontend em terminais separados.
 
-```bash
-ng build
+## Comandos disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm start` | Inicia o servidor de desenvolvimento na porta `4200`. |
+| `npm run build` | Gera a versão compilada da aplicação na pasta `dist/`. |
+| `npm test` | Executa os testes unitários. |
+| `npm run test:coverage` | Executa os testes e gera o relatório de cobertura. |
+
+## Endereço da API
+
+Em ambiente local, o frontend utiliza a API no endereço:
+
+```text
+http://localhost:8080/api
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Esse endereço está configurado nos arquivos de ambiente em `src/environments/`.
