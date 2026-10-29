@@ -1,0 +1,38 @@
+NOTAS DA RELEASE R1
+Plataforma RendUP
+
+Versão: R1
+Data de publicação: a definir
+Status: conteúdo preparado; confirmar a data e a publicação da release
+
+RESUMO
+
+A primeira release da RendUP reúne os fluxos iniciais de acesso e gerenciamento de usuários da plataforma, incluindo cadastro, login, perfil e administração de contas.
+
+FUNCIONALIDADES DISPONÍVEIS NO CÓDIGO DA R1
+
+- Cadastro de usuário e login.
+- Acesso autenticado ao próprio perfil e atualização dos dados cadastrais.
+- Alteração de senha.
+- Área administrativa para listar, consultar e atualizar usuários.
+- Inativação de usuário por administrador, com parâmetro de confirmação na API.
+- Controle de acesso às áreas de perfil e administração conforme autenticação e papel do usuário.
+
+QUALIDADE E TESTES
+
+O repositório contém testes unitários do frontend e do backend, além de cenários Cypress para interface e API. A documentação da suíte Cypress informa que os resultados começam como “Não executado”. Assim, estas notas não afirmam que os testes foram executados ou aprovados nesta release.
+
+CONTEÚDO EXISTENTE PARA ESSA RELEASE
+
+O código disponível para esta versão está concentrado em autenticação e gerenciamento de usuários. Funcionalidades de catálogo de investimentos, comparação, simulação, depósito, contratação e resgate não foram identificadas como entregues neste código da R1.
+
+EVIDÊNCIAS NO REPOSITÓRIO
+
+Frontend: frontend/src/app/pages/ e frontend/src/app/app.routes.ts
+
+Endpoints de autenticação: backend/src/main/java/com/example/templatespring/controller/AuthController.java
+
+Endpoints de usuários: backend/src/main/java/com/example/templatespring/controller/UsuarioController.java
+
+Testes Cypress e instruções: cypress/README.md
+

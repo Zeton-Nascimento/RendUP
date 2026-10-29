@@ -1,0 +1,52 @@
+RETROSPECTIVA DA RELEASE R1
+Plataforma RendUP
+
+SPRINT GOAL DA SPRINT 1
+
+Entregar os fluxos básicos de cadastro, login, perfil e administração de usuários.
+
+VISÃO GERAL DA RELEASE
+
+O projeto contém funcionalidades de autenticação, cadastro e administração de usuários, além de artefatos de testes para interface e API.
+O README da suíte Cypress descreve 15 cenários de interface com API simulada e 7 cenários básicos para API real, além de um cenário administrativo opcional.
+
+O QUE FUNCIONOU BEM
+
+- Há uma base implementada para autenticação e gerenciamento de usuários no frontend e no backend.
+- Foram preparados cenários Cypress para fluxos de interface e chamadas à API, incluindo autenticação, cadastro, permissões e atualização de perfil.
+- A documentação dos testes explicita pré-requisitos, limites da simulação da interface e cuidados com credenciais e dados de teste.
+
+
+Esses pontos descrevem artefatos encontrados no repositório. Não há registro suficiente para atribuir a eles resultados de execução ou decisões tomadas pela equipe durante a release.
+
+PONTOS A MELHORAR
+
+- Registrar os resultados da execução dos testes, com data, ambiente, versão avaliada, cenários aprovados e falhas encontradas.
+- Consolidar a rastreabilidade entre histórias, critérios de aceite, código e evidências da release.
+- Registrar métricas da sprint, como velocity, burndown final, itens concluídos e impedimentos, junto com a fonte dos dados.
+- Manter evidências de validação da release em docs/releases/, incluindo links para pipeline, logs ou relatórios quando disponíveis.
+- Confirmar que as configurações e credenciais usadas em cada ambiente são externas ao código e adequadas ao ambiente de execução.
+- Formalizar os critérios de entrada e saída da release, incluindo validações funcionais, segurança, configuração de ambiente e revisão das pendências.
+
+MÉTRICAS E EVIDÊNCIAS
+
+Gráfico de burndown da Sprint 1: docs/releases/Gráfico Burndown sprint 1.png
+
+Documentação da suíte Cypress: cypress/README.md
+
+Código e testes do frontend: frontend/src/
+
+Código e testes do backend: backend/src/
+
+
+ESCOPO DA PRÓXIMA RELEASE
+
+R2 — OPERAÇÕES CRÍTICAS CONFIÁVEIS
+
+Validação uniforme das entradas e controle de uso abusivo.
+Transações atômicas e idempotência em operações financeiras.
+Confirmação explícita antes de remoção, resgate, desbloqueio e outras ações críticas.
+Catálogo público, detalhes, comparação, administração e sincronização.
+Simulação, transparência de dados, assistente de IA e histórico.
+Depósito, contratação, evidências e prévia de resgate.
+
