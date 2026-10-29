@@ -1,6 +1,12 @@
+:host {
+  display: block;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
 .perfil-page {
   width: min(920px, calc(100% - 40px));
-  margin: 56px auto;
+  margin: 32px auto 24px;
   display: grid;
   gap: 24px;
 }
@@ -167,6 +173,13 @@
   white-space: nowrap;
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .edit-button span {
   margin-right: 5px;
   font-size: 16px;
@@ -244,6 +257,21 @@
   padding: 0 28px 28px;
 }
 
+.password-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.password-status {
+  margin: 0 28px 18px;
+}
+
+.password-status .secondary-button {
+  flex: 0 0 auto;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -287,6 +315,11 @@ button:disabled {
     margin: 28px auto;
   }
 
+  :host {
+    max-height: none;
+    overflow: visible;
+  }
+
   .page-header,
   .card-header,
   .section-heading {
@@ -308,6 +341,15 @@ button:disabled {
   }
 
   .edit-button {
+    width: 100%;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .header-actions button {
     width: 100%;
   }
 

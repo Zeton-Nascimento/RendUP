@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { environment } from "../../environments/environment";
-import type { AtualizarUsuarioRequest, UsuarioResponse } from "../models/auth.models";
+import type { AlterarSenhaRequest, AtualizarUsuarioRequest, UsuarioResponse } from "../models/auth.models";
 
 @Injectable({ providedIn: "root" })
 export class UsuarioService {
@@ -23,6 +23,10 @@ export class UsuarioService {
 
   atualizarMe(request: AtualizarUsuarioRequest) {
     return this.http.put<UsuarioResponse>(`${this.base}/me`, request);
+  }
+
+  alterarSenha(request: AlterarSenhaRequest) {
+    return this.http.put<void>(`${this.base}/me/senha`, request);
   }
 
   inativar(id: string) {

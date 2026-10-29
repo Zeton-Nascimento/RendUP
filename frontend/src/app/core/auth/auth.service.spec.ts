@@ -93,7 +93,7 @@ describe('AuthService', () => {
 
     expect(service.isTokenExpired(expiredToken)).toBe(true);
     expect(service.isTokenExpired(validToken)).toBe(false);
-    expect(service.isTokenExpired(tokenWithoutExp)).toBe(false);
+    expect(service.isTokenExpired(tokenWithoutExp)).toBe(true);
   });
 
   it('encerra a sessao automaticamente quando o token expira', () => {

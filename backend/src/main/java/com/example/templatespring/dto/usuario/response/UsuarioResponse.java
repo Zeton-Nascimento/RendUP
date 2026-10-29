@@ -1,5 +1,6 @@
 package com.example.templatespring.dto.usuario.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UsuarioResponse {
 
     private UUID id;

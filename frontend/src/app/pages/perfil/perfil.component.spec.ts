@@ -16,6 +16,7 @@ describe("PerfilComponent", () => {
   const usuarioService = {
     obterMe: vi.fn(),
     atualizarMe: vi.fn(),
+    alterarSenha: vi.fn(),
   };
   const authStateMock = {
     usuario: usuarioSignal.asReadonly(),
@@ -27,6 +28,7 @@ describe("PerfilComponent", () => {
     usuarioSignal.set(null);
     usuarioService.obterMe.mockReturnValue(of(criarUsuario()));
     usuarioService.atualizarMe.mockReset();
+    usuarioService.alterarSenha.mockReset();
 
     await TestBed.configureTestingModule({
       imports: [PerfilComponent],

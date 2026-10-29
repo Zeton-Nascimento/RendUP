@@ -4,7 +4,12 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { finalize } from "rxjs";
 
 import { AuthState } from "../../core/state/auth.state";
-import type { AuthUsuario, AtualizarUsuarioRequest, PerfilInvestidor } from "../../models/auth.models";
+import type {
+  AlterarSenhaRequest,
+  AuthUsuario,
+  AtualizarUsuarioRequest,
+  PerfilInvestidor,
+} from "../../models/auth.models";
 import { UsuarioService } from "../../services/usuario.service";
 
 @Component({
@@ -24,6 +29,10 @@ export class PerfilComponent implements OnInit {
   readonly salvando = signal(false);
   readonly erroAtualizacao = signal<string | null>(null);
   readonly sucessoAtualizacao = signal<string | null>(null);
+  readonly alterandoSenha = signal(false);
+  readonly salvandoSenha = signal(false);
+  readonly erroSenha = signal<string | null>(null);
+  readonly sucessoSenha = signal<string | null>(null);
   readonly usuarioPerfil = signal<AuthUsuario | null>(this.authState.usuario());
 
   readonly perfis: ReadonlyArray<{ value: PerfilInvestidor; label: string }> = [
@@ -51,6 +60,15 @@ export class PerfilComponent implements OnInit {
     }),
   });
 
+  readonly senhaForm = new FormGroup({
+    senhaAtual: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
+    novaSenha: new FormControl("", {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)],
+    }),
+    confirmarSenha: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
+  });
+
   ngOnInit(): void {
     this.carregarPerfil();
   }
@@ -69,6 +87,61 @@ export class PerfilComponent implements OnInit {
     if (usuario) this.preencherFormulario(usuario);
     this.erroAtualizacao.set(null);
     this.editando.set(false);
+  }
+
+  abrirAlteracaoSenha(): void {
+    this.senhaForm.reset();
+    this.erroSenha.set(null);
+    this.sucessoSenha.set(null);
+    this.alterandoSenha.set(true);
+    this.editando.set(false);
+  }
+
+  cancelarAlteracaoSenha(): void {
+    this.senhaForm.reset();
+    this.erroSenha.set(null);
+    this.sucessoSenha.set(null);
+    this.alterandoSenha.set(false);
+  }
+
+  sairDepoisDaSenha(): void {
+    this.authState.logout();
+    window.location.href = "/login";
+  }
+
+  salvarSenha(): void {
+    if (this.salvandoSenha()) return;
+
+    if (this.senhaForm.invalid) {
+      this.senhaForm.markAllAsTouched();
+      return;
+    }
+
+    const { senhaAtual, novaSenha, confirmarSenha } = this.senhaForm.getRawValue();
+    if (novaSenha !== confirmarSenha) {
+      this.erroSenha.set("As senhas novas precisam ser iguais.");
+      return;
+    }
+
+    const request: AlterarSenhaRequest = { senhaAtual, novaSenha };
+    this.salvandoSenha.set(true);
+    this.erroSenha.set(null);
+    this.sucessoSenha.set(null);
+
+    this.usuarioService
+      .alterarSenha(request)
+      .pipe(finalize(() => this.salvandoSenha.set(false)))
+      .subscribe({
+        next: () => {
+          this.senhaForm.reset();
+          this.sucessoSenha.set("Senha alterada com sucesso. Faça login novamente quando sair da conta.");
+        },
+        error: (err) => {
+          this.erroSenha.set(
+            String(err?.error?.message ?? err?.error?.erro ?? err?.message ?? "Não foi possível alterar a senha."),
+          );
+        },
+      });
   }
 
   recarregar(): void {

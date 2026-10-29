@@ -44,14 +44,16 @@ public class UsuarioMapper {
                 .ativo(entity.isAtivo())
                 .perfilUsuario(entity.getPerfilUsuario())
                 .perfilInvestidor(entity.getPerfilInvestidor() == null ? null : entity.getPerfilInvestidor().toString())
-                .cpf(dadosPessoais == null ? null : dadosPessoais.getCpf())
+                .cpf(dadosPessoais == null ? null : mascararCpf(dadosPessoais.getCpf()))
                 .telefone(dadosPessoais == null ? null : dadosPessoais.getTelefone())
                 .dataNascimento(dadosPessoais == null ? null : dadosPessoais.getDataNascimento())
-                .banco(conta == null ? null : conta.getBanco())
-                .agencia(conta == null ? null : conta.getAgencia())
-                .numeroConta(conta == null ? null : conta.getNumeroConta())
                 .permissoes(entity.getPermissoes().stream().map(Permissao::getNome).toList())
                 .build();
+    }
+
+    private static String mascararCpf(String cpf) {
+        if (cpf == null || cpf.length() != 11) return null;
+        return "***.***." + cpf.substring(6, 9) + "-" + cpf.substring(9);
     }
 
     private static String normalizarSomenteDigitos(String valor) {

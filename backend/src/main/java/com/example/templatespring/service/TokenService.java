@@ -3,6 +3,7 @@ package com.example.templatespring.service;
 import com.example.templatespring.entity.security.Cargo;
 import com.example.templatespring.entity.security.Permissao;
 import com.example.templatespring.entity.security.Usuario;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -15,12 +16,16 @@ import java.util.Set;
 @Service
 public class TokenService {
 
-    private static final long EXPIRES_IN_SECONDS = 1200L;
-
     private final JwtEncoder jwtEncoder;
+    private long expiresInSeconds = 1200L;
 
     public TokenService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
+    }
+
+    @Value("${jwt.expiration-seconds:1200}")
+    public void setExpiresInSeconds(long expiresInSeconds) {
+        this.expiresInSeconds = expiresInSeconds;
     }
 
     public String gerarToken(Usuario usuario) {
@@ -36,7 +41,7 @@ public class TokenService {
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("investimentos-api")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(EXPIRES_IN_SECONDS))
+                .expiresAt(now.plusSeconds(expiresInSeconds))
                 .subject(usuario.getId().toString())
                 .claim("email", usuario.getEmail())
                 .claim("authorities", authorities);
@@ -51,6 +56,6 @@ public class TokenService {
     }
 
     public long getExpiresInSeconds() {
-        return EXPIRES_IN_SECONDS;
+        return expiresInSeconds;
     }
 }
