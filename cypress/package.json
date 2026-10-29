@@ -1,0 +1,15 @@
+{
+  "name": "qa-cypress-rendup-sprint1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Suítes Cypress independentes para as US da Sprint 1 do RendUP",
+  "scripts": {
+    "test:e2e": "cypress run --config-file cypress.config.cjs",
+    "test:e2e:open": "cypress open --config-file cypress.config.cjs",
+    "test:api": "cypress run --config-file cypress.api.config.cjs",
+    "test:api:open": "cypress open --config-file cypress.api.config.cjs"
+  },
+  "devDependencies": {
+    "cypress": "16.1.1"
+  }
+}
