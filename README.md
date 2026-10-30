@@ -25,10 +25,19 @@ Existem diversos tipos de investimentos, cada um com características, níveis d
 | Insegurança na hora de tomar uma decisão            |
 
 ---
-## Equipe
+## Equipe - Release 1
 
 | Integrante           | Papel                 |  Sigla |
 | :------------------- | :-------------------- | :----: |
 |**Alissom Silva**     | Scrum Master          | **SM** |
-|**Jose Lucas**        | Product Owner         | **PO/DevOps** |
+|**Jose Lucas**        | Product Owner / DevOps| **PO/DevOps** |
 |**Zeton**             | Analista de Qualidade | **QA** |
+
+
+## Equipe - Release 2
+
+| Integrante           | Papel                 |  Sigla |
+| :------------------- | :-------------------- | :----: |
+|**Zeton**             | Scrum Master          | **SM** |
+|**Alissom Silva**     | Product Owner / DevOps| **PO/DevOps** |
+|**José Lucas**        | Analista de Qualidade | **QA** |
