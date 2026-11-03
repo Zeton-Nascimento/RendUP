@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend build and tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: rendup
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rendup"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/rendup
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build and test backend
+        working-directory: backend
+        run: ./mvnw -B clean verify
+
+  frontend:
+    name: Frontend build and tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm run test:coverage
+
+  cypress:
+    name: Cypress UI and API tests
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: rendup
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rendup"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/rendup
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:4200
+      RENDUP_ADMIN_EMAIL: ${{ secrets.RENDUP_ADMIN_EMAIL }}
+      RENDUP_ADMIN_PASSWORD: ${{ secrets.RENDUP_ADMIN_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Cypress dependencies
+        working-directory: cypress
+        run: npm ci
+
+      - name: Start backend
+        working-directory: backend
+        run: |
+          ./mvnw -B spring-boot:run > "$RUNNER_TEMP/rendup-backend.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/rendup-backend.pid"
+
+      - name: Wait for backend
+        run: |
+          for attempt in {1..60}; do
+            if curl --silent --show-error http://localhost:8080/actuator/health > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+
+          cat "$RUNNER_TEMP/rendup-backend.log"
+          exit 1
+
+      - name: Run Cypress UI suite
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: cypress
+          start: npm --prefix ../frontend run start -- --host 0.0.0.0
+          wait-on: http://localhost:4200
+          wait-on-timeout: 120
+          command: npm run test:e2e
+
+      - name: Run Cypress API suite
+        if: always()
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: cypress
+          command: npm run test:api
+
+      - name: Upload Cypress evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-evidence
+          path: |
+            cypress/screenshots
+            cypress/videos
+            ${{ runner.temp }}/rendup-backend.log
+          if-no-files-found: ignore
