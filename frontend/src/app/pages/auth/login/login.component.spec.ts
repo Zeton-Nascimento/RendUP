@@ -49,11 +49,11 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve navegar para /perfil apos login bem-sucedido', () => {
+  it('deve navegar para /dashboard apos login bem-sucedido', () => {
     component.form.setValue({ email: 'user@email.com', senha: 'senha123' });
     component.entrar();
     expect(authService.login).toHaveBeenCalledWith({ email: 'user@email.com', senha: 'senha123' });
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/perfil');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
   });
 
   it('deve navegar para a area administrativa apos login de administrador', () => {

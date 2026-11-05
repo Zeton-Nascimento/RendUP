@@ -1,0 +1,39 @@
+<main class="dashboard-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">VISÃO GERAL</span>
+      <h1>Dashboard</h1>
+      <p>Olá, {{ usuario()?.nome || "investidor" }}. Encontre alternativas para seus objetivos.</p>
+    </div>
+    <a routerLink="/produtos" class="primary-button">Explorar produtos</a>
+  </header>
+
+  <section class="stats-grid" aria-label="Resumo da plataforma">
+    <article class="stat-card accent-card">
+      <span class="stat-label">Catálogo</span>
+      <strong>Produtos ativos</strong>
+      <span class="stat-description">Alternativas disponíveis para consulta.</span>
+    </article>
+    <article class="stat-card">
+      <span class="stat-label">Filtros</span>
+      <strong>Escolha com clareza</strong>
+      <span class="stat-description">Compare risco, liquidez e valor mínimo.</span>
+    </article>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="welcome-card">
+      <span class="section-kicker">PRÓXIMO PASSO</span>
+      <h2>Explore o catálogo financeiro</h2>
+      <p>Use os filtros para encontrar produtos compatíveis com o seu perfil e objetivo de investimento.</p>
+      <a routerLink="/produtos" class="secondary-button">Ver produtos</a>
+    </article>
+
+    <article class="quick-card">
+      <span class="section-kicker">ACESSO RÁPIDO</span>
+      <h2>Navegação</h2>
+      <a routerLink="/produtos" class="quick-link"><span>◇</span> Produtos financeiros</a>
+      <a routerLink="/perfil" class="quick-link"><span>♙</span> Meu perfil</a>
+    </article>
+  </section>
+</main>

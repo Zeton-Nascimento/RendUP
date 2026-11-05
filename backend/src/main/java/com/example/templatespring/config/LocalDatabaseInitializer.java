@@ -1,11 +1,17 @@
 package com.example.templatespring.config;
 
 import com.example.templatespring.entity.enums.PerfilInvestidor;
+import com.example.templatespring.entity.enums.TipoLiquidez;
+import com.example.templatespring.entity.enums.TipoProduto;
+import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.entity.security.Cargo;
 import com.example.templatespring.entity.security.Usuario;
 import com.example.templatespring.repository.CargoRepository;
+import com.example.templatespring.repository.ProdutoFinanceiroRepository;
 import com.example.templatespring.repository.UsuarioRepository;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -23,6 +29,7 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
 
     private final CargoRepository cargoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProdutoFinanceiroRepository produtoFinanceiroRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -31,6 +38,7 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
         garantirCargo("INVESTIDOR", "Investidor com acesso padrão");
         Cargo cargoAdmin = garantirCargo("ADMIN", "Administrador do sistema");
         garantirUsuarioAdmin(cargoAdmin);
+        garantirProdutosParaDemonstracao();
     }
 
     private Cargo garantirCargo(String nome, String descricao) {
@@ -52,5 +60,53 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
 
         usuario.adicionarCargo(cargoAdmin);
         usuarioRepository.save(usuario);
+    }
+
+    private void garantirProdutosParaDemonstracao() {
+        if (produtoFinanceiroRepository.count() > 0) {
+            return;
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+        produtoFinanceiroRepository.saveAll(List.of(
+                produto(TipoProduto.CDB, "CDB Liquidez Diária", "Renda fixa para manter seu dinheiro acessível.",
+                        "BAIXO", TipoLiquidez.DIARIA, 10.50, 100.00, 0, 0, agora),
+                produto(TipoProduto.LCI, "LCI Mais Rendimento", "Investimento isento de IR para pessoa física.",
+                        "BAIXO", TipoLiquidez.NO_VENCIMENTO, 11.20, 500.00, 365, 90, agora),
+                produto(TipoProduto.TESOURO_SELIC, "Tesouro Selic 2029", "Título público para objetivos de médio prazo.",
+                        "BAIXO", TipoLiquidez.D_PLUS_N, 12.00, 150.00, 2, 730, agora),
+                produto(TipoProduto.FUNDO, "Fundo Balanceado RendUP", "Carteira diversificada para quem busca equilíbrio.",
+                        "MEDIO", TipoLiquidez.D_PLUS_N, 14.00, 250.00, 5, 365, agora),
+                produto(TipoProduto.ACAO, "Carteira de Ações Brasil", "Exposição diversificada ao mercado de ações.",
+                        "ALTO", TipoLiquidez.D_PLUS_N, 18.00, 100.00, 3, 0, agora),
+                produto(TipoProduto.POUPANCA, "Poupança RendUP", "Opção simples para reserva de curto prazo.",
+                        "BAIXO", TipoLiquidez.DIARIA, 6.00, 10.00, 0, 0, agora)));
+    }
+
+    private ProdutoFinanceiro produto(
+            TipoProduto tipo,
+            String nome,
+            String descricao,
+            String risco,
+            TipoLiquidez liquidez,
+            double rentabilidade,
+            double valorMinimo,
+            int diasLiquidez,
+            int prazoDias,
+            LocalDateTime agora) {
+        ProdutoFinanceiro produto = new ProdutoFinanceiro();
+        produto.setTipoProduto(tipo);
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setNivelRisco(risco);
+        produto.setLiquidez(liquidez);
+        produto.setRentabilidadePercentual(BigDecimal.valueOf(rentabilidade));
+        produto.setValorMinimo(BigDecimal.valueOf(valorMinimo));
+        produto.setDiasLiquidez(diasLiquidez);
+        produto.setPrazoDias(prazoDias);
+        produto.setAtivo(true);
+        produto.setCreatedAt(agora);
+        produto.setUpdatedAt(agora);
+        return produto;
     }
 }

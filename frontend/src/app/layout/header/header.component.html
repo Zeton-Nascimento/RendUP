@@ -1,0 +1,30 @@
+<header class="app-header">
+  <a class="brand" routerLink="/dashboard" aria-label="Ir para o dashboard">
+    <img src="assets/Bolinha recortada.png" alt="" class="brand-icon" />
+    <img src="assets/Nome recortado.png" alt="RendUP" class="brand-name" />
+  </a>
+
+  <div class="header-right">
+    <div class="profile-menu">
+      <button
+        type="button"
+        class="profile-trigger"
+        aria-label="Abrir menu do perfil"
+        [attr.aria-expanded]="menuAberto()"
+        (click)="toggleMenu()"
+      >
+        <span class="avatar" aria-hidden="true">{{ (usuario()?.nome || "U").charAt(0).toUpperCase() }}</span>
+        <span class="profile-name">{{ usuario()?.nome || "Usuário" }}</span>
+        <span class="chevron" [class.open]="menuAberto()" aria-hidden="true">⌄</span>
+      </button>
+
+      @if (menuAberto()) {
+        <div class="profile-dropdown" role="menu">
+          <a routerLink="/perfil" role="menuitem" (click)="fecharMenu()">Meu perfil</a>
+          <div class="dropdown-divider"></div>
+          <button type="button" role="menuitem" class="logout-item" (click)="sair()">Sair</button>
+        </div>
+      }
+    </div>
+  </div>
+</header>

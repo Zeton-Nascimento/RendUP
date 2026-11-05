@@ -38,7 +38,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     const token = this.authApi.getToken();
     if (token && !this.authApi.isTokenExpired(token)) {
-      this.router.navigateByUrl("/perfil");
+      const destino = this.authApi.hasRole("ROLE_ADMIN") ? "/admin/usuarios" : "/dashboard";
+      this.router.navigateByUrl(destino);
       return;
     }
 
@@ -67,7 +68,7 @@ export class LoginComponent implements OnInit {
 
     this.authApi.login({ email, senha }).subscribe({
       next: () => {
-        const destinoPadrao = this.authApi.hasRole("ROLE_ADMIN") ? "/admin/usuarios" : "/perfil";
+        const destinoPadrao = this.authApi.hasRole("ROLE_ADMIN") ? "/admin/usuarios" : "/dashboard";
         this.router.navigateByUrl(returnUrl ?? destinoPadrao);
       },
       error: (err) => {

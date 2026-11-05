@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/registrar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/produtos").permitAll()
                         .anyRequest().hasAnyAuthority("ROLE_INVESTIDOR", "ROLE_ADMIN"))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authenticationException) -> {

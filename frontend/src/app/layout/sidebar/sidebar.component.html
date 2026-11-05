@@ -1,0 +1,51 @@
+<aside class="sidebar" aria-label="Navegação principal">
+  <div class="sidebar-label">MENU PRINCIPAL</div>
+
+  <nav class="nav-list">
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="7" height="9" x="3" y="3" rx="1" />
+          <rect width="7" height="5" x="14" y="3" rx="1" />
+          <rect width="7" height="9" x="14" y="12" rx="1" />
+          <rect width="7" height="5" x="3" y="16" rx="1" />
+        </svg>
+      </span>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/produtos" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m7.5 4.27 9 5.15" />
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5" />
+          <path d="M12 22V12" />
+        </svg>
+      </span>
+      <span>Produtos</span>
+    </a>
+  </nav>
+
+  @if (isAdmin) {
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">ADMINISTRAÇÃO</div>
+    <nav class="nav-list">
+      <a routerLink="/admin/usuarios" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </span>
+        <span>Usuários</span>
+      </a>
+    </nav>
+  }
+
+  <div class="sidebar-footer">
+    <span class="security-dot" aria-hidden="true"></span>
+    <span>Sessão protegida</span>
+  </div>
+</aside>
