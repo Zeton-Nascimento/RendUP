@@ -86,7 +86,7 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
     cy.location("search").should("contain", "returnUrl");
   });
 
-  it("CT-UI-002 / US-008 — autentica investidor e abre o próprio perfil", () => {
+  it("CT-UI-002 / US-008 — autentica investidor, abre o dashboard e acessa o próprio perfil", () => {
     const accessToken = tokenFor(investor);
     cy.intercept("POST", `${API}/auth/login`, {
       statusCode: 200,
@@ -103,6 +103,10 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
       email: investor.email,
       senha: "SenhaTeste123",
     });
+
+    cy.location("pathname").should("eq", "/dashboard");
+    cy.contains("h1", "Dashboard").should("be.visible");
+    cy.get('a[routerLink="/perfil"]').click();
     cy.wait("@getOwnProfile");
     cy.location("pathname").should("eq", "/perfil");
     cy.contains("h1", "Meu perfil").should("be.visible");

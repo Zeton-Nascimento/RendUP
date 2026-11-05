@@ -1,0 +1,140 @@
+:host {
+  display: flex;
+  min-height: 0;
+  flex: 0 0 244px;
+}
+
+.sidebar {
+  display: flex;
+  width: 244px;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  flex: 0 0 244px;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 16px 18px;
+  border-right: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(20, 23, 31, 0.88), rgba(11, 13, 18, 0.72));
+  overflow-y: auto;
+}
+
+.sidebar-label {
+  padding: 0 12px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  opacity: 0.65;
+}
+
+.nav-list {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.nav-item:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.nav-item.active {
+  border-color: rgba(249, 115, 22, 0.25);
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--primary);
+}
+
+.nav-icon {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  color: currentColor;
+  flex: 0 0 22px;
+}
+
+.nav-icon svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  margin: 14px 10px 4px;
+  background: var(--border);
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 14px 10px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.security-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 4px rgba(62, 243, 154, 0.1);
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 9px 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  :host {
+    display: block;
+    min-height: auto;
+  }
+
+  .sidebar-label,
+  .sidebar-divider,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    flex: none;
+    gap: 5px;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+  }
+}

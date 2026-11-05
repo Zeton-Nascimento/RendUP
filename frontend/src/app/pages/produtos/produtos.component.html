@@ -1,0 +1,128 @@
+<main class="catalogo-page">
+  <header class="catalogo-header">
+    <div>
+      <span class="eyebrow">CATÁLOGO RENDUP</span>
+      <h1>Encontre seu próximo investimento</h1>
+      <p>Compare produtos ativos por tipo, risco, liquidez e valor mínimo.</p>
+    </div>
+  </header>
+
+  <section class="filters-card" aria-labelledby="filters-title">
+    <div class="filters-heading">
+      <div>
+        <span class="section-kicker">EXPLORAR</span>
+        <h2 id="filters-title">Filtre o catálogo</h2>
+      </div>
+      <span class="result-count">{{ totalProdutos() }} produtos</span>
+    </div>
+
+    <div class="filters-grid">
+      <div class="field search-field">
+        <label for="produto-busca">Nome do produto</label>
+        <input
+          id="produto-busca"
+          type="search"
+          [(ngModel)]="busca"
+          placeholder="Ex.: CDB, Tesouro..."
+          (keyup.enter)="aplicarFiltros()"
+        />
+      </div>
+
+      <div class="field">
+        <label for="produto-risco">Risco</label>
+        <select id="produto-risco" [(ngModel)]="riscoSelecionado">
+          <option value="">Todos os riscos</option>
+          <option value="BAIXO">Baixo</option>
+          <option value="MEDIO">Médio</option>
+          <option value="ALTO">Alto</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="produto-liquidez">Liquidez</label>
+        <select id="produto-liquidez" [(ngModel)]="liquidezSelecionada">
+          <option value="">Todas</option>
+          <option value="DIARIA">Diária</option>
+          <option value="D_PLUS_N">D+N dias</option>
+          <option value="NO_VENCIMENTO">No vencimento</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="produto-ordenacao">Ordenar por</label>
+        <select id="produto-ordenacao" [(ngModel)]="ordenacao">
+          <option value="NOME">Nome</option>
+          <option value="RENTABILIDADE">Maior rentabilidade</option>
+          <option value="MENOR_VALOR_MINIMO">Menor valor mínimo</option>
+          <option value="MAIOR_LIQUIDEZ">Maior liquidez</option>
+          <option value="MENOR_RISCO">Menor risco</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <div class="type-filters" aria-label="Filtrar por tipo de produto">
+        @for (tipo of tipos; track tipo.valor) {
+          <button
+            type="button"
+            class="type-chip"
+            [class.active]="tipoSelecionado === tipo.valor"
+            (click)="selecionarTipo(tipo.valor)"
+          >
+            {{ tipo.label }}
+          </button>
+        }
+      </div>
+      <div class="action-buttons">
+        <button type="button" class="secondary-button" (click)="limparFiltros()">Limpar</button>
+        <button type="button" class="primary-button" (click)="aplicarFiltros()">Buscar produtos</button>
+      </div>
+    </div>
+  </section>
+
+  @if (carregando()) {
+    <section class="state-card" role="status">Carregando produtos...</section>
+  } @else if (erro(); as mensagem) {
+    <section class="state-card error" role="alert">
+      <span>{{ mensagem }}</span>
+      <button type="button" class="secondary-button" (click)="buscarProdutos()">Tentar novamente</button>
+    </section>
+  } @else if (produtos().length === 0) {
+    <section class="state-card empty-state">
+      <strong>Nenhum produto encontrado</strong>
+      <span>Altere os filtros para consultar outras alternativas.</span>
+      <button type="button" class="secondary-button" (click)="limparFiltros()">Limpar filtros</button>
+    </section>
+  } @else {
+    <section class="products-grid" aria-live="polite" aria-label="Produtos financeiros">
+      @for (produto of produtos(); track produto.id) {
+        <article class="product-card">
+          <div class="card-topline">
+            <span class="product-type">{{ formatarTipo(produto.tipoProduto) }}</span>
+            <span class="risk-badge" [class.low]="produto.nivelRisco === 'BAIXO'" [class.medium]="produto.nivelRisco === 'MEDIO'" [class.high]="produto.nivelRisco === 'ALTO'">
+              {{ formatarRisco(produto.nivelRisco) }} risco
+            </span>
+          </div>
+
+          <h2>{{ produto.nome }}</h2>
+          <p class="product-description">{{ produto.descricao }}</p>
+
+          <dl class="product-details">
+            <div><dt>Rentabilidade</dt><dd class="highlight">{{ formatarRentabilidade(produto.rentabilidadePercentual) }}</dd></div>
+            <div><dt>Liquidez</dt><dd>{{ formatarLiquidez(produto.liquidez, produto.diasLiquidez) }}</dd></div>
+            <div><dt>Valor mínimo</dt><dd>{{ formatarMoeda(produto.valorMinimo) }}</dd></div>
+            <div><dt>Prazo</dt><dd>{{ produto.prazoDias ? produto.prazoDias + ' dias' : 'Livre' }}</dd></div>
+          </dl>
+        </article>
+      }
+    </section>
+
+    @if (totalPaginas() > 1) {
+      <nav class="pagination" aria-label="Paginação do catálogo">
+        <button type="button" class="secondary-button" [disabled]="pagina === 0" (click)="irParaPagina(pagina - 1)">Anterior</button>
+        <span>Página {{ paginaAtual }} de {{ totalPaginas() }}</span>
+        <button type="button" class="secondary-button" [disabled]="pagina >= totalPaginas() - 1" (click)="irParaPagina(pagina + 1)">Próxima</button>
+      </nav>
+    }
+  }
+</main>
