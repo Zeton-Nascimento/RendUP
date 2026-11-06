@@ -7,11 +7,13 @@ import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -36,6 +38,22 @@ class ProdutoFinanceiroRepositoryTest {
 
         assertThat(resultado.getTotalElements()).isEqualTo(1);
         assertThat(resultado.getContent()).extracting(ProdutoFinanceiro::getNome).containsExactly("CDB Diário");
+    }
+
+    @Test
+    void buscaProdutosRelacionadosSomenteAtivosDoMesmoTipo() {
+        ProdutoFinanceiro principal = repository.save(produto("CDB Principal", TipoProduto.CDB, "BAIXO", true));
+        repository.save(produto("CDB Relacionado", TipoProduto.CDB, "MEDIO", true));
+        repository.save(produto("CDB Inativo", TipoProduto.CDB, "BAIXO", false));
+        repository.save(produto("Fundo não relacionado", TipoProduto.FUNDO, "MEDIO", true));
+
+        List<ProdutoFinanceiro> relacionados = repository.findByTipoProdutoAndAtivoTrueAndIdNot(
+                TipoProduto.CDB,
+                principal.getId(),
+                PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "nome")));
+
+        assertThat(relacionados).extracting(ProdutoFinanceiro::getNome)
+                .containsExactly("CDB Relacionado");
     }
 
     private ProdutoFinanceiro produto(String nome, TipoProduto tipo, String risco, boolean ativo) {

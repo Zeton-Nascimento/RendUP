@@ -5,6 +5,9 @@ import com.example.templatespring.dto.produto.response.ProdutoFinanceiroResponse
 import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.mapper.ProdutoFinanceiroMapper;
 import com.example.templatespring.repository.ProdutoFinanceiroRepository;
+import com.example.templatespring.exception.RecursoNaoEncontradoException;
+import java.util.List;
+import java.util.UUID;
 import java.util.Locale;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -40,6 +43,25 @@ public class ProdutoFinanceiroService {
         return repository.buscarAtivosFiltrados(
                         filtro.tipo(), risco, filtro.liquidez(), nome, pageable)
                 .map(ProdutoFinanceiroMapper::toResponse);
+    }
+
+    public ProdutoFinanceiroResponse buscarPorId(UUID id) {
+        return repository.findById(id)
+                .filter(ProdutoFinanceiro::isAtivo)
+                .map(ProdutoFinanceiroMapper::toResponse)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto financeiro não encontrado."));
+    }
+
+    public List<ProdutoFinanceiroResponse> buscarRelacionados(UUID id) {
+        ProdutoFinanceiro produto = repository.findById(id)
+                .filter(ProdutoFinanceiro::isAtivo)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto financeiro não encontrado."));
+
+        return repository.findByTipoProdutoAndAtivoTrueAndIdNot(
+                        produto.getTipoProduto(), id, PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "nome")))
+                .stream()
+                .map(ProdutoFinanceiroMapper::toResponse)
+                .toList();
     }
 
     private Sort montarOrdenacao(String ordenacao) {

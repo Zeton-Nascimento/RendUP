@@ -1,6 +1,7 @@
 package com.example.templatespring.config;
 
 import com.example.templatespring.entity.enums.PerfilInvestidor;
+import com.example.templatespring.entity.enums.Indexador;
 import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
 import com.example.templatespring.entity.ProdutoFinanceiro;
@@ -98,6 +99,11 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
         produto.setTipoProduto(tipo);
         produto.setNome(nome);
         produto.setDescricao(descricao);
+        produto.setIndexador(indexadorPara(tipo));
+        produto.setPercentualIndexador(percentualIndexadorPara(tipo));
+        produto.setCarenciaDias(carenciaPara(tipo));
+        produto.setTaxas(taxasPara(tipo));
+        produto.setTributacao(tributacaoPara(tipo));
         produto.setNivelRisco(risco);
         produto.setLiquidez(liquidez);
         produto.setRentabilidadePercentual(BigDecimal.valueOf(rentabilidade));
@@ -108,5 +114,52 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
         produto.setCreatedAt(agora);
         produto.setUpdatedAt(agora);
         return produto;
+    }
+
+    private Indexador indexadorPara(TipoProduto tipo) {
+        return switch (tipo) {
+            case CDB, LCI, LCA, LC, FUNDO -> Indexador.CDI;
+            case TESOURO_SELIC, POUPANCA -> Indexador.SELIC;
+            case ACAO -> Indexador.IBOVESPA;
+        };
+    }
+
+    private BigDecimal percentualIndexadorPara(TipoProduto tipo) {
+        return switch (tipo) {
+            case CDB -> BigDecimal.valueOf(100);
+            case LCI -> BigDecimal.valueOf(95);
+            case LCA -> BigDecimal.valueOf(98);
+            case LC -> BigDecimal.valueOf(110);
+            case TESOURO_SELIC -> BigDecimal.valueOf(100);
+            case POUPANCA, FUNDO, ACAO -> null;
+        };
+    }
+
+    private String taxasPara(TipoProduto tipo) {
+        return switch (tipo) {
+            case FUNDO -> "Taxa de administração conforme o fundo";
+            case TESOURO_SELIC -> "Taxa de custódia conforme a regra do produto";
+            case ACAO -> "Taxas de corretagem e custódia conforme a operação";
+            default -> "Sem taxa de administração informada";
+        };
+    }
+
+    private Integer carenciaPara(TipoProduto tipo) {
+        return switch (tipo) {
+            case CDB -> 30;
+            case LCI -> 90;
+            case LCA -> 120;
+            case LC -> 60;
+            case TESOURO_SELIC, POUPANCA, ACAO -> 0;
+            case FUNDO -> 30;
+        };
+    }
+
+    private String tributacaoPara(TipoProduto tipo) {
+        return switch (tipo) {
+            case LCI, LCA, POUPANCA -> "Isento de IR para pessoa física";
+            case CDB, LC, TESOURO_SELIC, FUNDO -> "IR conforme prazo e regra do produto";
+            case ACAO -> "IR conforme a operação";
+        };
     }
 }

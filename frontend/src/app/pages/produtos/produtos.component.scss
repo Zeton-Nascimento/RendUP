@@ -260,6 +260,121 @@ p {
   color: var(--ok);
 }
 
+.product-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.details-link {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  color: #ffb15c;
+}
+
+.compare-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.compare-option input {
+  width: auto;
+  accent-color: var(--primary);
+}
+
+.compare-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.comparison-section {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid rgba(249, 115, 22, 0.32);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.09), var(--panel));
+}
+
+.comparison-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.comparison-heading h2 {
+  font-size: 20px;
+}
+
+.comparison-heading p,
+.comparison-hint {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.comparison-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table thead th {
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.comparison-table tbody th {
+  width: 150px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.comparison-table tbody tr:last-child th,
+.comparison-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.comparison-table td {
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.comparison-table td.highlight {
+  color: var(--ok);
+  font-weight: 800;
+}
+
 .pagination {
   justify-content: center;
   gap: 16px;
@@ -309,5 +424,10 @@ p {
 
   .products-grid {
     grid-template-columns: 1fr;
+  }
+
+  .comparison-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

@@ -1,0 +1,294 @@
+:host {
+  display: block;
+}
+
+.detail-page {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 22px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.breadcrumb a {
+  color: var(--primary);
+}
+
+.detail-header,
+.detail-grid,
+.transparency-grid,
+.related-topline {
+  display: flex;
+}
+
+.detail-header {
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.badges-row,
+.related-topline {
+  align-items: center;
+  gap: 8px;
+}
+
+.badges-row {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.detail-header h1 {
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -1px;
+}
+
+.detail-header p {
+  max-width: 720px;
+  margin-top: 9px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.section-kicker {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.product-type,
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.product-type {
+  background: rgba(167, 139, 250, 0.15);
+  color: var(--accent);
+}
+
+.risk-baixo,
+.risk-low {
+  background: rgba(62, 243, 154, 0.14);
+  color: var(--ok);
+}
+
+.risk-medio,
+.risk-medium {
+  background: rgba(249, 115, 22, 0.14);
+  color: #ffb15c;
+}
+
+.risk-alto,
+.risk-high {
+  background: rgba(255, 90, 95, 0.14);
+  color: #ff8588;
+}
+
+.tipo-tesouro-selic {
+  color: #f5c449;
+}
+
+.panel,
+.related-card,
+.state-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  padding: 24px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.7fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.panel h2,
+.related-section h2 {
+  font-size: 21px;
+}
+
+.details-list,
+.summary-list {
+  display: grid;
+  gap: 0;
+  margin: 18px 0 0;
+}
+
+.details-list div,
+.summary-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.details-list div:last-child,
+.summary-list div:last-child {
+  border-bottom: 0;
+}
+
+dt,
+.transparency-grid span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+dd {
+  max-width: 58%;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.highlight,
+.related-link {
+  color: var(--ok);
+}
+
+.transparency-panel h2 {
+  margin-bottom: 18px;
+}
+
+.transparency-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.transparency-grid div {
+  display: grid;
+  gap: 7px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.transparency-grid strong {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.disclaimer {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.related-section {
+  display: grid;
+  gap: 14px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.related-card {
+  display: grid;
+  gap: 11px;
+  padding: 18px;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.related-card:hover {
+  border-color: rgba(249, 115, 22, 0.45);
+  transform: translateY(-2px);
+}
+
+.related-card h3 {
+  font-size: 16px;
+}
+
+.related-card p {
+  min-height: 40px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.related-link {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.state-card {
+  display: grid;
+  min-height: 160px;
+  place-items: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.state-card.error {
+  border-color: rgba(255, 90, 95, 0.45);
+}
+
+.secondary-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.secondary-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+@media (max-width: 760px) {
+  .detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-grid,
+  .transparency-grid,
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+}

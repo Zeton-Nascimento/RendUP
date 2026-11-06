@@ -111,11 +111,96 @@
             <div><dt>Rentabilidade</dt><dd class="highlight">{{ formatarRentabilidade(produto.rentabilidadePercentual) }}</dd></div>
             <div><dt>Liquidez</dt><dd>{{ formatarLiquidez(produto.liquidez, produto.diasLiquidez) }}</dd></div>
             <div><dt>Valor mínimo</dt><dd>{{ formatarMoeda(produto.valorMinimo) }}</dd></div>
-            <div><dt>Prazo</dt><dd>{{ produto.prazoDias ? produto.prazoDias + ' dias' : 'Livre' }}</dd></div>
+            <div><dt>Prazo</dt><dd>{{ formatarPrazo(produto.prazoDias) }}</dd></div>
           </dl>
+
+          <div class="product-actions">
+            <a class="details-link" [routerLink]="['/produtos', produto.id]">Ver detalhes</a>
+            <label class="compare-option" [class.disabled]="!estaSelecionado(produto.id) && produtosSelecionados().length >= limiteComparacao">
+              <input
+                type="checkbox"
+                [checked]="estaSelecionado(produto.id)"
+                [disabled]="!estaSelecionado(produto.id) && produtosSelecionados().length >= limiteComparacao"
+                (change)="alternarComparacao(produto, $any($event.target).checked)"
+              />
+              <span>Comparar</span>
+            </label>
+          </div>
         </article>
       }
     </section>
+
+    @if (produtosSelecionados().length > 0) {
+      <section class="comparison-section" aria-label="Comparação de produtos">
+        <div class="comparison-heading">
+          <div>
+            <span class="section-kicker">COMPARAR</span>
+            <h2>Produtos selecionados</h2>
+            <p>Selecione até {{ limiteComparacao }} produtos para analisar as diferenças.</p>
+          </div>
+          <button type="button" class="secondary-button" (click)="limparComparacao()">Limpar comparação</button>
+        </div>
+
+        @if (produtosSelecionados().length < 2) {
+          <p class="comparison-hint">Selecione mais um produto para iniciar a comparação.</p>
+        } @else {
+          <div class="comparison-table-wrapper">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th scope="col">Critério</th>
+                  @for (produto of produtosSelecionados(); track produto.id) {
+                    <th scope="col">{{ produto.nome }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Tipo</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarTipo(produto.tipoProduto) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Risco</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarRisco(produto.nivelRisco) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Rentabilidade</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td class="highlight">{{ formatarRentabilidade(produto.rentabilidadePercentual) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Regra</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarRegraRentabilidade(produto) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Liquidez</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarLiquidez(produto.liquidez, produto.diasLiquidez) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Carência</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarCarencia(produto.carenciaDias) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Vencimento</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarPrazo(produto.prazoDias) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Valor mínimo</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ formatarMoeda(produto.valorMinimo) }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Taxas</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ produto.taxas || "Não informado" }}</td> }
+                </tr>
+                <tr>
+                  <th scope="row">Imposto de renda</th>
+                  @for (produto of produtosSelecionados(); track produto.id) { <td>{{ produto.tributacao || "Conforme regra aplicável" }}</td> }
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    }
 
     @if (totalPaginas() > 1) {
       <nav class="pagination" aria-label="Paginação do catálogo">

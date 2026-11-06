@@ -2,6 +2,7 @@ package com.example.templatespring.entity;
 
 import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
+import com.example.templatespring.entity.enums.Indexador;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,6 +39,24 @@ public class ProdutoFinanceiro {
 
     @Column(nullable = false, length = 500)
     private String descricao;
+
+    @Enumerated(EnumType.STRING)
+    private Indexador indexador;
+
+    @Column(name = "percentual_indexador", precision = 10, scale = 2)
+    private BigDecimal percentualIndexador;
+
+    @Column(name = "taxa_prefixada", precision = 10, scale = 2)
+    private BigDecimal taxaPrefixada;
+
+    @Column(name = "carencia_dias")
+    private Integer carenciaDias;
+
+    @Column(length = 250)
+    private String taxas;
+
+    @Column(length = 250)
+    private String tributacao;
 
     @Column(name = "rentabilidade_percentual", nullable = false, precision = 10, scale = 2)
     private BigDecimal rentabilidadePercentual;

@@ -1,0 +1,109 @@
+@if (carregando()) {
+  <section class="state-card" role="status">Carregando detalhes do produto...</section>
+} @else if (erro(); as mensagem) {
+  <section class="state-card error" role="alert">
+    <strong>{{ mensagem }}</strong>
+    <a routerLink="/produtos" class="secondary-button">Voltar para produtos</a>
+  </section>
+} @else if (produto(); as item) {
+  <main class="detail-page">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/produtos">Produtos</a>
+      <span aria-hidden="true">›</span>
+      <span>{{ item.nome }}</span>
+    </nav>
+
+    <header class="detail-header">
+      <div>
+        <div class="badges-row">
+          <span class="product-type" [ngClass]="getTipoClass(item.tipoProduto)">{{ formatarTipo(item.tipoProduto) }}</span>
+          <span class="risk-badge" [ngClass]="getRiscoClass(item.nivelRisco)">{{ formatarRisco(item.nivelRisco) }} risco</span>
+        </div>
+        <h1>{{ item.nome }}</h1>
+        <p>{{ item.descricao }}</p>
+      </div>
+      <a routerLink="/produtos" class="secondary-button">Voltar ao catálogo</a>
+    </header>
+
+    <section class="detail-grid" aria-label="Informações principais do produto">
+      <article class="panel">
+        <span class="section-kicker">VISÃO GERAL</span>
+        <h2>Como funciona</h2>
+        <dl class="details-list">
+          <div>
+            <dt>Rentabilidade estimada</dt>
+            <dd class="highlight">{{ formatarPercentual(item.rentabilidadePercentual) }} ao ano</dd>
+          </div>
+          <div>
+            <dt>Indexador</dt>
+            <dd>{{ formatarIndexador(item.indexador) }}</dd>
+          </div>
+          <div>
+            <dt>Regra de rentabilidade</dt>
+            <dd>{{ formatarRegraRentabilidade(item) }}</dd>
+          </div>
+          <div>
+            <dt>Liquidez</dt>
+            <dd>{{ formatarLiquidez(item.liquidez, item.diasLiquidez) }}</dd>
+          </div>
+          <div>
+            <dt>Carência</dt>
+            <dd>{{ formatarCarencia(item.carenciaDias) }}</dd>
+          </div>
+          <div>
+            <dt>Vencimento</dt>
+            <dd>{{ formatarPrazo(item.prazoDias) }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <aside class="panel summary-panel">
+        <span class="section-kicker">RESUMO</span>
+        <h2>Dados principais</h2>
+        <dl class="summary-list">
+          <div><dt>Risco</dt><dd><span class="risk-badge" [ngClass]="getRiscoClass(item.nivelRisco)">{{ formatarRisco(item.nivelRisco) }}</span></dd></div>
+          <div><dt>Valor mínimo</dt><dd class="highlight">{{ formatarMoeda(item.valorMinimo) }}</dd></div>
+          <div><dt>Tipo</dt><dd>{{ formatarTipo(item.tipoProduto) }}</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="panel transparency-panel">
+      <span class="section-kicker">TRANSPARÊNCIA</span>
+      <h2>Taxas, impostos e aviso importante</h2>
+      <div class="transparency-grid">
+        <div>
+          <span>Taxas</span>
+          <strong>{{ item.taxas || "Não informado no catálogo" }}</strong>
+        </div>
+        <div>
+          <span>Imposto de renda</span>
+          <strong>{{ item.tributacao || "Conforme regra aplicável" }}</strong>
+        </div>
+      </div>
+      <p class="disclaimer">As informações são estimativas e descritivas. Rentabilidade passada ou estimada não garante rentabilidade futura.</p>
+    </section>
+
+    @if (relacionados().length > 0) {
+      <section class="related-section">
+        <div>
+          <span class="section-kicker">OUTRAS ALTERNATIVAS</span>
+          <h2>Produtos relacionados</h2>
+        </div>
+        <div class="related-grid">
+          @for (relacionado of relacionados(); track relacionado.id) {
+            <a class="related-card" [routerLink]="['/produtos', relacionado.id]">
+              <div class="related-topline">
+                <span class="product-type" [ngClass]="getTipoClass(relacionado.tipoProduto)">{{ formatarTipo(relacionado.tipoProduto) }}</span>
+                <span class="risk-badge" [ngClass]="getRiscoClass(relacionado.nivelRisco)">{{ formatarRisco(relacionado.nivelRisco) }}</span>
+              </div>
+              <h3>{{ relacionado.nome }}</h3>
+              <p>{{ relacionado.descricao }}</p>
+              <span class="related-link">Ver detalhes →</span>
+            </a>
+          }
+        </div>
+      </section>
+    }
+  </main>
+}
