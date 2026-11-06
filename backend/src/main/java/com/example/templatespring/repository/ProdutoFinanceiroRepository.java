@@ -3,6 +3,7 @@ package com.example.templatespring.repository;
 import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProdutoFinanceiroRepository extends JpaRepository<ProdutoFinanceiro, UUID> {
+
+    List<ProdutoFinanceiro> findByTipoProdutoAndAtivoTrueAndIdNot(
+            TipoProduto tipoProduto, UUID id, Pageable pageable);
 
     @Query("""
             select p

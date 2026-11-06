@@ -9,6 +9,7 @@ export type TipoProduto =
   | "ACAO";
 
 export type TipoLiquidez = "DIARIA" | "D_PLUS_N" | "NO_VENCIMENTO";
+export type Indexador = "CDI" | "SELIC" | "IPCA" | "PREFIXADO" | "IBOVESPA";
 export type NivelRisco = "BAIXO" | "MEDIO" | "ALTO";
 export type Ordenacao =
   | "NOME"
@@ -22,6 +23,12 @@ export interface ProdutoFinanceiro {
   tipoProduto: TipoProduto;
   nome: string;
   descricao: string;
+  indexador: Indexador | null;
+  percentualIndexador: number | null;
+  taxaPrefixada: number | null;
+  carenciaDias: number | null;
+  taxas: string | null;
+  tributacao: string | null;
   rentabilidadePercentual: number;
   valorMinimo: number;
   nivelRisco: NivelRisco;

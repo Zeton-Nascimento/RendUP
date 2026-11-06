@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 import { finalize } from "rxjs";
 
 import { ProdutoService } from "../../services/produto.service";
@@ -15,7 +16,7 @@ import type {
 @Component({
   selector: "app-produtos",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: "./produtos.component.html",
   styleUrl: "./produtos.component.scss",
 })
@@ -27,6 +28,7 @@ export class ProdutosComponent implements OnInit {
   readonly erro = signal<string | null>(null);
   readonly totalPaginas = signal(0);
   readonly totalProdutos = signal(0);
+  readonly produtosSelecionados = signal<ProdutoFinanceiro[]>([]);
 
   readonly tipos: ReadonlyArray<{ valor: TipoProduto | ""; label: string }> = [
     { valor: "", label: "Todos" },
@@ -47,6 +49,7 @@ export class ProdutosComponent implements OnInit {
   ordenacao: Ordenacao = "NOME";
   pagina = 0;
   readonly tamanhoPagina = 6;
+  readonly limiteComparacao = 3;
 
   ngOnInit(): void {
     this.buscarProdutos();
@@ -108,6 +111,24 @@ export class ProdutosComponent implements OnInit {
     this.buscarProdutos();
   }
 
+  alternarComparacao(produto: ProdutoFinanceiro, selecionado: boolean): void {
+    if (selecionado) {
+      if (this.produtosSelecionados().length >= this.limiteComparacao) return;
+      this.produtosSelecionados.update((produtos) => [...produtos, produto]);
+      return;
+    }
+
+    this.produtosSelecionados.update((produtos) => produtos.filter((item) => item.id !== produto.id));
+  }
+
+  estaSelecionado(id: string): boolean {
+    return this.produtosSelecionados().some((produto) => produto.id === id);
+  }
+
+  limparComparacao(): void {
+    this.produtosSelecionados.set([]);
+  }
+
   formatarTipo(tipo: TipoProduto): string {
     return this.tipos.find((item) => item.valor === tipo)?.label ?? tipo;
   }
@@ -128,6 +149,38 @@ export class ProdutosComponent implements OnInit {
 
   formatarRentabilidade(valor: number): string {
     return `${valor.toFixed(2).replace(".", ",")}% ao ano`;
+  }
+
+  formatarCarencia(carencia: number | null): string {
+    return carencia && carencia > 0 ? `${carencia} dias` : "Sem carência";
+  }
+
+  formatarPrazo(prazo: number | null): string {
+    return prazo && prazo > 0 ? `${prazo} dias` : "Livre";
+  }
+
+  formatarIndexador(indexador: ProdutoFinanceiro["indexador"]): string {
+    if (!indexador) {
+      return "Não informado";
+    }
+
+    return {
+      CDI: "CDI",
+      SELIC: "Selic",
+      IPCA: "IPCA",
+      PREFIXADO: "Prefixado",
+      IBOVESPA: "Ibovespa",
+    }[indexador];
+  }
+
+  formatarRegraRentabilidade(produto: ProdutoFinanceiro): string {
+    if (produto.percentualIndexador !== null && produto.indexador) {
+      return `${produto.percentualIndexador.toFixed(2).replace(".", ",")}% do ${this.formatarIndexador(produto.indexador)}`;
+    }
+    if (produto.taxaPrefixada !== null) {
+      return `${produto.taxaPrefixada.toFixed(2).replace(".", ",")}% ao ano`;
+    }
+    return "Conforme produto";
   }
 
   get paginaAtual(): number {

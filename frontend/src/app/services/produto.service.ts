@@ -22,4 +22,12 @@ export class ProdutoService {
 
     return this.http.get<Pagina<ProdutoFinanceiro>>(this.base, { params });
   }
+
+  buscarPorId(id: string) {
+    return this.http.get<ProdutoFinanceiro>(`${this.base}/${id}`);
+  }
+
+  buscarRelacionados(id: string) {
+    return this.http.get<ProdutoFinanceiro[]>(`${this.base}/${id}/relacionados`);
+  }
 }
