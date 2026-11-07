@@ -41,6 +41,21 @@
         </span>
         <span>Usuários</span>
       </a>
+      @if (podeGerenciarProdutos) {
+        <a routerLink="/admin/produtos" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h16" />
+              <path d="M4 12h16" />
+              <path d="M4 17h16" />
+              <circle cx="8" cy="7" r="1" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="11" cy="17" r="1" />
+            </svg>
+          </span>
+          <span>Gerenciar produtos</span>
+        </a>
+      }
     </nav>
   }
 

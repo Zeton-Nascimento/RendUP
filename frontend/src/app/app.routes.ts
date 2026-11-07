@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 
 import { authGuard } from "./core/auth/auth.guard";
 import { adminGuard } from "./core/auth/admin.guard";
+import { produtoAdminGuard } from "./core/auth/produto-admin.guard";
 import { LoginComponent } from "./pages/auth/login/login.component";
 import { RegistroComponent } from "./pages/auth/registro/registro.component";
 import { MainLayoutComponent } from "./layout/main-layout/main-layout.component";
@@ -37,6 +38,12 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import("./pages/admin/usuarios/admin-usuarios.component").then((m) => m.AdminUsuariosComponent),
+      },
+      {
+        path: "admin/produtos",
+        canActivate: [produtoAdminGuard],
+        loadComponent: () =>
+          import("./pages/admin/produtos/admin-produtos.component").then((m) => m.AdminProdutosComponent),
       },
     ],
   },

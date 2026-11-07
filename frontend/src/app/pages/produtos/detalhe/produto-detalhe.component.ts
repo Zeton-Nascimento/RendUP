@@ -23,26 +23,34 @@ export class ProdutoDetalheComponent implements OnInit {
   readonly erro = signal<string | null>(null);
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get("id");
-    if (!id) {
-      this.carregando.set(false);
-      this.erro.set("Produto não informado.");
-      return;
-    }
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get("id");
+      this.carregando.set(true);
+      this.erro.set(null);
+      this.produto.set(null);
+      this.relacionados.set([]);
 
-    this.produtoService
-      .buscarPorId(id)
-      .pipe(finalize(() => this.carregando.set(false)))
-      .subscribe({
-        next: (produto) => {
-          this.produto.set(produto);
-          this.produtoService.buscarRelacionados(id).subscribe({
-            next: (relacionados) => this.relacionados.set(relacionados ?? []),
-          });
-        },
-        error: (err) => {
-          this.erro.set(String(err?.error?.erro ?? "Não foi possível carregar o produto."));
-        },
+      if (!id) {
+        this.carregando.set(false);
+        this.erro.set("Produto não informado.");
+        return;
+      }
+
+      this.produtoService
+        .buscarPorId(id)
+        .pipe(finalize(() => this.carregando.set(false)))
+        .subscribe({
+          next: (produto) => {
+            this.produto.set(produto);
+            this.produtoService.buscarRelacionados(id).subscribe({
+              next: (relacionados) => this.relacionados.set(relacionados ?? []),
+              error: () => this.relacionados.set([]),
+            });
+          },
+          error: (err) => {
+            this.erro.set(String(err?.error?.erro ?? "Não foi possível carregar o produto."));
+          },
+        });
       });
   }
 

@@ -26,6 +26,7 @@ export class AdminUsuariosComponent implements OnInit {
   readonly usuarioSelecionado = signal<UsuarioResponse | null>(null);
   readonly usuarioEmConsulta = signal<UsuarioResponse | null>(null);
   readonly erroConsulta = signal<string | null>(null);
+  readonly usuarioParaInativar = signal<UsuarioResponse | null>(null);
 
   ngOnInit(): void {
     this.carregarUsuarios();
@@ -34,10 +35,18 @@ export class AdminUsuariosComponent implements OnInit {
   inativar(usuario: UsuarioResponse): void {
     if (!usuario.ativo || this.inativandoId()) return;
 
-    const confirmado = window.confirm(
-      `Deseja inativar o usuário ${usuario.nome}? Esta ação impedirá novos acessos, mas preservará o histórico.`,
-    );
-    if (!confirmado) return;
+    this.usuarioParaInativar.set(usuario);
+  }
+
+  cancelarInativacao(): void {
+    this.usuarioParaInativar.set(null);
+  }
+
+  confirmarInativacao(): void {
+    const usuario = this.usuarioParaInativar();
+    if (!usuario || this.inativandoId()) return;
+
+    this.usuarioParaInativar.set(null);
 
     this.inativandoId.set(usuario.id);
     this.erro.set(null);

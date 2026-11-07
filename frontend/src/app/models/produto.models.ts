@@ -29,6 +29,10 @@ export interface ProdutoFinanceiro {
   carenciaDias: number | null;
   taxas: string | null;
   tributacao: string | null;
+  codigoExterno?: string | null;
+  origemCatalogo?: string | null;
+  versaoCatalogo?: string | null;
+  payloadOriginal?: string | null;
   rentabilidadePercentual: number;
   valorMinimo: number;
   nivelRisco: NivelRisco;
