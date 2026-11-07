@@ -6,8 +6,10 @@ import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
 import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.entity.security.Cargo;
+import com.example.templatespring.entity.security.Permissao;
 import com.example.templatespring.entity.security.Usuario;
 import com.example.templatespring.repository.CargoRepository;
+import com.example.templatespring.repository.PermissaoRepository;
 import com.example.templatespring.repository.ProdutoFinanceiroRepository;
 import com.example.templatespring.repository.UsuarioRepository;
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
     private static final String ADMIN_SENHA = "HDzcVpSOYsG+aZAE";
 
     private final CargoRepository cargoRepository;
+    private final PermissaoRepository permissaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProdutoFinanceiroRepository produtoFinanceiroRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,6 +41,9 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
     public void run(String... args) {
         garantirCargo("INVESTIDOR", "Investidor com acesso padrão");
         Cargo cargoAdmin = garantirCargo("ADMIN", "Administrador do sistema");
+        Permissao gerirProdutos = garantirPermissao("PRODUTO_GERIR", "Gerenciar produtos financeiros");
+        cargoAdmin.getPermissoes().add(gerirProdutos);
+        cargoRepository.save(cargoAdmin);
         garantirUsuarioAdmin(cargoAdmin);
         garantirProdutosParaDemonstracao();
     }
@@ -45,6 +51,11 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
     private Cargo garantirCargo(String nome, String descricao) {
         return cargoRepository.findByNome(nome).orElseGet(() -> cargoRepository.save(
                 Cargo.builder().nome(nome).descricao(descricao).build()));
+    }
+
+    private Permissao garantirPermissao(String nome, String descricao) {
+        return permissaoRepository.findByNome(nome).orElseGet(() -> permissaoRepository.save(
+                Permissao.builder().nome(nome).descricao(descricao).build()));
     }
 
     private void garantirUsuarioAdmin(Cargo cargoAdmin) {

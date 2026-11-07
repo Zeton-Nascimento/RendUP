@@ -23,6 +23,10 @@ public class ProdutoFinanceiroResponse {
     private Integer carenciaDias;
     private String taxas;
     private String tributacao;
+    private String codigoExterno;
+    private String origemCatalogo;
+    private String versaoCatalogo;
+    private String payloadOriginal;
     private BigDecimal rentabilidadePercentual;
     private BigDecimal valorMinimo;
     private String nivelRisco;

@@ -301,14 +301,15 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
       expect(req.url).to.include("confirmar=true");
       req.reply({ statusCode: 200, body: { ...investor, ativo: false } });
     }).as("deactivateUser");
-    cy.on("window:confirm", (message) => {
-      expect(message).to.contain("Deseja inativar o usuário Ana Souza?");
-      return true;
-    });
-
     visitWithUser("/admin/usuarios", admin);
     cy.wait("@listUsers");
     cy.contains(".user-row", investor.nome).contains("button", "Inativar").click();
+    cy.get('[role="dialog"]')
+      .should("be.visible")
+      .and("contain.text", "Inativar usuário?")
+      .and("contain.text", investor.nome)
+      .contains("button", "Inativar usuário")
+      .click();
     cy.wait("@deactivateUser");
     cy.contains(".user-row", investor.nome).should("contain.text", "Inativo");
     cy.get('[role="status"]').should("contain.text", "Usuário inativado com sucesso.");
@@ -320,11 +321,13 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
       body: [admin, investor],
     }).as("listUsers");
     cy.intercept("DELETE", `${API}/usuarios/${investor.id}*`).as("deactivateUser");
-    cy.on("window:confirm", () => false);
-
     visitWithUser("/admin/usuarios", admin);
     cy.wait("@listUsers");
     cy.contains(".user-row", investor.nome).contains("button", "Inativar").click();
+    cy.get('[role="dialog"]')
+      .should("be.visible")
+      .contains("button", "Cancelar")
+      .click();
     cy.get("@deactivateUser.all").should("have.length", 0);
     cy.contains(".user-row", investor.nome).should("contain.text", "Ativo");
   });

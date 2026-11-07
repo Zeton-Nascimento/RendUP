@@ -1,4 +1,20 @@
 <main class="admin-users-page">
+  @if (usuarioParaInativar(); as usuario) {
+    <div class="modal-backdrop" role="presentation" (click)="cancelarInativacao()">
+      <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmacao-inativacao-usuario-titulo" (click)="$event.stopPropagation()">
+        <span class="section-kicker">CONFIRMAÇÃO</span>
+        <h2 id="confirmacao-inativacao-usuario-titulo">Inativar usuário?</h2>
+        <p>O usuário <strong>{{ usuario.nome }}</strong> perderá o acesso à plataforma, mas o histórico da conta será preservado.</p>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="cancelarInativacao()">Cancelar</button>
+          <button type="button" class="danger-button" [disabled]="inativandoId() === usuario.id" (click)="confirmarInativacao()">
+            {{ inativandoId() === usuario.id ? "Inativando..." : "Inativar usuário" }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
   <header class="page-header">
     <div>
       <span class="eyebrow">ADMINISTRAÇÃO</span>

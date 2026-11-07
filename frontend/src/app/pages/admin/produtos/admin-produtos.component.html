@@ -1,0 +1,263 @@
+<main class="admin-products-page">
+  @if (produtoParaInativar(); as produto) {
+    <div class="modal-backdrop" role="presentation" (click)="cancelarInativacao()">
+      <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmacao-inativacao-titulo" (click)="$event.stopPropagation()">
+        <span class="section-kicker">CONFIRMAÇÃO</span>
+        <h2 id="confirmacao-inativacao-titulo">Inativar produto?</h2>
+        <p>O produto <strong>{{ produto.nome }}</strong> deixará de aparecer para os investidores, mas permanecerá salvo no catálogo administrativo.</p>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="cancelarInativacao()">Cancelar</button>
+          <button type="button" class="danger-button" [disabled]="salvando()" (click)="confirmarInativacao()">
+            {{ salvando() ? "Inativando..." : "Inativar produto" }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (produtoParaAtivar(); as produto) {
+    <div class="modal-backdrop" role="presentation" (click)="cancelarAtivacao()">
+      <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmacao-ativacao-titulo" (click)="$event.stopPropagation()">
+        <span class="section-kicker">CONFIRMAÇÃO</span>
+        <h2 id="confirmacao-ativacao-titulo">Ativar produto?</h2>
+        <p>O produto <strong>{{ produto.nome }}</strong> voltará a aparecer no catálogo para os investidores.</p>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="cancelarAtivacao()">Cancelar</button>
+          <button type="button" class="success-button" [disabled]="salvando()" (click)="confirmarAtivacao()">
+            {{ salvando() ? "Ativando..." : "Ativar produto" }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ADMINISTRAÇÃO</span>
+      <h1>Produtos financeiros</h1>
+      <p>Cadastre, atualize, inative e importe itens do catálogo.</p>
+    </div>
+    <button type="button" class="secondary-button" (click)="cancelarEdicao()">Limpar formulário</button>
+  </header>
+
+  @if (erro(); as mensagem) {
+    <section class="alert error" role="alert">{{ mensagem }}</section>
+  }
+
+  @if (sucesso(); as mensagem) {
+    <section class="alert success" role="status">{{ mensagem }}</section>
+  }
+
+  <section class="admin-grid">
+    <article class="panel form-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">{{ produtoEmEdicao() ? "EDIÇÃO" : "NOVO CADASTRO" }}</span>
+          <h2>{{ produtoEmEdicao() ? "Atualizar produto" : "Criar produto" }}</h2>
+        </div>
+        @if (produtoEmEdicao()) {
+          <button type="button" class="text-button" (click)="cancelarEdicao()">Cancelar edição</button>
+        }
+      </div>
+
+      <div class="form-grid">
+        <label [class.invalid]="mensagemCampo('nome')">
+          <span>Nome *</span>
+          <input type="text" [(ngModel)]="form.nome" placeholder="Ex.: CDB 110% CDI" />
+          @if (mensagemCampo('nome'); as mensagem) { <small>{{ mensagem }}</small> }
+        </label>
+
+        <label>
+          <span>Tipo *</span>
+          <select [(ngModel)]="form.tipoProduto">
+            @for (tipo of tipos; track tipo.valor) { <option [value]="tipo.valor">{{ tipo.label }}</option> }
+          </select>
+        </label>
+
+        <label class="wide" [class.invalid]="mensagemCampo('descricao')">
+          <span>Descrição *</span>
+          <textarea rows="2" [(ngModel)]="form.descricao" placeholder="Descrição apresentada no catálogo"></textarea>
+          @if (mensagemCampo('descricao'); as mensagem) { <small>{{ mensagem }}</small> }
+        </label>
+
+        <label>
+          <span>Indexador *</span>
+          <select [(ngModel)]="form.indexador" (change)="alternarIndexador()">
+            @for (indexador of indexadores; track indexador.valor) { <option [value]="indexador.valor">{{ indexador.label }}</option> }
+          </select>
+        </label>
+
+        @if (form.indexador === 'CDI') {
+          <label [class.invalid]="mensagemCampo('indexador')">
+            <span>% do CDI *</span>
+            <input type="number" min="0.01" step="0.01" [(ngModel)]="form.percentualIndexador" />
+            @if (mensagemCampo('indexador'); as mensagem) { <small>{{ mensagem }}</small> }
+          </label>
+        } @else if (form.indexador === 'PREFIXADO') {
+          <label>
+            <span>Taxa prefixada (%) *</span>
+            <input type="number" min="0.01" step="0.01" [(ngModel)]="form.taxaPrefixada" />
+          </label>
+        } @else {
+          <label>
+            <span>Taxa prefixada (%)</span>
+            <input type="number" min="0" step="0.01" [(ngModel)]="form.taxaPrefixada" />
+          </label>
+        }
+
+        <label [class.invalid]="mensagemCampo('rentabilidade')">
+          <span>Rentabilidade (% ao ano) *</span>
+          <input type="number" min="0" step="0.01" [(ngModel)]="form.rentabilidadePercentual" />
+          @if (mensagemCampo('rentabilidade'); as mensagem) { <small>{{ mensagem }}</small> }
+        </label>
+
+        <label [class.invalid]="mensagemCampo('prazo')">
+          <span>Prazo (dias) *</span>
+          <input type="number" min="0" step="1" [(ngModel)]="form.prazoDias" />
+          @if (mensagemCampo('prazo'); as mensagem) { <small>{{ mensagem }}</small> }
+        </label>
+
+        <label>
+          <span>Carência (dias)</span>
+          <input type="number" min="0" step="1" [(ngModel)]="form.carenciaDias" />
+        </label>
+
+        <label>
+          <span>Liquidez *</span>
+          <select [(ngModel)]="form.liquidez" (change)="alternarLiquidez()">
+            @for (liquidez of liquidezOpcoes; track liquidez.valor) { <option [value]="liquidez.valor">{{ liquidez.label }}</option> }
+          </select>
+        </label>
+
+        <label>
+          <span>Dias de liquidez</span>
+          <input type="number" min="0" step="1" [disabled]="form.liquidez !== 'D_PLUS_N'" [(ngModel)]="form.diasLiquidez" />
+        </label>
+
+        <label>
+          <span>Valor mínimo (R$) *</span>
+          <input type="number" min="0" step="0.01" [(ngModel)]="form.valorMinimo" />
+        </label>
+
+        <label>
+          <span>Nível de risco *</span>
+          <select [(ngModel)]="form.nivelRisco">
+            @for (risco of riscos; track risco.valor) { <option [value]="risco.valor">{{ risco.label }}</option> }
+          </select>
+        </label>
+
+        <label>
+          <span>Taxas</span>
+          <input type="text" [(ngModel)]="form.taxas" placeholder="Ex.: taxa de administração" />
+        </label>
+
+        <label>
+          <span>Tributação</span>
+          <input type="text" [(ngModel)]="form.tributacao" placeholder="Ex.: IR conforme prazo" />
+        </label>
+
+        <label class="checkbox-field wide">
+          <input type="checkbox" [(ngModel)]="form.ativo" />
+          <span class="checkbox-copy">
+            <strong>Produto disponível no catálogo</strong>
+            <small>Desmarque para inativar e ocultar o produto dos investidores.</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="primary-button" [disabled]="salvando()" (click)="salvarProduto()">
+          {{ salvando() ? "Salvando..." : (produtoEmEdicao() ? "Salvar alterações" : "Criar produto") }}
+        </button>
+        <button type="button" class="secondary-button" [disabled]="salvando()" (click)="cancelarEdicao()">Limpar</button>
+      </div>
+    </article>
+
+    <article class="panel import-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">CATÁLOGO</span>
+          <h2>Importar produtos</h2>
+        </div>
+      </div>
+      <p class="panel-description">Envie um arquivo JSON ou cole uma lista de produtos. Cada item é validado individualmente.</p>
+      <input type="file" accept=".json,application/json,text/plain" (change)="selecionarArquivo($event)" />
+      <textarea class="json-input" rows="16" [(ngModel)]="importacaoTexto" placeholder='[{"tipoProduto":"CDB","nome":"CDB 110% CDI","descricao":"Renda fixa","indexador":"CDI","percentualIndexador":110,"rentabilidadePercentual":12,"prazoDias":365,"carenciaDias":30,"liquidez":"DIARIA","diasLiquidez":0,"valorMinimo":100,"nivelRisco":"BAIXO","ativo":true,"versaoCatalogo":"v1"}]'></textarea>
+      <button type="button" class="primary-button" [disabled]="importando()" (click)="importar()">
+        {{ importando() ? "Importando..." : "Importar catálogo" }}
+      </button>
+
+      @if (resultadoImportacao(); as resultado) {
+        <div class="import-result">
+          <strong>Resultado da importação</strong>
+          <span>{{ resultado.inseridos }} inserido(s) · {{ resultado.atualizados }} atualizado(s) · {{ resultado.rejeitados }} rejeitado(s)</span>
+          <span>Versão: {{ resultado.versaoCatalogo || "não informada" }}</span>
+          <code>Hash: {{ resultado.hashImportacao }}</code>
+          @if (resultado.erros.length > 0) {
+            <ul>
+              @for (erro of resultado.erros; track erro.linha) { <li>Linha {{ erro.linha }}: {{ erro.motivo }}</li> }
+            </ul>
+          }
+        </div>
+      }
+    </article>
+  </section>
+
+  <section class="panel catalog-panel">
+    <div class="panel-heading">
+      <div>
+        <span class="section-kicker">CATÁLOGO ADMINISTRATIVO</span>
+        <h2>Produtos cadastrados</h2>
+      </div>
+      <span class="count">{{ totalProdutos() }} produto(s)</span>
+    </div>
+
+    <div class="filters">
+      <input type="text" [(ngModel)]="nomeFiltro" placeholder="Buscar por nome" />
+      <select [(ngModel)]="tipoFiltro"><option value="">Todos os tipos</option>@for (tipo of tipos; track tipo.valor) { <option [value]="tipo.valor">{{ tipo.label }}</option> }</select>
+      <select [(ngModel)]="riscoFiltro"><option value="">Todos os riscos</option>@for (risco of riscos; track risco.valor) { <option [value]="risco.valor">{{ risco.label }}</option> }</select>
+      <select [(ngModel)]="liquidezFiltro"><option value="">Todas as liquidez</option>@for (liquidez of liquidezOpcoes; track liquidez.valor) { <option [value]="liquidez.valor">{{ liquidez.label }}</option> }</select>
+      <select [(ngModel)]="ativoFiltro"><option value="">Todos os status</option><option value="true">Ativos</option><option value="false">Inativos</option></select>
+      <button type="button" class="secondary-button" (click)="aplicarFiltros()">Filtrar</button>
+      <button type="button" class="text-button" (click)="limparFiltros()">Limpar</button>
+    </div>
+
+    @if (carregando()) {
+      <div class="state">Carregando produtos...</div>
+    } @else if (produtos().length === 0) {
+      <div class="state">Nenhum produto encontrado.</div>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Produto</th><th>Tipo</th><th>Rentabilidade</th><th>Risco</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody>
+            @for (produto of produtos(); track produto.id) {
+              <tr [class.inactive-row]="!produto.ativo">
+                <td><strong>{{ produto.nome }}</strong><small>{{ produto.descricao }}</small></td>
+                <td>{{ formatarTipo(produto.tipoProduto) }}</td>
+                <td>{{ produto.rentabilidadePercentual.toFixed(2).replace('.', ',') }}% a.a.</td>
+                <td>{{ produto.nivelRisco }}</td>
+                <td><span class="status-badge" [class.inactive]="!produto.ativo">{{ produto.ativo ? "Ativo" : "Inativo" }}</span></td>
+                <td class="actions-cell">
+                  <button type="button" class="text-button" (click)="editarProduto(produto)">Editar</button>
+                  @if (produto.ativo) {
+                    <button type="button" class="danger-button" [disabled]="salvando()" (click)="desativarProduto(produto)">Inativar</button>
+                  } @else {
+                    <button type="button" class="success-button" [disabled]="salvando()" (click)="ativarProduto(produto)">Ativar</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (totalPaginas() > 1) {
+        <div class="pagination">
+          <button type="button" class="secondary-button" [disabled]="pagina === 0" (click)="anterior()">Anterior</button>
+          <span>Página {{ pagina + 1 }} de {{ totalPaginas() }}</span>
+          <button type="button" class="secondary-button" [disabled]="pagina >= totalPaginas() - 1" (click)="proxima()">Próxima</button>
+        </div>
+      }
+    }
+  </section>
+</main>

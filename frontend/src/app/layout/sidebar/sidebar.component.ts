@@ -20,4 +20,8 @@ export class SidebarComponent {
     const usuario = this.usuario();
     return usuario?.perfilUsuario === "ADMIN" || usuario?.permissoes?.includes("ROLE_ADMIN") === true;
   }
+
+  get podeGerenciarProdutos(): boolean {
+    return this.usuario()?.permissoes?.includes("PRODUTO_GERIR") === true;
+  }
 }

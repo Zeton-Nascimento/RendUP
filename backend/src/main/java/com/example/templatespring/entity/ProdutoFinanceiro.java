@@ -58,6 +58,18 @@ public class ProdutoFinanceiro {
     @Column(length = 250)
     private String tributacao;
 
+    @Column(name = "codigo_externo", length = 100)
+    private String codigoExterno;
+
+    @Column(name = "origem_catalogo", length = 100)
+    private String origemCatalogo;
+
+    @Column(name = "versao_catalogo", length = 100)
+    private String versaoCatalogo;
+
+    @Column(name = "payload_original", columnDefinition = "text")
+    private String payloadOriginal;
+
     @Column(name = "rentabilidade_percentual", nullable = false, precision = 10, scale = 2)
     private BigDecimal rentabilidadePercentual;
 
