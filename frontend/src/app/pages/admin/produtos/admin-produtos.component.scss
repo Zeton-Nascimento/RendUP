@@ -285,6 +285,43 @@ button:disabled {
   margin-top: 12px;
 }
 
+.import-description {
+  margin-top: 18px;
+}
+
+.sync-result {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(62, 243, 154, .25);
+  border-radius: 10px;
+  color: #c5ffe2;
+  background: rgba(10, 100, 55, .24);
+  font-size: 12px;
+}
+
+.sync-result.failed {
+  border-color: rgba(255, 90, 95, .45);
+  color: #ffd8da;
+  background: rgba(140, 20, 25, .35);
+}
+
+.sync-result code {
+  overflow-wrap: anywhere;
+  color: #a7f3d0;
+  font-size: 11px;
+}
+
+.sync-result.failed code {
+  color: #ffc5c8;
+}
+
+.sync-result ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
 .import-result {
   display: grid;
   gap: 7px;

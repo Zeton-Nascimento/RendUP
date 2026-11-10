@@ -67,4 +67,8 @@ export class ProdutoService {
   importarCatalogoAdmin(itens: ItemCatalogoProdutoImportRequest[]) {
     return this.http.post<ResultadoImportacaoResponse>(`${this.base}/import`, itens);
   }
+
+  sincronizarCatalogoAdmin() {
+    return this.http.post<ResultadoImportacaoResponse>(`${this.base}/sincronizar`, null);
+  }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, inject, signal } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { finalize } from "rxjs";
 
@@ -26,16 +26,19 @@ import { ProdutoService } from "../../../services/produto.service";
   templateUrl: "./admin-produtos.component.html",
   styleUrl: "./admin-produtos.component.scss",
 })
-export class AdminProdutosComponent implements OnInit {
+export class AdminProdutosComponent implements OnInit, OnDestroy {
   private readonly produtoService = inject(ProdutoService);
+  private sincronizacaoTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly produtos = signal<ProdutoFinanceiro[]>([]);
   readonly carregando = signal(true);
   readonly salvando = signal(false);
   readonly importando = signal(false);
+  readonly sincronizando = signal(false);
   readonly erro = signal<string | null>(null);
   readonly sucesso = signal<string | null>(null);
   readonly resultadoImportacao = signal<ResultadoImportacaoResponse | null>(null);
+  readonly resultadoSincronizacao = signal<ResultadoImportacaoResponse | null>(null);
   readonly produtoEmEdicao = signal<ProdutoFinanceiro | null>(null);
   readonly produtoParaInativar = signal<ProdutoFinanceiro | null>(null);
   readonly produtoParaAtivar = signal<ProdutoFinanceiro | null>(null);
@@ -87,6 +90,10 @@ export class AdminProdutosComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregar();
+  }
+
+  ngOnDestroy(): void {
+    this.cancelarLimpezaSincronizacao();
   }
 
   salvarProduto(): void {
@@ -288,6 +295,31 @@ export class AdminProdutosComponent implements OnInit {
       });
   }
 
+  sincronizarCatalogo(): void {
+    if (this.sincronizando()) return;
+
+    this.sincronizando.set(true);
+    this.limparMensagens();
+    this.produtoService.sincronizarCatalogoAdmin()
+      .pipe(finalize(() => this.sincronizando.set(false)))
+      .subscribe({
+        next: (resultado) => {
+          this.resultadoSincronizacao.set(resultado);
+          if (resultado.status === "FALHA") {
+            this.erro.set(resultado.mensagem ?? "A sincronização falhou. O catálogo anterior foi preservado.");
+            return;
+          }
+
+          this.sucesso.set(
+            `Sincronização concluída: ${resultado.inseridos} inserido(s), ${resultado.atualizados} atualizado(s) e ${resultado.inativados ?? 0} inativado(s).`,
+          );
+          this.agendarLimpezaSincronizacao();
+          this.carregar();
+        },
+        error: (err) => this.erro.set(this.extrairErro(err, "Não foi possível sincronizar o catálogo.")),
+      });
+  }
+
   limparMensagens(): void {
     this.erro.set(null);
     this.sucesso.set(null);
@@ -342,6 +374,22 @@ export class AdminProdutosComponent implements OnInit {
     if (this.form.indexador === "CDI") this.form.taxaPrefixada = null;
     if (this.form.indexador === "PREFIXADO") this.form.percentualIndexador = null;
     if (this.form.liquidez !== "D_PLUS_N") this.form.diasLiquidez = 0;
+  }
+
+  private agendarLimpezaSincronizacao(): void {
+    this.cancelarLimpezaSincronizacao();
+    this.sincronizacaoTimer = setTimeout(() => {
+      this.sucesso.set(null);
+      this.resultadoSincronizacao.set(null);
+      this.sincronizacaoTimer = null;
+    }, 15_000);
+  }
+
+  private cancelarLimpezaSincronizacao(): void {
+    if (this.sincronizacaoTimer !== null) {
+      clearTimeout(this.sincronizacaoTimer);
+      this.sincronizacaoTimer = null;
+    }
   }
 
   private mapearProdutoParaRequest(produto: ProdutoFinanceiro, ativo: boolean): ProdutoFinanceiroAdminRequest {

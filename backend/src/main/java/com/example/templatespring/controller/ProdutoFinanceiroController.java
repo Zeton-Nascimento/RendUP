@@ -10,6 +10,7 @@ import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
 import jakarta.validation.Valid;
 import com.example.templatespring.service.ProdutoFinanceiroService;
+import com.example.templatespring.service.catalogo.CatalogoSincronizacaoService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -32,9 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProdutoFinanceiroController {
 
     private final ProdutoFinanceiroService service;
+    private final CatalogoSincronizacaoService catalogoSincronizacaoService;
 
-    public ProdutoFinanceiroController(ProdutoFinanceiroService service) {
+    public ProdutoFinanceiroController(
+            ProdutoFinanceiroService service,
+            CatalogoSincronizacaoService catalogoSincronizacaoService) {
         this.service = service;
+        this.catalogoSincronizacaoService = catalogoSincronizacaoService;
     }
 
     @GetMapping
@@ -91,6 +96,12 @@ public class ProdutoFinanceiroController {
     public ResultadoImportacaoResponse importarCatalogo(
             @RequestBody List<ItemCatalogoProdutoRequest> itens) {
         return service.importarCatalogo(itens);
+    }
+
+    @PreAuthorize("hasAuthority('PRODUTO_GERIR')")
+    @PostMapping("/sincronizar")
+    public ResultadoImportacaoResponse sincronizarCatalogo() {
+        return catalogoSincronizacaoService.sincronizar();
     }
 
     @GetMapping("/{id}")
