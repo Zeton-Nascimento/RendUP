@@ -15,8 +15,12 @@ public class ResultadoImportacaoResponse {
     private int totalItens;
     private int inseridos;
     private int atualizados;
+    private int inativados;
     private int rejeitados;
     private String versaoCatalogo;
+    private String origemCatalogo;
     private String hashImportacao;
+    private String status;
+    private String mensagem;
     private List<ImportacaoErroResponse> erros;
 }

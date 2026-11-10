@@ -35,14 +35,26 @@ public class ImportacaoCatalogo {
     @Column(nullable = false)
     private int rejeitados;
 
+    @Column
+    private int inativados;
+
     @Column(name = "usuario_responsavel", length = 255)
     private String usuarioResponsavel;
 
     @Column(name = "versao_catalogo", length = 100)
     private String versaoCatalogo;
 
+    @Column(name = "origem_catalogo", length = 100)
+    private String origemCatalogo;
+
     @Column(name = "hash_importacao", length = 64)
     private String hashImportacao;
+
+    @Column(length = 20)
+    private String status;
+
+    @Column(columnDefinition = "text")
+    private String mensagem;
 
     @Column(columnDefinition = "text")
     private String erros;

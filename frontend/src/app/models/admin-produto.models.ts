@@ -47,9 +47,13 @@ export interface ResultadoImportacaoResponse {
   totalItens: number;
   inseridos: number;
   atualizados: number;
+  inativados?: number;
   rejeitados: number;
   versaoCatalogo: string | null;
+  origemCatalogo?: string | null;
   hashImportacao: string;
+  status?: "SUCESSO" | "FALHA" | "PARCIAL" | null;
+  mensagem?: string | null;
   erros: ImportacaoErroResponse[];
 }
 

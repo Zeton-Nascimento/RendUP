@@ -21,6 +21,8 @@ public interface ProdutoFinanceiroRepository extends JpaRepository<ProdutoFinanc
 
     Optional<ProdutoFinanceiro> findByOrigemCatalogoAndCodigoExterno(String origemCatalogo, String codigoExterno);
 
+    List<ProdutoFinanceiro> findByOrigemCatalogo(String origemCatalogo);
+
     List<ProdutoFinanceiro> findByTipoProdutoAndAtivoTrueAndIdNot(
             TipoProduto tipoProduto, UUID id, Pageable pageable);
 

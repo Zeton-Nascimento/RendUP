@@ -179,8 +179,28 @@
           <span class="section-kicker">CATÁLOGO</span>
           <h2>Importar produtos</h2>
         </div>
+        <button type="button" class="secondary-button" [disabled]="sincronizando()" (click)="sincronizarCatalogo()">
+          {{ sincronizando() ? "Sincronizando..." : "Sincronizar mock" }}
+        </button>
       </div>
-      <p class="panel-description">Envie um arquivo JSON ou cole uma lista de produtos. Cada item é validado individualmente.</p>
+      <p class="panel-description">Sincronize a fonte mockada formalizada ou envie um arquivo JSON manualmente.</p>
+
+      @if (resultadoSincronizacao(); as resultado) {
+        <div class="sync-result" [class.failed]="resultado.status === 'FALHA'">
+          <strong>{{ resultado.status === "FALHA" ? "Sincronização não aplicada" : "Sincronização concluída" }}</strong>
+          <span>Fonte: {{ resultado.origemCatalogo || "não informada" }} · Versão: {{ resultado.versaoCatalogo || "não informada" }}</span>
+          <span>{{ resultado.inseridos }} inserido(s) · {{ resultado.atualizados }} atualizado(s) · {{ resultado.inativados ?? 0 }} inativado(s)</span>
+          @if (resultado.mensagem) { <span>{{ resultado.mensagem }}</span> }
+          @if (resultado.hashImportacao) { <code>Hash: {{ resultado.hashImportacao }}</code> }
+          @if (resultado.erros.length > 0) {
+            <ul>
+              @for (erro of resultado.erros; track erro.linha) { <li>Linha {{ erro.linha }}: {{ erro.motivo }}</li> }
+            </ul>
+          }
+        </div>
+      }
+
+      <p class="panel-description import-description">Envie um arquivo JSON ou cole uma lista de produtos. Cada item é validado individualmente.</p>
       <input type="file" accept=".json,application/json,text/plain" (change)="selecionarArquivo($event)" />
       <textarea class="json-input" rows="16" [(ngModel)]="importacaoTexto" placeholder='[{"tipoProduto":"CDB","nome":"CDB 110% CDI","descricao":"Renda fixa","indexador":"CDI","percentualIndexador":110,"rentabilidadePercentual":12,"prazoDias":365,"carenciaDias":30,"liquidez":"DIARIA","diasLiquidez":0,"valorMinimo":100,"nivelRisco":"BAIXO","ativo":true,"versaoCatalogo":"v1"}]'></textarea>
       <button type="button" class="primary-button" [disabled]="importando()" (click)="importar()">
