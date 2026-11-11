@@ -22,6 +22,7 @@ public class RegistroRequest {
 
   @NotBlank
   @Email
+  @Size(max = 254, message = "email deve ter no máximo 254 caracteres")
   private String email;
 
   @NotBlank
@@ -29,6 +30,7 @@ public class RegistroRequest {
           regexp = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$",
           message = "senha deve ter no mínimo 8 caracteres e conter ao menos 1 letra e 1 número"
   )
+  @Size(max = 72, message = "senha deve ter no máximo 72 caracteres")
   private String senha;
 
   @NotBlank

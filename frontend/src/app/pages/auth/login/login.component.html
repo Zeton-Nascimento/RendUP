@@ -12,7 +12,7 @@
     <form class="auth-form" [formGroup]="form" (ngSubmit)="entrar()">
       <div class="auth-row">
         <label class="auth-label" for="login-email">Email</label>
-        <input id="login-email" type="email" inputmode="email" autocomplete="username" formControlName="email" />
+        <input id="login-email" type="email" inputmode="email" maxlength="254" autocomplete="username" formControlName="email" />
         @if (form.get('email')?.touched && form.get('email')?.invalid) {
         @if (form.get('email')?.hasError('required')) {
         <p class="auth-field-error">Email é obrigatório</p>
@@ -24,7 +24,7 @@
 
       <div class="auth-row">
         <label class="auth-label" for="login-senha">Senha</label>
-        <input id="login-senha" type="password" autocomplete="current-password" formControlName="senha" />
+        <input id="login-senha" type="password" maxlength="72" autocomplete="current-password" formControlName="senha" />
         @if (form.get('senha')?.invalid && form.get('senha')?.touched) {
         <p class="auth-field-error">Senha inválida (mínimo 4 caracteres)</p>
         }

@@ -15,14 +15,21 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProdutoFinanceiroAdminValidator {
 
     private static final Set<String> RISCOS_VALIDOS = Set.of("BAIXO", "MEDIO", "ALTO");
+    private static final int NOME_MINIMO = 2;
+    private static final int NOME_MAXIMO = 120;
+    private static final int DESCRICAO_MAXIMA = 500;
+    private static final int TEXTO_ADMIN_MAXIMO = 250;
+    private static final int DIAS_MAXIMO = 36_500;
+    private static final BigDecimal PERCENTUAL_MAXIMO = BigDecimal.valueOf(1_000);
+    private static final BigDecimal VALOR_MINIMO_MAXIMO = BigDecimal.valueOf(1_000_000_000L);
 
     public ProdutoFinanceiroRequest validar(ProdutoFinanceiroRequest request) {
         if (request == null) {
             throw erro("Dados do produto são obrigatórios.");
         }
 
-        request.setNome(validarTexto(request.getNome(), "Nome do produto é obrigatório."));
-        request.setDescricao(validarTexto(request.getDescricao(), "Descrição do produto é obrigatória."));
+        request.setNome(validarTexto(request.getNome(), "Nome do produto é obrigatório.", NOME_MINIMO, NOME_MAXIMO));
+        request.setDescricao(validarTexto(request.getDescricao(), "Descrição do produto é obrigatória.", 1, DESCRICAO_MAXIMA));
         request.setNivelRisco(validarRisco(request.getNivelRisco()));
         validarCampos(
                 request.getTipoProduto(),
@@ -38,8 +45,8 @@ public class ProdutoFinanceiroAdminValidator {
         if (request.getAtivo() == null) {
             throw erro("A situação ativa do produto é obrigatória.");
         }
-        request.setTaxas(normalizar(request.getTaxas()));
-        request.setTributacao(normalizar(request.getTributacao()));
+        request.setTaxas(validarTextoOpcional(request.getTaxas(), "Taxas", TEXTO_ADMIN_MAXIMO));
+        request.setTributacao(validarTextoOpcional(request.getTributacao(), "Tributação", TEXTO_ADMIN_MAXIMO));
         return request;
     }
 
@@ -48,8 +55,8 @@ public class ProdutoFinanceiroAdminValidator {
             throw erro("Item de catálogo inválido.");
         }
 
-        item.setNome(validarTexto(item.getNome(), "Nome do produto é obrigatório."));
-        item.setDescricao(validarTexto(item.getDescricao(), "Descrição do produto é obrigatória."));
+        item.setNome(validarTexto(item.getNome(), "Nome do produto é obrigatório.", NOME_MINIMO, NOME_MAXIMO));
+        item.setDescricao(validarTexto(item.getDescricao(), "Descrição do produto é obrigatória.", 1, DESCRICAO_MAXIMA));
         item.setNivelRisco(validarRisco(item.getNivelRisco()));
         validarCampos(
                 item.getTipoProduto(),
@@ -62,12 +69,12 @@ public class ProdutoFinanceiroAdminValidator {
                 item.getLiquidez(),
                 item.getDiasLiquidez(),
                 item.getValorMinimo());
-        item.setTaxas(normalizar(item.getTaxas()));
-        item.setTributacao(normalizar(item.getTributacao()));
-        item.setCodigoExterno(normalizar(item.getCodigoExterno()));
-        item.setOrigemCatalogo(normalizar(item.getOrigemCatalogo()));
-        item.setVersaoCatalogo(normalizar(item.getVersaoCatalogo()));
-        item.setPayloadOriginal(normalizar(item.getPayloadOriginal()));
+        item.setTaxas(validarTextoOpcional(item.getTaxas(), "Taxas", TEXTO_ADMIN_MAXIMO));
+        item.setTributacao(validarTextoOpcional(item.getTributacao(), "Tributação", TEXTO_ADMIN_MAXIMO));
+        item.setCodigoExterno(validarTextoOpcional(item.getCodigoExterno(), "Código externo", 100));
+        item.setOrigemCatalogo(validarTextoOpcional(item.getOrigemCatalogo(), "Origem do catálogo", 100));
+        item.setVersaoCatalogo(validarTextoOpcional(item.getVersaoCatalogo(), "Versão do catálogo", 100));
+        item.setPayloadOriginal(validarTextoOpcional(item.getPayloadOriginal(), "Payload original", 10_000));
     }
 
     private void validarCampos(
@@ -90,20 +97,38 @@ public class ProdutoFinanceiroAdminValidator {
         if (rentabilidade == null || rentabilidade.compareTo(BigDecimal.ZERO) < 0) {
             throw erro("Rentabilidade deve ser maior ou igual a zero.");
         }
+        if (rentabilidade.compareTo(PERCENTUAL_MAXIMO) > 0) {
+            throw erro("Rentabilidade deve ser no máximo 1000%.");
+        }
         if (valorMinimo == null || valorMinimo.compareTo(BigDecimal.ZERO) < 0) {
             throw erro("Valor mínimo deve ser maior ou igual a zero.");
+        }
+        if (valorMinimo.compareTo(VALOR_MINIMO_MAXIMO) > 0) {
+            throw erro("Valor mínimo deve ser no máximo R$ 1.000.000.000,00.");
         }
         if (prazoDias == null || prazoDias < 0) {
             throw erro("Prazo deve ser maior ou igual a zero.");
         }
+        if (prazoDias > DIAS_MAXIMO) {
+            throw erro("Prazo deve ser no máximo 36500 dias.");
+        }
         if (carenciaDias != null && (carenciaDias < 0 || carenciaDias > prazoDias)) {
             throw erro("Carência deve estar entre zero e o prazo do produto.");
+        }
+        if (carenciaDias != null && carenciaDias > DIAS_MAXIMO) {
+            throw erro("Carência deve ser no máximo 36500 dias.");
         }
         if (percentualIndexador != null && percentualIndexador.compareTo(BigDecimal.ZERO) <= 0) {
             throw erro("Percentual do indexador deve ser maior que zero.");
         }
+        if (percentualIndexador != null && percentualIndexador.compareTo(PERCENTUAL_MAXIMO) > 0) {
+            throw erro("Percentual do indexador deve ser no máximo 1000.");
+        }
         if (taxaPrefixada != null && taxaPrefixada.compareTo(BigDecimal.ZERO) <= 0) {
             throw erro("Taxa prefixada deve ser maior que zero.");
+        }
+        if (taxaPrefixada != null && taxaPrefixada.compareTo(PERCENTUAL_MAXIMO) > 0) {
+            throw erro("Taxa prefixada deve ser no máximo 1000.");
         }
         if (indexador == Indexador.CDI && percentualIndexador == null) {
             throw erro("Produtos indexados ao CDI exigem percentual do indexador.");
@@ -116,6 +141,9 @@ public class ProdutoFinanceiroAdminValidator {
         }
         if (diasLiquidez != null && diasLiquidez < 0) {
             throw erro("Dias de liquidez não podem ser negativos.");
+        }
+        if (diasLiquidez != null && diasLiquidez > DIAS_MAXIMO) {
+            throw erro("Dias de liquidez devem ser no máximo 36500.");
         }
         if (liquidez == TipoLiquidez.D_PLUS_N && (diasLiquidez == null || diasLiquidez <= 0)) {
             throw erro("Liquidez D+N exige dias de liquidez maiores que zero.");
@@ -133,10 +161,21 @@ public class ProdutoFinanceiroAdminValidator {
         return normalizado.toUpperCase(Locale.ROOT);
     }
 
-    private String validarTexto(String valor, String mensagem) {
+    private String validarTexto(String valor, String mensagem, int minimo, int maximo) {
         String normalizado = normalizar(valor);
-        if (normalizado == null) {
+        if (normalizado == null || normalizado.length() < minimo) {
             throw erro(mensagem);
+        }
+        if (normalizado.length() > maximo) {
+            throw erro("O texto informado deve ter no máximo " + maximo + " caracteres.");
+        }
+        return normalizado;
+    }
+
+    private String validarTextoOpcional(String valor, String campo, int maximo) {
+        String normalizado = normalizar(valor);
+        if (normalizado != null && normalizado.length() > maximo) {
+            throw erro(campo + " deve ter no máximo " + maximo + " caracteres.");
         }
         return normalizado;
     }

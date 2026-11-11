@@ -15,7 +15,7 @@ import lombok.Setter;
 public class AtualizarUsuarioRequest {
 
     @NotBlank
-    @Size(min = 2, max = 120)
+    @Size(min = 2, max = 120, message = "nome deve ter entre 2 e 120 caracteres")
     private String nome;
 
     @NotBlank

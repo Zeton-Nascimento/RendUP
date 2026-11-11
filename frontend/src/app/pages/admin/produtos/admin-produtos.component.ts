@@ -27,6 +27,7 @@ import { ProdutoService } from "../../../services/produto.service";
   styleUrl: "./admin-produtos.component.scss",
 })
 export class AdminProdutosComponent implements OnInit, OnDestroy {
+  private static readonly MAX_ITENS_IMPORTACAO = 100;
   private readonly produtoService = inject(ProdutoService);
   private sincronizacaoTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -256,6 +257,10 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
   selecionarArquivo(event: Event): void {
     const arquivo = (event.target as HTMLInputElement).files?.[0];
     if (!arquivo) return;
+    if (arquivo.size > 1_000_000) {
+      this.erro.set("O arquivo de catálogo deve ter no máximo 1 MB.");
+      return;
+    }
     void arquivo.text().then((texto) => this.importacaoTexto = texto)
       .catch(() => this.erro.set("Não foi possível ler o arquivo selecionado."));
   }
@@ -278,6 +283,11 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
       }
     } catch {
       this.erro.set('JSON inválido. Envie uma lista ou um objeto no formato { "itens": [] }.');
+      return;
+    }
+
+    if (itens.length > AdminProdutosComponent.MAX_ITENS_IMPORTACAO) {
+      this.erro.set("A importação deve conter no máximo 100 produtos.");
       return;
     }
 

@@ -105,6 +105,17 @@ describe('apiInterceptor', () => {
     expect(result.error.message).toBe('Recurso não encontrado.');
   });
 
+  it('informa quando o recurso está temporariamente limitado', () => {
+    const result = interceptError(
+      new HttpErrorResponse({
+        status: 429,
+        error: {},
+      }),
+    ) as HttpErrorResponse;
+
+    expect(result.error.message).toBe('Muitas solicitações. Aguarde alguns segundos e tente novamente.');
+  });
+
   it('normaliza erros 5xx em uma mensagem generica', () => {
     const result = interceptError(
       new HttpErrorResponse({

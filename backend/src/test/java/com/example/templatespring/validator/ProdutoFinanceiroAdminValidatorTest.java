@@ -31,6 +31,26 @@ class ProdutoFinanceiroAdminValidatorTest {
                 .hasMessageContaining("percentual do indexador");
     }
 
+    @Test
+    void rejeitaProdutoComTextoAcimaDoLimite() {
+        ProdutoFinanceiroRequest request = requestValido();
+        request.setNome("x".repeat(121));
+
+        assertThatThrownBy(() -> validator.validar(request))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("no máximo 120");
+    }
+
+    @Test
+    void rejeitaProdutoComValorForaDoLimite() {
+        ProdutoFinanceiroRequest request = requestValido();
+        request.setRentabilidadePercentual(BigDecimal.valueOf(1000.01));
+
+        assertThatThrownBy(() -> validator.validar(request))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("no máximo 1000");
+    }
+
     private ProdutoFinanceiroRequest requestValido() {
         ProdutoFinanceiroRequest request = new ProdutoFinanceiroRequest();
         request.setTipoProduto(TipoProduto.CDB);

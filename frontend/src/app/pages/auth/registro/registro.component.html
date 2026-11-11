@@ -13,7 +13,7 @@
       <div class="auth-grid">
         <div class="auth-row">
           <label class="auth-label" for="registro-nome">Nome</label>
-          <input id="registro-nome" type="text" autocomplete="name" formControlName="nome" placeholder="Ex.: Ana Souza" />
+          <input id="registro-nome" type="text" maxlength="120" autocomplete="name" formControlName="nome" placeholder="Ex.: Ana Souza" />
           @if (mensagemErro("nome"); as erroCampo) {
             <p class="auth-field-error">{{ erroCampo }}</p>
           }
@@ -26,6 +26,7 @@
             type="email"
             inputmode="email"
             autocomplete="email"
+            maxlength="254"
             formControlName="email"
             placeholder="Ex.: ana.souza@email.com"
           />
@@ -40,6 +41,7 @@
             id="registro-senha"
             type="password"
             autocomplete="new-password"
+            maxlength="72"
             formControlName="senha"
             placeholder="Ex.: Ana12345"
           />
@@ -82,7 +84,7 @@
 
         <div class="auth-row">
           <label class="auth-label" for="registro-data-nascimento">Data de nascimento</label>
-          <input id="registro-data-nascimento" type="date" formControlName="dataNascimento" />
+          <input id="registro-data-nascimento" type="date" [max]="dataMaxima" formControlName="dataNascimento" />
           @if (mensagemErro("dataNascimento"); as erroCampo) {
             <p class="auth-field-error">{{ erroCampo }}</p>
           }
@@ -90,7 +92,7 @@
 
         <div class="auth-row">
           <label class="auth-label" for="registro-banco">Banco</label>
-          <input id="registro-banco" type="text" formControlName="banco" placeholder="Ex.: Banco Renda" />
+          <input id="registro-banco" type="text" maxlength="100" formControlName="banco" placeholder="Ex.: Banco Renda" />
           @if (mensagemErro("banco"); as erroCampo) {
             <p class="auth-field-error">{{ erroCampo }}</p>
           }

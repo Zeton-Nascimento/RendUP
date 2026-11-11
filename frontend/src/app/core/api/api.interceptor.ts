@@ -60,6 +60,8 @@ function getDefaultClientMessage(status: number): string {
       return "Acesso negado.";
     case 404:
       return "Recurso não encontrado.";
+    case 429:
+      return "Muitas solicitações. Aguarde alguns segundos e tente novamente.";
     case 422:
       return "Dados inválidos. Revise os campos e tente novamente.";
     default:

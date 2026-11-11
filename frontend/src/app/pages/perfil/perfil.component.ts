@@ -34,6 +34,7 @@ export class PerfilComponent implements OnInit {
   readonly erroSenha = signal<string | null>(null);
   readonly sucessoSenha = signal<string | null>(null);
   readonly usuarioPerfil = signal<AuthUsuario | null>(this.authState.usuario());
+  readonly dataMaxima = new Date().toISOString().slice(0, 10);
 
   readonly perfis: ReadonlyArray<{ value: PerfilInvestidor; label: string }> = [
     { value: "CONSERVADOR", label: "Conservador" },
@@ -44,7 +45,7 @@ export class PerfilComponent implements OnInit {
   readonly form = new FormGroup({
     nome: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
+      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(120)],
     }),
     telefone: new FormControl("", {
       nonNullable: true,
@@ -64,7 +65,7 @@ export class PerfilComponent implements OnInit {
     senhaAtual: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
     novaSenha: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)],
+      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(72), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)],
     }),
     confirmarSenha: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
   });

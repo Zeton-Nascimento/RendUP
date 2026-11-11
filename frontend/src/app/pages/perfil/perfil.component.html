@@ -66,7 +66,7 @@
           <div class="form-grid">
             <label>
               Nome completo
-              <input type="text" formControlName="nome" autocomplete="name" />
+              <input type="text" maxlength="120" formControlName="nome" autocomplete="name" />
               @if (mensagemErro("nome"); as mensagem) {
                 <small class="field-error">{{ mensagem }}</small>
               }
@@ -82,7 +82,7 @@
 
             <label>
               Data de nascimento
-              <input type="date" formControlName="dataNascimento" />
+              <input type="date" [max]="dataMaxima" formControlName="dataNascimento" />
               @if (mensagemErro("dataNascimento"); as mensagem) {
                 <small class="field-error">{{ mensagem }}</small>
               }
@@ -131,21 +131,21 @@
           <div class="form-grid">
             <label>
               Senha atual
-              <input type="password" autocomplete="current-password" formControlName="senhaAtual" />
+              <input type="password" maxlength="72" autocomplete="current-password" formControlName="senhaAtual" />
               @if (senhaForm.controls.senhaAtual.touched && senhaForm.controls.senhaAtual.invalid) {
                 <small class="field-error">Informe sua senha atual.</small>
               }
             </label>
             <label>
               Nova senha
-              <input type="password" autocomplete="new-password" formControlName="novaSenha" />
+              <input type="password" maxlength="72" autocomplete="new-password" formControlName="novaSenha" />
               @if (senhaForm.controls.novaSenha.touched && senhaForm.controls.novaSenha.invalid) {
                 <small class="field-error">Use pelo menos 8 caracteres, com uma letra e um número.</small>
               }
             </label>
             <label>
               Confirmar nova senha
-              <input type="password" autocomplete="new-password" formControlName="confirmarSenha" />
+              <input type="password" maxlength="72" autocomplete="new-password" formControlName="confirmarSenha" />
               @if (senhaForm.controls.confirmarSenha.touched && senhaForm.controls.confirmarSenha.invalid) {
                 <small class="field-error">Confirme a nova senha.</small>
               }
