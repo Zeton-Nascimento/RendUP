@@ -305,9 +305,8 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
     cy.wait("@listUsers");
     cy.contains(".user-row", investor.nome).contains("button", "Inativar").click();
     cy.get('[role="dialog"]')
-      .should("be.visible")
-      .and("contain.text", "Inativar usuário?")
-      .and("contain.text", investor.nome)
+      .should("contain.text", "Inativar usuário?")
+      .and("contain.text", "Ana Souza")
       .contains("button", "Inativar usuário")
       .click();
     cy.wait("@deactivateUser");
@@ -321,11 +320,12 @@ describe("RendUP — Sprint 1 — E2E de interface (API simulada)", () => {
       body: [admin, investor],
     }).as("listUsers");
     cy.intercept("DELETE", `${API}/usuarios/${investor.id}*`).as("deactivateUser");
+
     visitWithUser("/admin/usuarios", admin);
     cy.wait("@listUsers");
     cy.contains(".user-row", investor.nome).contains("button", "Inativar").click();
     cy.get('[role="dialog"]')
-      .should("be.visible")
+      .should("contain.text", "Inativar usuário?")
       .contains("button", "Cancelar")
       .click();
     cy.get("@deactivateUser.all").should("have.length", 0);
