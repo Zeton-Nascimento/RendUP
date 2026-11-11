@@ -22,6 +22,8 @@ jwt:
 app:
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  rate-limit:
+    catalogo-intervalo-ms: ${CATALOGO_RATE_LIMIT_INTERVALO_MS:15000}
 
 catalogo:
   sincronizacao:

@@ -10,7 +10,9 @@ import com.example.templatespring.entity.enums.TipoLiquidez;
 import com.example.templatespring.entity.enums.TipoProduto;
 import jakarta.validation.Valid;
 import com.example.templatespring.service.ProdutoFinanceiroService;
+import com.example.templatespring.service.UsoAbusivoRateLimitService;
 import com.example.templatespring.service.catalogo.CatalogoSincronizacaoService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -34,12 +36,15 @@ public class ProdutoFinanceiroController {
 
     private final ProdutoFinanceiroService service;
     private final CatalogoSincronizacaoService catalogoSincronizacaoService;
+    private final UsoAbusivoRateLimitService usoAbusivoRateLimitService;
 
     public ProdutoFinanceiroController(
             ProdutoFinanceiroService service,
-            CatalogoSincronizacaoService catalogoSincronizacaoService) {
+            CatalogoSincronizacaoService catalogoSincronizacaoService,
+            UsoAbusivoRateLimitService usoAbusivoRateLimitService) {
         this.service = service;
         this.catalogoSincronizacaoService = catalogoSincronizacaoService;
+        this.usoAbusivoRateLimitService = usoAbusivoRateLimitService;
     }
 
     @GetMapping
@@ -94,13 +99,16 @@ public class ProdutoFinanceiroController {
     @PreAuthorize("hasAuthority('PRODUTO_GERIR')")
     @PostMapping("/import")
     public ResultadoImportacaoResponse importarCatalogo(
-            @RequestBody List<ItemCatalogoProdutoRequest> itens) {
+            @RequestBody List<ItemCatalogoProdutoRequest> itens,
+            HttpServletRequest request) {
+        usoAbusivoRateLimitService.verificar("catalogo-importacao", consumidor(request));
         return service.importarCatalogo(itens);
     }
 
     @PreAuthorize("hasAuthority('PRODUTO_GERIR')")
     @PostMapping("/sincronizar")
-    public ResultadoImportacaoResponse sincronizarCatalogo() {
+    public ResultadoImportacaoResponse sincronizarCatalogo(HttpServletRequest request) {
+        usoAbusivoRateLimitService.verificar("catalogo-sincronizacao", consumidor(request));
         return catalogoSincronizacaoService.sincronizar();
     }
 
@@ -112,5 +120,16 @@ public class ProdutoFinanceiroController {
     @GetMapping("/{id}/relacionados")
     public List<ProdutoFinanceiroResponse> buscarRelacionados(@PathVariable UUID id) {
         return service.buscarRelacionados(id);
+    }
+
+    private String consumidor(HttpServletRequest request) {
+        var autenticacao = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        if (autenticacao != null && autenticacao.isAuthenticated()
+                && autenticacao.getName() != null && !autenticacao.getName().isBlank()) {
+            return "usuario:" + autenticacao.getName();
+        }
+        return "ip:" + request.getRemoteAddr();
     }
 }

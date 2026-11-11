@@ -40,6 +40,7 @@ export class RegistroComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly sucesso = signal<string | null>(null);
   readonly cadastroConcluido = signal(false);
+  readonly dataMaxima = new Date().toISOString().slice(0, 10);
 
   readonly perfis: ReadonlyArray<{ value: PerfilInvestidor; label: string }> = [
     { value: "CONSERVADOR", label: "Conservador" },
@@ -50,17 +51,18 @@ export class RegistroComponent implements OnInit {
   readonly form = new FormGroup({
     nome: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
+      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(120)],
     }),
     email: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.email],
+      validators: [Validators.required, Validators.email, Validators.maxLength(254)],
     }),
     senha: new FormControl("", {
       nonNullable: true,
       validators: [
         Validators.required,
         Validators.minLength(8),
+        Validators.maxLength(72),
         Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
       ],
     }),
@@ -78,7 +80,7 @@ export class RegistroComponent implements OnInit {
     }),
     banco: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
+      validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
     }),
     agencia: new FormControl("", {
       nonNullable: true,

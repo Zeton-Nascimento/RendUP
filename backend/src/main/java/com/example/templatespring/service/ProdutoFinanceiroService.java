@@ -44,6 +44,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 public class ProdutoFinanceiroService {
 
     private static final String PRODUTO_NAO_ENCONTRADO = "Produto financeiro não encontrado.";
+    private static final int MAX_ITENS_IMPORTACAO = 100;
     private static final Set<String> RISCOS_VALIDOS = Set.of("BAIXO", "MEDIO", "ALTO");
     private static final Set<String> ORDENACOES_VALIDAS = Set.of(
             "NOME", "RENTABILIDADE", "MENOR_VALOR_MINIMO", "MAIOR_LIQUIDEZ", "MENOR_RISCO");
@@ -144,7 +145,15 @@ public class ProdutoFinanceiroService {
 
     @Transactional
     public ResultadoImportacaoResponse importarCatalogo(List<ItemCatalogoProdutoRequest> itens) {
-        List<ItemCatalogoProdutoRequest> entrada = itens == null ? List.of() : itens;
+        if (itens == null || itens.isEmpty()) {
+            throw new ResponseStatusException(BAD_REQUEST, "A importação deve conter pelo menos um produto.");
+        }
+        List<ItemCatalogoProdutoRequest> entrada = itens;
+        if (entrada.size() > MAX_ITENS_IMPORTACAO) {
+            throw new ResponseStatusException(
+                    BAD_REQUEST,
+                    "A importação deve conter no máximo " + MAX_ITENS_IMPORTACAO + " produtos.");
+        }
         List<ImportacaoErroResponse> erros = new ArrayList<>();
         int inseridos = 0;
         int atualizados = 0;

@@ -27,11 +27,11 @@ export class LoginComponent implements OnInit {
   readonly form = new FormGroup({
     email: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.email],
+      validators: [Validators.required, Validators.email, Validators.maxLength(254)],
     }),
     senha: new FormControl("", {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(4)],
+      validators: [Validators.required, Validators.minLength(4), Validators.maxLength(72)],
     }),
   });
 

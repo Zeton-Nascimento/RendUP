@@ -1,6 +1,7 @@
 package com.example.templatespring.controller.advice;
 
 import com.example.templatespring.exception.RecursoNaoEncontradoException;
+import com.example.templatespring.exception.UsoAbusivoException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +33,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("erro", "Acesso negado."));
     }
 
+    @ExceptionHandler(UsoAbusivoException.class)
+    public ResponseEntity<Map<String, Object>> handleUsoAbusivo(UsoAbusivoException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(ex.getRetryAfterSeconds()))
+                .body(Map.of(
+                        "erro", ex.getMessage(),
+                        "codigo", "RATE_LIMIT_EXCEDIDO",
+                        "tenteNovamenteEmSegundos", ex.getRetryAfterSeconds()));
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
         String mensagem = ex.getReason() == null ? "Erro ao processar a requisição." : ex.getReason();
@@ -39,6 +52,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return ResponseEntity.badRequest().body(Map.of("erro", "Filtro inválido: " + ex.getName() + "."));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleMalformedRequest(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "erro", "Requisição inválida.",
+                "erros", List.of(Map.of(
+                        "campo", "corpo",
+                        "mensagem", "O JSON enviado está ausente ou malformado."))));
     }
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
