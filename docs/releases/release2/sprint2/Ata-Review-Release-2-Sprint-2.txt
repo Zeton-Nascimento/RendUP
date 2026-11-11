@@ -1,0 +1,41 @@
+ATA DE SPRINT REVIEW — RendUP
+
+Sprint nº: 2
+Data: 11/11/2026
+Participantes/Stakeholders: José Lucas, Zeton Brandon e Alissom Silva
+
+1) META DO SPRINT
+
+Entregar a primeira versão do catálogo de produtos financeiros, permitindo que investidores consultem, filtrem, comparem e visualizem detalhes dos produtos. Também fazia parte da meta permitir que administradores gerenciassem o catálogo, sincronizassem os produtos por meio de uma fonte mockada e utilizassem validações e controle contra uso abusivo.
+
+2) ITENS DEMONSTRADOS
+
+US-011 — Explorar e filtrar produtos financeiros
+Status: entregue.
+Observação: foram demonstrados o catálogo, a busca por nome, os filtros por tipo, risco e liquidez, a ordenação, a paginação e o estado vazio quando não há resultados.
+
+US-012 — Detalhar e comparar produtos financeiros
+Status: entregue.
+Observação: foram demonstrados os detalhes de risco, liquidez, carência, vencimento, rentabilidade, taxas, tributação, comparação e produtos relacionados.
+
+US-013 — Administrar e importar produtos financeiros
+Status: entregue.
+Observação: a área administrativa foi demonstrada com consulta, cadastro, atualização e inativação de produtos.
+
+US-014 — Sincronizar catálogo com fonte externa mockada
+Status: entregue.
+Observação: a sincronização mockada foi demonstrada com informações de origem, versão, itens processados e hash da importação.
+
+US-015 — Validar entradas e controlar uso abusivo
+Status: entregue.
+Observação: as validações de entradas foram demonstradas e aprovadas. 
+
+
+3) DECISÕES DE BACKLOG
+
+Foi aceito o uso de uma fonte mockada para o catálogo nesta sprint, sem integração com uma fonte externa real. Dono: equipe de desenvolvimento e PO, com validação do QA.
+
+As credenciais administrativas dos testes devem ser informadas por variáveis de ambiente e não devem ser gravadas no repositório. Dono: José Lucas.
+
+Os testes de interface e os testes de API continuarão sendo registrados separadamente, pois validam camadas diferentes do sistema. Dono: José Lucas.
+
