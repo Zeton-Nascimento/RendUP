@@ -1,6 +1,7 @@
 package com.example.templatespring.controller.advice;
 
 import com.example.templatespring.exception.RecursoNaoEncontradoException;
+import com.example.templatespring.exception.IdempotenciaConflitoException;
 import com.example.templatespring.exception.UsoAbusivoException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("erro", "Acesso negado."));
+    }
+
+    @ExceptionHandler(IdempotenciaConflitoException.class)
+    public ResponseEntity<Map<String, Object>> handleIdempotenciaConflito(IdempotenciaConflitoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("erro", ex.getMessage()));
     }
 
     @ExceptionHandler(UsoAbusivoException.class)

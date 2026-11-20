@@ -42,7 +42,10 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
         garantirCargo("INVESTIDOR", "Investidor com acesso padrão");
         Cargo cargoAdmin = garantirCargo("ADMIN", "Administrador do sistema");
         Permissao gerirProdutos = garantirPermissao("PRODUTO_GERIR", "Gerenciar produtos financeiros");
+        Permissao gerirRegrasFinanceiras = garantirPermissao(
+                "REGRA_FINANCEIRA_GERIR", "Documentar regras financeiras e tributárias");
         cargoAdmin.getPermissoes().add(gerirProdutos);
+        cargoAdmin.getPermissoes().add(gerirRegrasFinanceiras);
         cargoRepository.save(cargoAdmin);
         garantirUsuarioAdmin(cargoAdmin);
         garantirProdutosParaDemonstracao();
