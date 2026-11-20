@@ -1,0 +1,230 @@
+<main class="rules-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ADMINISTRAÇÃO</span>
+      <h1>Regras financeiras</h1>
+      <p>Documente as regras de rendimento, IR, carência, liquidez, vencimento e resgate por tipo de produto.</p>
+    </div>
+    <button type="button" class="secondary-button" (click)="limparFormulario()">Limpar formulário</button>
+  </header>
+
+  @if (erro(); as mensagem) {
+    <section class="alert error" role="alert">{{ mensagem }}</section>
+  }
+
+  @if (sucesso(); as mensagem) {
+    <section class="alert success" role="status">{{ mensagem }}</section>
+  }
+
+  <section class="editor-layout">
+    <article class="panel editor-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">DOCUMENTO DE REFERÊNCIA</span>
+          <h2>Consolidar regras</h2>
+        </div>
+        @if (carregando()) {
+          <span class="loading-label">Carregando...</span>
+        }
+      </div>
+
+      <div class="top-fields">
+        <label>
+          <span>Tipo de produto *</span>
+          <select [(ngModel)]="tipoSelecionado" (ngModelChange)="selecionarTipo()">
+            @for (tipo of tipos; track tipo.valor) {
+              <option [value]="tipo.valor">{{ tipo.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Versão do documento *</span>
+          <input type="text" maxlength="40" [(ngModel)]="form.versao" placeholder="Ex.: 2026.1" />
+        </label>
+
+        <label>
+          <span>Status *</span>
+          <select [(ngModel)]="form.status">
+            @for (status of statusOpcoes; track status.valor) {
+              <option [value]="status.valor">{{ status.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="wide">
+          <span>Observações gerais</span>
+          <textarea rows="2" maxlength="500" [(ngModel)]="form.observacoes" placeholder="Informe a fonte de aprovação ou observações de auditoria."></textarea>
+        </label>
+      </div>
+
+      <div class="events-heading">
+        <div>
+          <span class="section-kicker">EVENTOS OBRIGATÓRIOS</span>
+          <h3>Regras e cenários de referência</h3>
+        </div>
+        <span class="helper-text">Todos os cinco eventos precisam estar documentados para aprovar.</span>
+      </div>
+
+      <div class="events-list">
+        @for (evento of form.eventos; track evento.evento; let indice = $index) {
+          <article class="event-card">
+            <div class="event-title">
+              <div>
+                <span class="event-number">0{{ indice + 1 }}</span>
+                <div>
+                  <h3>{{ eventos[indice].label }}</h3>
+                  <p>{{ eventos[indice].ajuda }}</p>
+                </div>
+              </div>
+              <div class="event-actions">
+                <button type="button" class="text-button" (click)="adicionarCenario(evento)">Adicionar cenário</button>
+                <span class="event-code">{{ evento.evento }}</span>
+              </div>
+            </div>
+
+            <div class="event-fields">
+              <label>
+                <span>Descrição da regra *</span>
+                <textarea rows="3" [(ngModel)]="evento.descricao" placeholder="Descreva a regra aprovada para este evento."></textarea>
+              </label>
+              <label>
+                <span>Fórmula ou metodologia *</span>
+                <textarea rows="3" [(ngModel)]="evento.formula" placeholder="Ex.: valor bruto × percentual do indexador."></textarea>
+              </label>
+            </div>
+
+            @for (cenario of evento.cenariosReferencia; track $index; let cenarioIndex = $index) {
+              <div class="scenario-block">
+                <div class="scenario-heading">
+                  <div>
+                    <span class="section-kicker">CENÁRIO DE REFERÊNCIA {{ cenarioIndex + 1 }}</span>
+                    <p>Use os valores esperados para comparar cálculos futuros.</p>
+                  </div>
+                  @if (evento.cenariosReferencia.length > 1) {
+                    <button type="button" class="remove-button" (click)="removerCenario(evento, cenarioIndex)">Remover</button>
+                  }
+                </div>
+                <div class="scenario-grid">
+                  <label class="wide">
+                    <span>Produto de referência *</span>
+                    <select [(ngModel)]="cenario.produtoId">
+                      <option [ngValue]="null">Selecione o produto</option>
+                      @for (produto of produtosDoTipo(); track produto.id) {
+                        <option [ngValue]="produto.id">{{ produto.nome }} — {{ produto.rentabilidadePercentual.toFixed(2).replace('.', ',') }}% ao ano</option>
+                      }
+                    </select>
+                  </label>
+                  <label>
+                    <span>Nome *</span>
+                    <input type="text" maxlength="120" [(ngModel)]="cenario.nome" placeholder="Ex.: Aporte de R$ 100 por 30 dias" />
+                  </label>
+                  <label>
+                    <span>Valor de entrada</span>
+                    <input type="number" min="0" step="0.01" [(ngModel)]="cenario.valorEntrada" />
+                  </label>
+                  <label>
+                    <span>Aporte mensal</span>
+                    <input type="number" min="0" step="0.01" [(ngModel)]="cenario.aporteMensal" />
+                  </label>
+                  <label>
+                    <span>Prazo (dias)</span>
+                    <input type="number" min="0" max="36500" step="1" [(ngModel)]="cenario.prazoDias" />
+                  </label>
+                  <label>
+                    <span>Taxa (%)</span>
+                    <input type="number" min="0" step="0.000001" [(ngModel)]="cenario.taxaPercentual" />
+                  </label>
+                  <label>
+                    <span>Valor bruto esperado</span>
+                    <input type="number" min="0" step="0.000001" [(ngModel)]="cenario.valorBrutoEsperado" />
+                  </label>
+                  <label>
+                    <span>Imposto esperado</span>
+                    <input type="number" min="0" step="0.000001" [(ngModel)]="cenario.impostoEsperado" />
+                  </label>
+                  <label>
+                    <span>Valor líquido esperado</span>
+                    <input type="number" min="0" step="0.000001" [(ngModel)]="cenario.valorLiquidoEsperado" />
+                  </label>
+                  <label>
+                    <span>Valor arredondado esperado</span>
+                    <input type="number" min="0" step="0.000001" [(ngModel)]="cenario.valorArredondadoEsperado" />
+                  </label>
+                  <label>
+                    <span>Casas decimais</span>
+                    <input type="number" min="0" max="6" step="1" [(ngModel)]="cenario.casasDecimais" />
+                  </label>
+                  <label class="wide">
+                    <span>Observações do cenário</span>
+                    <input type="text" maxlength="500" [(ngModel)]="cenario.observacoes" placeholder="Premissas usadas no cenário." />
+                  </label>
+                </div>
+              </div>
+            }
+          </article>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="primary-button" [disabled]="salvando()" (click)="salvar()">
+          {{ salvando() ? "Salvando..." : "Salvar regras" }}
+        </button>
+        <button type="button" class="secondary-button" [disabled]="salvando()" (click)="verificar()">Verificar documento</button>
+      </div>
+    </article>
+
+    <aside class="side-column">
+      @if (validacao(); as resultado) {
+        <article class="panel validation-panel" [class.ready]="resultado.podeProcessar">
+          <span class="section-kicker">VALIDAÇÃO</span>
+          <h2>{{ resultado.podeProcessar ? "Regra pronta para aplicação" : "Processamento bloqueado" }}</h2>
+          <p>Status do documento: <strong>{{ statusLabel(resultado.statusDocumento) }}</strong></p>
+          @if (resultado.pendencias.length > 0) {
+            <ul>
+              @for (pendencia of resultado.pendencias; track pendencia) {
+                <li>{{ pendencia }}</li>
+              }
+            </ul>
+          } @else {
+            <p>Os eventos obrigatórios estão documentados e aprovados.</p>
+          }
+        </article>
+      }
+
+      <article class="panel catalog-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="section-kicker">DOCUMENTOS SALVOS</span>
+            <h2>Por tipo de produto</h2>
+          </div>
+          <span class="count">{{ regras().length }}</span>
+        </div>
+
+        @if (regras().length === 0) {
+          <p class="empty-state">Nenhuma regra foi documentada ainda.</p>
+        } @else {
+          <div class="saved-rules">
+            @for (regra of regras(); track regra.id) {
+              <button type="button" class="saved-rule" [class.selected]="regra.tipoProduto === tipoSelecionado" (click)="selecionarRegra(regra.tipoProduto)">
+                <span>
+                  <strong>{{ formatarTipo(regra.tipoProduto) }}</strong>
+                  <small>Versão {{ regra.versao }}</small>
+                </span>
+                <span class="status-badge" [class.ready]="regra.prontaParaAplicacao" [class.conflict]="regra.status === 'CONFLITANTE'">
+                  {{ statusLabel(regra.status) }}
+                </span>
+              </button>
+            }
+          </div>
+        }
+      </article>
+
+      <article class="panel scope-panel">
+        <span class="section-kicker">DOCUMENTAÇÃO</span>
+        <h2>Base auditável</h2>
+        <p>Esta tela documenta e valida as regras financeiras antes que sejam utilizadas nos cálculos e nas operações.</p>
+      </article>
+    </aside>
+  </section>
+</main>
