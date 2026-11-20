@@ -1,0 +1,47 @@
+RETROSPECTIVA 02 — Sprint
+
+Projeto: RendUP – Sistema de Investimentos
+Sprint: 2
+Data: 11/11/2026
+
+1. O QUE FOI BOM?
+
+A definição do escopo da Sprint 2 ajudou a equipe a direcionar o desenvolvimento para o catálogo de produtos financeiros e para os perfis de usuário.
+
+A estrutura criada na Sprint 1 foi reaproveitada, evitando refazer funcionalidades como cadastro, login, perfis e controle de acesso.
+
+A utilização de uma fonte mockada permitiu desenvolver a sincronização do catálogo mesmo sem uma integração externa definida.
+
+A interface passou a apresentar um fluxo mais completo para o investidor, com catálogo, filtros, detalhes, comparação e produtos relacionados.
+
+A área administrativa ficou mais clara ao separar as ações de gerenciamento do catálogo das ações disponíveis para o investidor.
+
+2. O QUE PODEMOS MELHORAR?
+
+A equipe precisa alinhar melhor os nomes de campos, rotas, permissões e respostas da API para evitar ajustes durante a integração.
+
+A integração das alterações de diferentes integrantes poderia acontecer em intervalos menores, evitando acumular muitas mudanças para o final da sprint.
+
+3. AÇÕES PARA A PRÓXIMA SPRINT
+
+Confirmar o escopo e os critérios de aceite das histórias antes de iniciar a implementação.
+Responsável: PO e equipe de desenvolvimento.
+Prazo: antes do planejamento da Sprint 3.
+
+Definir previamente os contratos da API, incluindo rotas, campos obrigatórios, permissões e mensagens de erro.
+Responsável: responsáveis pelo frontend e backend.
+Prazo: antes do início da implementação de cada história da Sprint 3.
+
+Integrar as alterações no repositório com mais frequência para identificar conflitos mais cedo.
+Responsável: todos os integrantes da equipe.
+Prazo: durante toda a Sprint 3, preferencialmente após a conclusão de cada tarefa.
+
+Fazer uma demonstração parcial durante a sprint, antes da review final, para validar o caminho da solução.
+Responsável: equipe de desenvolvimento.
+Prazo: até a metade da Sprint 3.
+
+4. RESULTADO ESPERADO
+
+Entregar telas mais consistentes com o fluxo esperado para investidores e administradores.
+
+Manter o catálogo, os perfis de usuário e a área administrativa integrados de forma estável.

@@ -19,6 +19,17 @@ module.exports = defineConfig({
         process.env.RENDUP_ADMIN_EMAIL && process.env.RENDUP_ADMIN_PASSWORD,
       );
 
+      config.env = {
+        ...config.env,
+        adminEmail: process.env.RENDUP_ADMIN_EMAIL || "",
+        adminPassword: process.env.RENDUP_ADMIN_PASSWORD || "",
+      };
+
+      config.expose = {
+        ...(config.expose ?? {}),
+        hasAdminCredentials,
+      };
+
       if (!hasAdminCredentials) {
         config.excludeSpecPattern = [
           ...priorExclude,

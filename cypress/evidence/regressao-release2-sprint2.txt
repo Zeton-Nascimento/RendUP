@@ -1,0 +1,127 @@
+REGISTRO DE REGRESSÃO
+Release 2 e Sprint 2
+
+IDENTIFICAÇÃO
+
+Data da execução: 10/11/2026
+Ambiente: local, com frontend e API simulada nos cenários Cucumber
+Frontend: http://localhost:4200
+Backend: http://localhost:8080
+
+RESULTADO CONSOLIDADO
+
+Smoke Cucumber
+Comando executado: --env tags=@smoke
+Testes aprovados: 7
+Testes reprovados: 0
+Testes pendentes: 0
+Status: Passou
+
+Features da Sprint 2
+Comando executado: cypress.cucumber.config.cjs
+Testes aprovados: 13
+Testes reprovados: 0
+Testes pendentes: 0
+Status: Passou
+
+API da Sprint 2
+Comando executado: npm run test:api:sprint2
+Testes aprovados: 7
+Testes reprovados: 0
+Testes pendentes: 0
+Status: Passou
+
+Regressão da Release 2
+Comando executado: --env tags=@regressao
+Testes aprovados: 10
+Testes reprovados: 0
+Testes pendentes: 0
+Status: Passou
+
+RASTREABILIDADE DOS CASOS
+
+Caso CT-033
+US relacionada: US-015
+Arquivo: validacao-abuso.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/validacao-abuso.feature/release2-sprint2/CT-033.png
+
+Caso CT-034
+US relacionada: US-015
+Arquivo: validacao-abuso.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/validacao-abuso.feature/release2-sprint2/CT-034.png
+
+Caso CT-035
+US relacionada: US-011
+Arquivo: catalogo-produtos.feature
+Tipo: Feliz
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/catalogo-produtos.feature/release2-sprint2/CT-035.png
+
+Caso CT-036
+US relacionada: US-011
+Arquivo: catalogo-produtos.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/catalogo-produtos.feature/release2-sprint2/CT-036.png
+
+Caso CT-037
+US relacionada: US-012
+Arquivo: detalhe-comparacao.feature
+Tipo: Feliz
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/detalhe-comparacao.feature/release2-sprint2/CT-037.png
+
+Caso CT-038
+US relacionada: US-012
+Arquivo: detalhe-comparacao.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/detalhe-comparacao.feature/release2-sprint2/CT-038.png
+
+Caso CT-039
+US relacionada: US-013
+Arquivo: administrar-produtos.feature
+Tipo: Feliz
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/administrar-produtos.feature/release2-sprint2/CT-039.png
+
+Caso CT-040
+US relacionada: US-013
+Arquivo: administrar-produtos.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/administrar-produtos.feature/release2-sprint2/CT-040.png
+
+Caso CT-041
+US relacionada: US-014
+Arquivo: sincronizar-catalogo.feature
+Tipo: Feliz
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/sincronizar-catalogo.feature/release2-sprint2/CT-041.png
+
+Caso CT-042
+US relacionada: US-014
+Arquivo: sincronizar-catalogo.feature
+Tipo: Exceção
+Prioridade: Alta
+Resultado: Passou
+Evidência: screenshots/sincronizar-catalogo.feature/release2-sprint2/CT-042.png
+
+REGISTRO DE DEFEITOS
+
+Até o momento, não há defeitos registrados neste ciclo de regressão.
+
+Caso seja identificada alguma falha, registrar o identificador do defeito, o caso de teste relacionado, a descrição, a severidade, a evidência e o status da correção.
