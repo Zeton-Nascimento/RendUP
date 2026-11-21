@@ -1,9 +1,11 @@
-import { HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
+import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, throwError } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
+
+export const SKIP_UNAUTHORIZED_REDIRECT = new HttpContextToken<boolean>(() => false);
 
 function getObjectError(error: unknown): Record<string, unknown> {
   return typeof error === "object" && error ? (error as Record<string, unknown>) : {};
@@ -95,6 +97,7 @@ function handleHttpError(
   err: HttpErrorResponse,
   auth: AuthService,
   router: Router,
+  skipUnauthorizedRedirect = false,
 ): HttpErrorResponse {
   if (err.status === 0) {
     return buildFriendlyHttpError(
@@ -104,6 +107,10 @@ function handleHttpError(
   }
 
   if (err.status === 401) {
+    if (skipUnauthorizedRedirect) {
+      return err;
+    }
+
     return handleUnauthorizedError(err, auth, router);
   }
 
@@ -136,7 +143,9 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => err);
       }
 
-      return throwError(() => handleHttpError(err, auth, router));
+      return throwError(() =>
+        handleHttpError(err, auth, router, req.context.get(SKIP_UNAUTHORIZED_REDIRECT)),
+      );
     }),
   );
 };
