@@ -9,6 +9,20 @@
   </header>
 
   <section class="stats-grid" aria-label="Resumo da plataforma">
+    @if (ehInvestidor()) {
+      <article class="stat-card balance-card">
+        <span class="stat-label">Saldo disponível</span>
+        @if (carregandoSaldo()) {
+          <strong>Consultando...</strong>
+        } @else if (erroSaldo(); as mensagem) {
+          <strong class="error-value">Indisponível</strong>
+          <button type="button" class="inline-action" (click)="carregarSaldo()">Tentar novamente</button>
+        } @else {
+          <strong>{{ saldo() | currency: "BRL" }}</strong>
+          <span class="stat-description">Valor disponível para futuras operações.</span>
+        }
+      </article>
+    }
     <article class="stat-card accent-card">
       <span class="stat-label">Catálogo</span>
       <strong>Produtos ativos</strong>

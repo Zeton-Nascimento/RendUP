@@ -1,0 +1,126 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.68);
+}
+
+.modal-box {
+  width: min(100%, 440px);
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #151820;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.55);
+}
+
+.modal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modal-kicker {
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.modal-title,
+.modal-text {
+  margin: 0;
+}
+
+.modal-heading h2 {
+  margin: 6px 0 0;
+  color: var(--text);
+  font-size: 22px;
+}
+
+.close-button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.modal-text {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.field-label {
+  display: block;
+  margin: 20px 0 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.28);
+  font: inherit;
+}
+
+input:focus {
+  border-color: var(--primary);
+}
+
+.modal-error {
+  margin: 10px 0 0;
+  color: #ffb4b8;
+  font-size: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn-primary,
+.btn-secondary {
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.btn-primary {
+  border-color: var(--primary);
+  color: var(--primary-contrast);
+  background: linear-gradient(135deg, var(--primary), var(--primary-secondary));
+}
+
+.btn-secondary {
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

@@ -24,4 +24,8 @@ export class SidebarComponent {
   get podeGerenciarProdutos(): boolean {
     return this.usuario()?.permissoes?.includes("PRODUTO_GERIR") === true;
   }
+
+  get podeGerenciarRegrasFinanceiras(): boolean {
+    return this.usuario()?.permissoes?.includes("REGRA_FINANCEIRA_GERIR") === true;
+  }
 }
