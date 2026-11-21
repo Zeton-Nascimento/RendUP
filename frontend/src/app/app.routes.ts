@@ -45,6 +45,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import("./pages/admin/produtos/admin-produtos.component").then((m) => m.AdminProdutosComponent),
       },
+      {
+        path: "admin/regras-financeiras",
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import("./pages/admin/regras-financeiras/admin-regras-financeiras.component").then(
+            (m) => m.AdminRegrasFinanceirasComponent,
+          ),
+      },
     ],
   },
   { path: "**", redirectTo: "login" },

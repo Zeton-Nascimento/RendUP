@@ -5,6 +5,20 @@
   </a>
 
   <div class="header-right">
+    @if (ehInvestidor()) {
+      <div class="saldo-area">
+        <div class="saldo-info">
+          <span class="saldo-label">Saldo disponível</span>
+          @if (carregandoSaldo()) {
+            <span class="saldo-valor">Consultando...</span>
+          } @else {
+            <span class="saldo-valor">{{ saldoDisponivel() | currency: "BRL" }}</span>
+          }
+        </div>
+        <button type="button" class="deposit-button" (click)="abrirDeposito()">Depositar</button>
+      </div>
+    }
+
     <div class="profile-menu">
       <button
         type="button"
@@ -28,3 +42,12 @@
     </div>
   </div>
 </header>
+
+@if (depositoAberto()) {
+  <app-depositar-modal
+    [carregando]="depositando()"
+    [erro]="erroDeposito()"
+    (fechado)="fecharDeposito()"
+    (confirmado)="confirmarDeposito($event)"
+  />
+}
