@@ -22,7 +22,10 @@
         <h1>{{ item.nome }}</h1>
         <p>{{ item.descricao }}</p>
       </div>
-      <a routerLink="/produtos" class="secondary-button">Voltar ao catálogo</a>
+      <div class="header-actions">
+        <a [routerLink]="['/simulador']" [queryParams]="{ produtoId: item.id }" class="primary-button">Simular este produto</a>
+        <a routerLink="/produtos" class="secondary-button">Voltar ao catálogo</a>
+      </div>
     </header>
 
     <section class="detail-grid" aria-label="Informações principais do produto">
