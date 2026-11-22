@@ -1,0 +1,203 @@
+<main class="simulador-page">
+  <header class="page-header">
+    <div class="header-title-row">
+      <h1 class="page-title">Simulador de Investimentos</h1>
+    </div>
+    <p class="page-subtitle">Compare produtos e visualize cenários antes de investir.</p>
+  </header>
+
+  <section class="form-bar panel" aria-label="Parâmetros da simulação">
+    <div class="bar-row">
+      <div class="field-compact">
+        <label class="field-label" for="valorInicial">Valor inicial</label>
+        <input id="valorInicial" type="number" [(ngModel)]="valorInicial" min="0" step="100" placeholder="R$ 1.000" />
+      </div>
+
+      <div class="field-compact">
+        <label class="field-label" for="aporteMensal">Aporte mensal</label>
+        <input id="aporteMensal" type="number" [(ngModel)]="aporteMensal" min="0" step="100" placeholder="R$ 0" />
+      </div>
+
+      <div class="field-compact field-narrow">
+        <label class="field-label" for="prazo">Prazo</label>
+        <select id="prazo" [(ngModel)]="prazoMeses">
+          @for (prazo of prazosDisponiveis; track prazo.value) {
+            <option [ngValue]="prazo.value">{{ prazo.label }}</option>
+          }
+        </select>
+      </div>
+
+      <fieldset class="perfil-options">
+        <legend class="field-label">Perfil</legend>
+        <label class="radio-pill"><input type="radio" name="perfil" value="CONSERVADOR" [(ngModel)]="perfil" /><span>Conservador</span></label>
+        <label class="radio-pill"><input type="radio" name="perfil" value="MODERADO" [(ngModel)]="perfil" /><span>Moderado</span></label>
+        <label class="radio-pill"><input type="radio" name="perfil" value="ARROJADO" [(ngModel)]="perfil" /><span>Arrojado</span></label>
+      </fieldset>
+
+      <div class="bar-divider"></div>
+
+      <div class="field-produtos">
+        <span class="field-label">Produtos</span>
+        <div class="produtos-inline">
+          @for (produto of produtosSelecionadosDetalhes; track produto.id) {
+            <span class="produto-chip">
+              {{ produto.nome }}
+              <button type="button" class="chip-remove" (click)="removerProduto(produto.id)" [disabled]="carregando()">×</button>
+            </span>
+          }
+          @if (produtosSelecionados.length === 0) { <span class="empty-hint">Nenhum produto selecionado</span> }
+          @if (produtosSelecionados.length < 4) {
+            <button type="button" class="btn-add-chip" (click)="abrirModal()" [disabled]="carregando()">+ Adicionar</button>
+          }
+        </div>
+      </div>
+
+      <div class="bar-actions">
+        <button type="button" class="btn-limpar" (click)="limpar()" [disabled]="carregando()">Limpar</button>
+        <button type="button" class="btn-simular" (click)="simular()" [disabled]="carregando() || carregandoProdutos()">
+          {{ carregando() ? "Simulando..." : "Simular" }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="workspace-panel panel" aria-labelledby="resultado-title">
+    <div class="panel-header">
+      <h2 id="resultado-title" class="panel-title">Visualização da sua simulação</h2>
+    </div>
+
+    @if (carregandoProdutos()) {
+      <div class="estado-vazio"><p>Carregando produtos...</p></div>
+    } @else if (erroProdutos(); as mensagem) {
+      <div class="estado-erro"><p>{{ mensagem }}</p><button type="button" class="btn-limpar" (click)="carregarProdutos()">Tentar novamente</button></div>
+    } @else if (carregando()) {
+      <div class="estado-loading"><div class="loading-spinner"></div><p>Calculando cenários...</p></div>
+    } @else if (erro(); as mensagem) {
+      <div class="estado-erro"><p>{{ mensagem }}</p></div>
+    } @else if (resultado(); as simulacao) {
+      <div class="resultado-content">
+        <section class="ranking-section">
+          <h3 class="section-title">Ranking dos cenários</h3>
+          <div class="ranking-list">
+            @for (cenario of simulacao.cenarios; track cenario.produtoId) {
+              <article class="ranking-item" [class.primeiro]="cenario.ranking === 1">
+                <span class="ranking-posicao">{{ cenario.ranking }}º</span>
+                <div class="ranking-info">
+                  <strong>{{ cenario.nomeProduto }}</strong>
+                  <span>{{ formatarMoeda(cenario.valorFinalLiquido) }} · {{ formatarPercentual(cenario.rentabilidade) }}</span>
+                </div>
+                @if (cenario.destaque) { <span class="destaque-tag">{{ cenario.destaque }}</span> }
+              </article>
+            }
+          </div>
+        </section>
+
+        <section class="destaques-section">
+          <h3 class="section-title">Resumo dos destaques</h3>
+          <div class="destaques-grid">
+            <article class="destaque-card equilibrio">
+              <span class="destaque-label">Maior resultado líquido</span>
+              <strong>{{ melhorCenario?.nomeProduto }}</strong>
+              <span>{{ melhorCenario ? formatarMoeda(melhorCenario.valorFinalLiquido) : "-" }}</span>
+            </article>
+            <article class="destaque-card liquidez">
+              <span class="destaque-label">Maior liquidez</span>
+              <strong>{{ cenarioMaiorLiquidez?.nomeProduto }}</strong>
+              <span>{{ cenarioMaiorLiquidez ? formatarLiquidez(cenarioMaiorLiquidez.liquidez) : "-" }}</span>
+            </article>
+            <article class="destaque-card rentavel">
+              <span class="destaque-label">Menor risco</span>
+              <strong>{{ cenarioMenorRisco?.nomeProduto }}</strong>
+              <span>{{ cenarioMenorRisco ? formatarRisco(cenarioMenorRisco.nivelRisco) : "-" }}</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="evolucao-section">
+          <h3 class="section-title">Evolução dos cenários</h3>
+          <div class="evolucao-list">
+            @for (cenario of simulacao.cenarios; track cenario.produtoId) {
+              <div class="evolucao-item">
+                <div class="evolucao-heading"><strong>{{ cenario.nomeProduto }}</strong><span>{{ formatarMoeda(cenario.valorFinalLiquido) }}</span></div>
+                <div class="evolucao-bars">
+                  @for (valor of cenario.evolucaoMensal; track $index) {
+                    <span class="evolucao-bar" [style.height.%]="8 + (valor / cenario.valorFinalLiquido) * 92" [title]="'Mês ' + ($index + 1) + ': ' + formatarMoeda(valor)"></span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="comparison-section">
+          <h3 class="section-title">Tabela comparativa</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Produto</th><th>Valor bruto</th><th>Valor líquido</th><th>Rentabilidade</th><th>Liquidez</th><th>Risco</th></tr></thead>
+              <tbody>
+                @for (cenario of simulacao.cenarios; track cenario.produtoId) {
+                  <tr>
+                    <td><strong>{{ cenario.nomeProduto }}</strong><small>{{ formatarTipo(cenario.tipoProduto) }}</small></td>
+                    <td>{{ formatarMoeda(cenario.valorFinalBruto) }}</td>
+                    <td class="highlight">{{ formatarMoeda(cenario.valorFinalLiquido) }}</td>
+                    <td>{{ formatarPercentual(cenario.rentabilidade) }}</td>
+                    <td>{{ formatarLiquidez(cenario.liquidez) }}</td>
+                    <td>{{ formatarRisco(cenario.nivelRisco) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    } @else {
+      <div class="estado-vazio">
+        <div class="vazio-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="7" y="8" width="34" height="32" rx="6" />
+            <path d="M14 32 21 24l5 5 8-11" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 15h10" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="vazio-copy">
+          <h3>Monte sua primeira simulação</h3>
+          <p>Compare quanto seu dinheiro pode render em diferentes produtos financeiros.</p>
+        </div>
+        <div class="vazio-passos">
+          <span><b>1</b> Adicione um produto</span>
+          <span><b>2</b> Informe os aportes</span>
+          <span><b>3</b> Clique em simular</span>
+        </div>
+        <button type="button" class="vazio-action" (click)="abrirModal()">Adicionar produto</button>
+      </div>
+    }
+  </section>
+</main>
+
+@if (modalAberto) {
+  <div class="modal-backdrop" role="presentation" (click)="fecharModal()">
+    <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div><h2 id="modal-title">Selecionar produto</h2><p>Escolha um produto para adicionar à comparação.</p></div>
+        <button type="button" class="btn-fechar" (click)="fecharModal()">×</button>
+      </div>
+      <input class="busca-input" type="search" [(ngModel)]="buscaProduto" placeholder="Buscar por nome do produto..." />
+      <div class="filtro-section">
+        @for (tipo of tipos; track tipo.valor) {
+          <button type="button" class="filtro-chip" [class.ativo]="filtroTipo === tipo.valor" (click)="selecionarTipo(tipo.valor)">{{ tipo.label }}</button>
+        }
+      </div>
+      <div class="modal-count">{{ produtosFiltrados.length }} produto(s) encontrado(s)</div>
+      <div class="modal-products">
+        @for (produto of produtosFiltrados; track produto.id) {
+          <article class="modal-product-card">
+            <div class="card-badges"><span class="badge">{{ formatarTipo(produto.tipoProduto) }}</span><span class="badge">{{ formatarRisco(produto.nivelRisco) }} risco</span></div>
+            <strong>{{ produto.nome }}</strong>
+            <small>{{ formatarLiquidez(produto.liquidez) }} · mínimo {{ formatarMoeda(produto.valorMinimo) }}</small>
+            <button type="button" class="btn-selecionar" [disabled]="estaSelecionado(produto.id)" (click)="adicionarProduto(produto)">{{ estaSelecionado(produto.id) ? "Selecionado" : "Selecionar" }}</button>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
+}
