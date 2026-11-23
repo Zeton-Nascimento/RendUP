@@ -149,6 +149,28 @@
             </table>
           </div>
         </section>
+
+        <section class="metodologia-section" aria-labelledby="metodologia-title">
+          <div class="metodologia-heading">
+            <div>
+              <h3 id="metodologia-title" class="section-title">Origem e metodologia</h3>
+              <p class="metodologia-subtitle">Entenda como interpretar os valores apresentados.</p>
+            </div>
+            <span class="tipo-dado-badge">{{ formatarTipoDado(simulacao.tipoDado) }}</span>
+          </div>
+
+          <div class="metodologia-grid">
+            <div><span>Origem dos dados</span><strong>{{ simulacao.fonteDados }}</strong></div>
+            <div><span>Data de referência</span><strong>{{ formatarData(simulacao.dataReferencia) }}</strong></div>
+            <div><span>Origem da simulação</span><strong>{{ simulacao.origem === "MANUAL" ? "Solicitação manual" : simulacao.origem }}</strong></div>
+          </div>
+
+          <p class="metodologia-texto">{{ simulacao.metodologia }}</p>
+          <div class="limitacao-box" role="note">
+            <strong>Limitação do resultado</strong>
+            <span>{{ simulacao.limitacao }}</span>
+          </div>
+        </section>
       </div>
     } @else {
       <div class="estado-vazio">

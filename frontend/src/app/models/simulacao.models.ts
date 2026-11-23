@@ -1,6 +1,7 @@
 import type { TipoLiquidez, TipoProduto } from "./produto.models";
 
 export type PerfilSimulacao = "CONSERVADOR" | "MODERADO" | "ARROJADO";
+export type TipoDadoSimulacao = "OBSERVADO" | "ESTIMADO" | "MOCKADO";
 
 export interface SimulacaoRequest {
   valorInicial: number;
@@ -30,6 +31,12 @@ export interface SimulacaoResponse {
   id: string;
   cenarios: CenarioSimulacao[];
   origem: "MANUAL";
+  fonteDados: string;
+  tipoDado: TipoDadoSimulacao;
+  dataReferencia: string;
+  metodologia: string;
+  limitacao: string;
+  disponivelParaDecisao: boolean;
   textoEntrada: string | null;
   createdAt: string;
 }

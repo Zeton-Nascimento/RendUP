@@ -11,6 +11,7 @@ import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.entity.Simulacao;
 import com.example.templatespring.entity.enums.OrigemSimulacao;
 import com.example.templatespring.entity.enums.PerfilInvestidor;
+import com.example.templatespring.entity.enums.TipoDadoSimulacao;
 import com.example.templatespring.repository.CenarioSimulacaoRepository;
 import com.example.templatespring.repository.ProdutoFinanceiroRepository;
 import com.example.templatespring.repository.SimulacaoRepository;
@@ -32,6 +33,15 @@ import com.example.templatespring.exception.RecursoNaoEncontradoException;
 public class SimulacaoService {
 
     private static final BigDecimal CEM = new BigDecimal("100");
+    private static final String FONTE_DADOS = "Catálogo local mockado do RendUP";
+    private static final String METODOLOGIA =
+            "A taxa anual do produto é convertida para uma taxa mensal equivalente. "
+                    + "O aporte inicial rende mensalmente e o aporte mensal é acrescentado ao final de cada mês. "
+                    + "O valor líquido aplica a regra simplificada de IR conforme o prazo e o tipo do produto. "
+                    + "Os valores monetários são arredondados para duas casas decimais.";
+    private static final String LIMITACAO =
+            "Os dados de mercado são mockados e os valores são estimativas. "
+                    + "O resultado não é garantia de rentabilidade, recomendação ou base suficiente para uma decisão de investimento.";
     private static final TypeReference<List<BigDecimal>> EVOLUCAO_TYPE = new TypeReference<>() {};
 
     private final SimulacaoValidator validator;
@@ -200,6 +210,12 @@ public class SimulacaoService {
         return SimulacaoResponse.builder()
                 .id(simulacao.getId())
                 .origem(simulacao.getOrigem())
+                .fonteDados(FONTE_DADOS)
+                .tipoDado(TipoDadoSimulacao.MOCKADO)
+                .dataReferencia(simulacao.getCreatedAt())
+                .metodologia(METODOLOGIA)
+                .limitacao(LIMITACAO)
+                .disponivelParaDecisao(false)
                 .createdAt(simulacao.getCreatedAt())
                 .cenarios(entidades.stream().map(this::cenarioResponse).toList())
                 .build();

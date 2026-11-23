@@ -130,6 +130,22 @@ button[disabled] {
 .simulador-page .vazio-passos span { padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); background: rgba(255,255,255,.03); font-size: 11px; }
 .simulador-page .vazio-passos b { display: inline-grid; width: 17px; height: 17px; place-items: center; margin-right: 4px; border-radius: 50%; color: #fff; background: var(--accent); font-size: 10px; }
 .simulador-page .vazio-action { padding: 9px 16px; border: 1px solid var(--primary); border-radius: 9px; color: var(--primary-contrast); background: linear-gradient(135deg, var(--primary), var(--primary-secondary)); font-size: 12px; font-weight: 750; }
+
+.simulador-page .metodologia-section { display: flex; flex-direction: column; gap: 14px; padding-top: 20px; border-top: 1px solid var(--border); }
+.simulador-page .metodologia-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.simulador-page .metodologia-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.simulador-page .tipo-dado-badge { padding: 5px 10px; border: 1px solid rgba(249,115,22,.45); border-radius: 999px; color: var(--primary); background: rgba(249,115,22,.1); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.simulador-page .metodologia-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+.simulador-page .metodologia-grid div { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,.025); }
+.simulador-page .metodologia-grid span { color: var(--muted); font-size: 11px; }
+.simulador-page .metodologia-grid strong { font-size: 12px; line-height: 1.4; }
+.simulador-page .metodologia-texto { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.simulador-page .limitacao-box { display: grid; gap: 5px; padding: 12px 14px; border: 1px solid rgba(240,180,41,.35); border-radius: 10px; color: #f9df9a; background: rgba(160,105,0,.12); font-size: 12px; line-height: 1.5; }
+.simulador-page .limitacao-box strong { color: #ffd166; }
+
+@media (max-width: 720px) {
+  .simulador-page .metodologia-grid { grid-template-columns: 1fr; }
+}
 ul {
   list-style: none;
   margin: 0;
