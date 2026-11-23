@@ -238,4 +238,17 @@ export class SimuladorComponent implements OnInit {
     return { BAIXO: "Baixo", MEDIO: "Médio", ALTO: "Alto" }[risco] ?? risco;
   }
 
+  formatarTipoDado(tipo: SimulacaoResponse["tipoDado"]): string {
+    return { OBSERVADO: "Observado", ESTIMADO: "Estimado", MOCKADO: "Mockado" }[tipo];
+  }
+
+  formatarData(data: string): string {
+    const dataFormatada = new Date(data);
+    if (Number.isNaN(dataFormatada.getTime())) return "Não informada";
+    return new Intl.DateTimeFormat("pt-BR", {
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(dataFormatada);
+  }
+
 }
