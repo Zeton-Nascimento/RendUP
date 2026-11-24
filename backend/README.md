@@ -74,26 +74,84 @@ export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/rendup
 
 As tabelas são criadas e atualizadas automaticamente pelo Hibernate quando a aplicação é iniciada (`ddl-auto: update`).
 
+## Configurar a IA (Groq)
+
+Antes de iniciar o backend, configure a integração com a IA usando uma chave da Groq.
+
+### Criar a chave da Groq
+
+1. Acesse o [console de chaves da Groq](https://console.groq.com/keys) e faça login ou crie sua conta.
+2. Clique em **Create API Key**.
+3. No campo **Display Name**, informe qualquer nome para identificar a chave.
+4. Configure a chave para **não expirar** (`No expiration` ou opção equivalente).
+5. Crie a chave e **guarde o valor exibido imediatamente**. A Groq não permite copiar a chave novamente depois que essa tela é fechada.
+
+Substitua `sua-chave-completa` nos exemplos abaixo pelo valor copiado.
+
+### Linux ou macOS
+
+No diretório raiz do projeto, execute:
+
+```bash
+cd backend
+export GROQ_ENABLED=true
+export GROQ_API_KEY='sua-chave-completa'
+export GROQ_MODEL='openai/gpt-oss-120b'
+export GROQ_BASE_URL='https://api.groq.com/openai/v1'
+
+./mvnw clean spring-boot:run
+```
+
+### Windows — PowerShell
+
+No PowerShell, no diretório raiz do projeto, execute:
+
+```powershell
+cd backend
+$env:GROQ_ENABLED = "true"
+$env:GROQ_API_KEY = "sua-chave-completa"
+$env:GROQ_MODEL = "openai/gpt-oss-120b"
+$env:GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+
+.\mvnw.cmd clean spring-boot:run
+```
+
+### Windows — Prompt de Comando (CMD)
+
+No Prompt de Comando, no diretório raiz do projeto, execute:
+
+```bat
+cd backend
+set GROQ_ENABLED=true
+set GROQ_API_KEY=sua-chave-completa
+set GROQ_MODEL=openai/gpt-oss-120b
+set GROQ_BASE_URL=https://api.groq.com/openai/v1
+
+mvnw.cmd clean spring-boot:run
+```
+
+As variáveis de ambiente configuradas dessa forma ficam disponíveis apenas no terminal atual. Se abrir outro terminal, será necessário configurá-las novamente.
+
 ## Executar o backend
 
 No diretório raiz do projeto, execute:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+./mvnw clean spring-boot:run
 ```
 
 No Windows, use:
 
 ```powershell
 cd backend
-.\mvnw.cmd spring-boot:run
+.\mvnw.cmd clean spring-boot:run
 ```
 
 Se o Maven estiver instalado, também é possível executar:
 
 ```bash
-mvn spring-boot:run
+mvn clean spring-boot:run
 ```
 
 O backend ficará disponível em [http://localhost:8080].
@@ -106,7 +164,7 @@ No primeiro terminal, inicie o backend:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+./mvnw clean spring-boot:run
 ```
 
 No segundo terminal, inicie o frontend:

@@ -61,7 +61,8 @@
     </div>
   </section>
 
-  <section class="workspace-panel panel" aria-labelledby="resultado-title">
+  <div class="workspace-grid">
+  <section class="workspace-panel panel panel-left" aria-labelledby="resultado-title">
     <div class="panel-header">
       <h2 id="resultado-title" class="panel-title">Visualização da sua simulação</h2>
     </div>
@@ -194,6 +195,26 @@
       </div>
     }
   </section>
+
+  <section class="workspace-panel panel panel-right" aria-labelledby="assistente-panel-title">
+    <div class="panel-header">
+      <h2 id="assistente-panel-title" class="panel-title">Assistente de IA</h2>
+      <p class="panel-subtitle">Entenda os cenários e refine os parâmetros da simulação.</p>
+    </div>
+    <div class="panel-content workspace-chat">
+      <app-assistente-ia
+        [cenarios]="resultado()?.cenarios ?? []"
+        [simulacaoId]="resultado()?.id ?? null"
+        [perfil]="perfil"
+        [produtoIds]="produtosSelecionados"
+        [valorInicial]="valorInicial"
+        [aporteMensal]="aporteMensal"
+        [prazoMeses]="prazoMeses"
+        (simulacaoAtualizada)="onAssistenteSimulacaoAtualizada($event)"
+      />
+    </div>
+  </section>
+  </div>
 </main>
 
 @if (modalAberto) {

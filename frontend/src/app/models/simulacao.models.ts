@@ -2,6 +2,7 @@ import type { TipoLiquidez, TipoProduto } from "./produto.models";
 
 export type PerfilSimulacao = "CONSERVADOR" | "MODERADO" | "ARROJADO";
 export type TipoDadoSimulacao = "OBSERVADO" | "ESTIMADO" | "MOCKADO";
+export type IntencaoChat = "SIMULAR" | "EXPLICAR" | "DESCONHECIDA";
 
 export interface SimulacaoRequest {
   valorInicial: number;
@@ -39,4 +40,23 @@ export interface SimulacaoResponse {
   disponivelParaDecisao: boolean;
   textoEntrada: string | null;
   createdAt: string;
+}
+
+export interface ChatRequest {
+  mensagem: string;
+  simulacaoIdAtual?: string;
+  perfil?: PerfilSimulacao;
+  produtoIds?: string[];
+  prazoMesesRefinamento?: number;
+  valorInicialRefinamento?: number;
+  aporteMensalRefinamento?: number;
+}
+
+export interface ChatResponse {
+  resposta: string;
+  intencao: IntencaoChat;
+  simulacaoAtualizada: SimulacaoResponse | null;
+  fallback: boolean;
+  sugestoes: string[];
+  disclaimer: string;
 }

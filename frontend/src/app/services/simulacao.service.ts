@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { environment } from "../../environments/environment";
-import type { SimulacaoRequest, SimulacaoResponse } from "../models/simulacao.models";
+import type { ChatRequest, ChatResponse, SimulacaoRequest, SimulacaoResponse } from "../models/simulacao.models";
 
 @Injectable({ providedIn: "root" })
 export class SimulacaoService {
@@ -15,5 +15,9 @@ export class SimulacaoService {
 
   buscarPorId(id: string) {
     return this.http.get<SimulacaoResponse>(`${this.base}/${id}`);
+  }
+
+  chatIA(request: ChatRequest) {
+    return this.http.post<ChatResponse>(`${environment.apiUrl}/v1/chat/ia`, request);
   }
 }
