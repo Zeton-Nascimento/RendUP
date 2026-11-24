@@ -1,0 +1,69 @@
+<section class="assistente-card" aria-labelledby="assistente-title">
+  <header class="assistente-header">
+    <div class="assistente-identidade">
+      <span class="assistente-avatar" aria-hidden="true">R</span>
+      <div>
+        <span class="assistente-kicker">ASSISTENTE RENDUP</span>
+        <h2 id="assistente-title">Refine sua simulação</h2>
+      </div>
+    </div>
+    <span class="assistente-status">Informativo</span>
+  </header>
+
+  <p class="assistente-intro">
+    Tire dúvidas sobre os cenários ou peça alterações de prazo e aportes. O assistente não realiza contratações.
+  </p>
+
+  <div class="assistente-mensagens" aria-live="polite">
+    @if (mensagens().length === 0 && !enviando()) {
+      <div class="assistente-boas-vindas">
+        <strong>{{ simulacaoId() ? "Sua simulação está pronta para ser refinada." : "Posso explicar conceitos de investimentos." }}</strong>
+        <span>{{ simulacaoId() ? "Pergunte o que muda ao alterar prazo, valor ou aporte mensal." : "Execute uma simulação para receber explicações sobre os cenários." }}</span>
+      </div>
+    }
+
+    @for (item of mensagens(); track $index) {
+      <div class="chat-mensagem" [class.mensagem-usuario]="item.remetente === 'usuario'">
+        <span class="chat-autor">{{ item.remetente === "usuario" ? "Você" : "RendUP" }}</span>
+        @if (item.remetente === "assistente") {
+          <div class="chat-texto-formatado" [innerHTML]="item.texto | assistenteResposta"></div>
+        } @else {
+          <p>{{ item.texto }}</p>
+        }
+      </div>
+    }
+
+    @if (enviando()) {
+      <div class="chat-mensagem">
+        <span class="chat-autor">RendUP</span>
+        <p class="assistente-digitando">Analisando sua pergunta...</p>
+      </div>
+    }
+  </div>
+
+  @if (!enviando()) {
+    <div class="assistente-sugestoes">
+      @for (sugestao of sugestoes(); track sugestao) {
+        <button type="button" (click)="usarSugestao(sugestao)">{{ sugestao }}</button>
+      }
+    </div>
+  }
+
+  <div class="assistente-input">
+    <input
+      type="text"
+      [(ngModel)]="mensagem"
+      maxlength="1000"
+      placeholder="Pergunte sobre esta simulação..."
+      [disabled]="enviando()"
+      (keydown)="onKeydown($event)"
+    />
+    <button type="button" (click)="enviarMensagem()" [disabled]="!mensagem.trim() || enviando()">
+      Enviar
+    </button>
+  </div>
+
+  <p class="assistente-disclaimer">
+    As respostas são informativas e não constituem recomendação ou decisão de investimento.
+  </p>
+</section>

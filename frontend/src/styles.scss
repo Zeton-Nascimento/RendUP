@@ -143,8 +143,25 @@ button[disabled] {
 .simulador-page .limitacao-box { display: grid; gap: 5px; padding: 12px 14px; border: 1px solid rgba(240,180,41,.35); border-radius: 10px; color: #f9df9a; background: rgba(160,105,0,.12); font-size: 12px; line-height: 1.5; }
 .simulador-page .limitacao-box strong { color: #ffd166; }
 
+.simulador-page .workspace-grid { display: flex; flex-direction: row; height: calc(100vh - 220px); min-height: 500px; gap: 16px; overflow: hidden; }
+.simulador-page .panel-left, .simulador-page .panel-right { flex: 1 1 0; min-width: 0; min-height: 0; }
+.simulador-page .panel-left > .resultado-content { min-height: 0; flex: 1; overflow-y: auto; }
+.simulador-page .panel-subtitle { margin: 0 0 16px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.simulador-page .panel-content { display: flex; min-height: 0; flex: 1; flex-direction: column; overflow: hidden; }
+.simulador-page .workspace-chat { padding: 0; }
+.simulador-page .workspace-chat > app-assistente-ia { display: flex; min-height: 0; flex: 1; flex-direction: column; }
+
 @media (max-width: 720px) {
   .simulador-page .metodologia-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 1100px) {
+  .simulador-page .workspace-grid { height: auto; min-height: 0; flex-direction: column; overflow: visible; }
+  .simulador-page .panel-left, .simulador-page .panel-right { flex: none; min-height: 500px; }
+}
+
+@media (max-width: 720px) {
+  .simulador-page .workspace-grid { gap: 12px; }
 }
 ul {
   list-style: none;

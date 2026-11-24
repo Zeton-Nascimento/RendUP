@@ -8,11 +8,12 @@ import { ProdutoService } from "../../services/produto.service";
 import { SimulacaoService } from "../../services/simulacao.service";
 import type { ProdutoFinanceiro, TipoLiquidez, TipoProduto } from "../../models/produto.models";
 import type { CenarioSimulacao, PerfilSimulacao, SimulacaoResponse } from "../../models/simulacao.models";
+import { AssistenteIaComponent } from "./assistente-ia.component";
 
 @Component({
   selector: "app-simulador",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AssistenteIaComponent],
   templateUrl: "./simulador.component.html",
   styleUrl: "./simulador.component.scss",
 })
@@ -207,6 +208,17 @@ export class SimuladorComponent implements OnInit {
     this.filtroTipo = "";
     this.resultado.set(null);
     this.erro.set(null);
+  }
+
+  onAssistenteSimulacaoAtualizada(simulacao: SimulacaoResponse): void {
+    this.resultado.set(simulacao);
+    const primeiro = simulacao.cenarios[0];
+    if (!primeiro) return;
+
+    this.valorInicial = primeiro.valorInicial;
+    this.aporteMensal = primeiro.aporteMensal;
+    this.prazoMeses = primeiro.evolucaoMensal.length;
+    this.produtosSelecionados = simulacao.cenarios.map((cenario) => cenario.produtoId);
   }
 
   formatarMoeda(valor: number): string {
