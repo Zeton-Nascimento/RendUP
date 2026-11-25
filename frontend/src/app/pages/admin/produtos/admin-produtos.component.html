@@ -1,4 +1,20 @@
 <main class="admin-products-page">
+  @if (produtoParaAtualizar(); as produto) {
+    <div class="modal-backdrop" role="presentation" (click)="cancelarAtualizacao()">
+      <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmacao-atualizacao-titulo" (click)="$event.stopPropagation()">
+        <span class="section-kicker">CONFIRMAÇÃO</span>
+        <h2 id="confirmacao-atualizacao-titulo">Confirmar alteração?</h2>
+        <p>Os dados do produto <strong>{{ produto.nome }}</strong> serão atualizados no catálogo administrativo.</p>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="cancelarAtualizacao()">Cancelar</button>
+          <button type="button" class="primary-button" [disabled]="salvando()" (click)="confirmarAtualizacao()">
+            {{ salvando() ? "Atualizando..." : "Confirmar alteração" }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
   @if (produtoParaInativar(); as produto) {
     <div class="modal-backdrop" role="presentation" (click)="cancelarInativacao()">
       <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmacao-inativacao-titulo" (click)="$event.stopPropagation()">

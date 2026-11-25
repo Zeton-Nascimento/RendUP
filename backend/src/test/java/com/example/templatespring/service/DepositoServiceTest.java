@@ -48,6 +48,7 @@ class DepositoServiceTest {
 
         DepositoRequest request = new DepositoRequest();
         request.setValor(new BigDecimal("50.25"));
+        request.setConfirmar(true);
 
         DepositoResponse response = depositoService.depositar(request);
 
@@ -73,6 +74,7 @@ class DepositoServiceTest {
 
         DepositoRequest request = new DepositoRequest();
         request.setValor(new BigDecimal("10.999"));
+        request.setConfirmar(true);
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
@@ -94,6 +96,7 @@ class DepositoServiceTest {
 
         DepositoRequest request = new DepositoRequest();
         request.setValor(new BigDecimal("10.00"));
+        request.setConfirmar(true);
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,

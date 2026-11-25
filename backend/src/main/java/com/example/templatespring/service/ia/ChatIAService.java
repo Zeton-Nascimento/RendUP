@@ -7,6 +7,7 @@ import com.example.templatespring.dto.simulacao.request.SimulacaoRequest;
 import com.example.templatespring.dto.simulacao.response.CenarioResponse;
 import com.example.templatespring.dto.simulacao.response.SimulacaoResponse;
 import com.example.templatespring.entity.enums.PerfilInvestidor;
+import com.example.templatespring.entity.enums.OrigemSimulacao;
 import com.example.templatespring.exception.IAIndisponivelException;
 import com.example.templatespring.service.SimulacaoService;
 import java.math.BigDecimal;
@@ -141,7 +142,7 @@ public class ChatIAService {
         request.setPrazoMeses(refinamento.prazoMeses());
         request.setPerfil(perfil);
         request.setProdutoIds(atual.getCenarios().stream().map(CenarioResponse::getProdutoId).toList());
-        return simulacaoService.simular(request);
+        return simulacaoService.simularComOrigem(request, OrigemSimulacao.ASSISTENTE_IA);
     }
 
     private Refinamento extrairRefinamento(ChatRequest request, String mensagem, SimulacaoResponse atual) {

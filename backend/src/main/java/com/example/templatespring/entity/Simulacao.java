@@ -1,6 +1,7 @@
 package com.example.templatespring.entity;
 
 import com.example.templatespring.entity.enums.OrigemSimulacao;
+import com.example.templatespring.entity.enums.PerfilInvestidor;
 import com.example.templatespring.entity.security.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +38,10 @@ public class Simulacao {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private OrigemSimulacao origem;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "perfil_investidor", length = 20)
+    private PerfilInvestidor perfil;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

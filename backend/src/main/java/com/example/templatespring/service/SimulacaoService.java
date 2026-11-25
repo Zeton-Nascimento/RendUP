@@ -5,7 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.templatespring.dto.simulacao.request.SimulacaoRequest;
 import com.example.templatespring.dto.simulacao.response.CenarioResponse;
+import com.example.templatespring.dto.simulacao.response.SimulacaoHistoricoResponse;
 import com.example.templatespring.dto.simulacao.response.SimulacaoResponse;
+import com.example.templatespring.dto.simulacao.response.SimulacaoResumoCenarioResponse;
+import com.example.templatespring.dto.simulacao.response.SimulacaoResumoResponse;
 import com.example.templatespring.entity.CenarioSimulacao;
 import com.example.templatespring.entity.ProdutoFinanceiro;
 import com.example.templatespring.entity.Simulacao;
@@ -19,6 +22,7 @@ import com.example.templatespring.validator.SimulacaoValidator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -68,6 +72,11 @@ public class SimulacaoService {
 
     @Transactional
     public SimulacaoResponse simular(SimulacaoRequest request) {
+        return simularComOrigem(request, OrigemSimulacao.MANUAL);
+    }
+
+    @Transactional
+    public SimulacaoResponse simularComOrigem(SimulacaoRequest request, OrigemSimulacao origem) {
         validator.validar(request);
         var usuario = usuarioAutenticadoService.get();
 
@@ -82,7 +91,8 @@ public class SimulacaoService {
 
         Simulacao simulacao = new Simulacao();
         simulacao.setUsuario(usuario);
-        simulacao.setOrigem(OrigemSimulacao.MANUAL);
+        simulacao.setOrigem(origem);
+        simulacao.setPerfil(request.getPerfil());
         simulacao.setCreatedAt(LocalDateTime.now());
         Simulacao salva = simulacaoRepository.save(simulacao);
 
@@ -114,6 +124,89 @@ public class SimulacaoService {
         Simulacao simulacao = simulacaoRepository.findByIdAndUsuarioId(id, usuario.getId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Simulação não encontrada."));
         return resposta(simulacao, cenarioRepository.findBySimulacaoIdOrderByRankingPosicaoAsc(id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<SimulacaoHistoricoResponse> historico() {
+        var usuario = usuarioAutenticadoService.get();
+        return simulacaoRepository.findByUsuarioIdOrderByCreatedAtDesc(usuario.getId()).stream()
+                .map(this::historicoResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public SimulacaoResumoResponse resumoCompartilhavel(UUID id) {
+        SimulacaoResponse simulacao = buscarPorId(id);
+        List<CenarioResponse> cenarios = simulacao.getCenarios();
+        CenarioResponse primeiro = cenarios.get(0);
+        PerfilInvestidor perfil = perfilDa(simulacao.getPerfil());
+        String data = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(simulacao.getCreatedAt());
+        String origem = simulacao.getOrigem() == OrigemSimulacao.ASSISTENTE_IA
+                ? "Assistente de IA"
+                : "Solicitação manual";
+
+        List<SimulacaoResumoCenarioResponse> resumoCenarios = cenarios.stream()
+                .map(cenario -> SimulacaoResumoCenarioResponse.builder()
+                        .produto(cenario.getNomeProduto())
+                        .tipoProduto(cenario.getTipoProduto())
+                        .valorFinalLiquido(cenario.getValorFinalLiquido())
+                        .rentabilidade(cenario.getRentabilidade())
+                        .liquidez(cenario.getLiquidez())
+                        .nivelRisco(cenario.getNivelRisco())
+                        .build())
+                .toList();
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("Resumo de simulação RendUP\n")
+                .append("Data: ").append(data).append("\n")
+                .append("Origem: ").append(origem).append("\n")
+                .append("Perfil: ").append(perfil.name()).append("\n")
+                .append("Valor inicial: R$ ").append(primeiro.getValorInicial()).append("\n")
+                .append("Aporte mensal: R$ ").append(primeiro.getAporteMensal()).append("\n")
+                .append("Prazo: ").append(primeiro.getPrazoMeses()).append(" meses\n\n")
+                .append("Cenários:\n");
+        for (SimulacaoResumoCenarioResponse cenario : resumoCenarios) {
+            texto.append("- ").append(cenario.getProduto())
+                    .append(" | líquido: R$ ").append(cenario.getValorFinalLiquido())
+                    .append(" | rentabilidade: ").append(cenario.getRentabilidade()).append("%")
+                    .append(" | liquidez: ").append(cenario.getLiquidez())
+                    .append(" | risco: ").append(cenario.getNivelRisco()).append("\n");
+        }
+        texto.append("\nOs dados são estimativas mockadas e não constituem recomendação de investimento.");
+
+        return SimulacaoResumoResponse.builder()
+                .id(simulacao.getId())
+                .createdAt(simulacao.getCreatedAt())
+                .origem(simulacao.getOrigem())
+                .perfil(perfil)
+                .valorInicial(primeiro.getValorInicial())
+                .aporteMensal(primeiro.getAporteMensal())
+                .prazoMeses(primeiro.getPrazoMeses())
+                .cenarios(resumoCenarios)
+                .textoCompartilhavel(texto.toString())
+                .aviso("O resumo não contém dados pessoais, credenciais, tokens ou dados bancários.")
+                .build();
+    }
+
+    private SimulacaoHistoricoResponse historicoResponse(Simulacao simulacao) {
+        List<CenarioSimulacao> cenarios = cenarioRepository.findBySimulacaoIdOrderByRankingPosicaoAsc(simulacao.getId());
+        CenarioSimulacao primeiro = cenarios.isEmpty() ? null : cenarios.get(0);
+        return SimulacaoHistoricoResponse.builder()
+                .id(simulacao.getId())
+                .createdAt(simulacao.getCreatedAt())
+                .origem(simulacao.getOrigem())
+                .perfil(perfilDa(simulacao.getPerfil()))
+                .valorInicial(primeiro == null ? null : primeiro.getValorInicial())
+                .aporteMensal(primeiro == null ? null : primeiro.getAporteMensal())
+                .prazoMeses(primeiro == null ? null : primeiro.getPrazoMeses())
+                .quantidadeCenarios(cenarios.size())
+                .melhorProduto(primeiro == null ? null : primeiro.getProdutoFinanceiro().getNome())
+                .melhorValorFinalLiquido(primeiro == null ? null : primeiro.getValorFinalLiquido())
+                .build();
+    }
+
+    private PerfilInvestidor perfilDa(PerfilInvestidor perfil) {
+        return perfil == null ? PerfilInvestidor.CONSERVADOR : perfil;
     }
 
     private CenarioCalculado calcular(ProdutoFinanceiro produto, SimulacaoRequest request) {
@@ -210,6 +303,7 @@ public class SimulacaoService {
         return SimulacaoResponse.builder()
                 .id(simulacao.getId())
                 .origem(simulacao.getOrigem())
+                .perfil(perfilDa(simulacao.getPerfil()))
                 .fonteDados(FONTE_DADOS)
                 .tipoDado(TipoDadoSimulacao.MOCKADO)
                 .dataReferencia(simulacao.getCreatedAt())
@@ -236,6 +330,7 @@ public class SimulacaoService {
                 .destaque(cenario.getDestaque())
                 .valorInicial(cenario.getValorInicial())
                 .aporteMensal(cenario.getAporteMensal())
+                .prazoMeses(cenario.getPrazoMeses())
                 .build();
     }
 

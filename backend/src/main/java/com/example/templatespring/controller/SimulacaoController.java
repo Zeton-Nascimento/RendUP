@@ -2,9 +2,12 @@ package com.example.templatespring.controller;
 
 import com.example.templatespring.dto.simulacao.request.SimulacaoRequest;
 import com.example.templatespring.dto.simulacao.response.SimulacaoResponse;
+import com.example.templatespring.dto.simulacao.response.SimulacaoHistoricoResponse;
+import com.example.templatespring.dto.simulacao.response.SimulacaoResumoResponse;
 import com.example.templatespring.service.SimulacaoService;
 import jakarta.validation.Valid;
 import java.util.UUID;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,5 +35,15 @@ public class SimulacaoController {
     @GetMapping("/{id}")
     public SimulacaoResponse buscarPorId(@PathVariable UUID id) {
         return service.buscarPorId(id);
+    }
+
+    @GetMapping
+    public List<SimulacaoHistoricoResponse> historico() {
+        return service.historico();
+    }
+
+    @GetMapping("/{id}/resumo")
+    public SimulacaoResumoResponse resumoCompartilhavel(@PathVariable UUID id) {
+        return service.resumoCompartilhavel(id);
     }
 }

@@ -3,6 +3,7 @@ import type { TipoLiquidez, TipoProduto } from "./produto.models";
 export type PerfilSimulacao = "CONSERVADOR" | "MODERADO" | "ARROJADO";
 export type TipoDadoSimulacao = "OBSERVADO" | "ESTIMADO" | "MOCKADO";
 export type IntencaoChat = "SIMULAR" | "EXPLICAR" | "DESCONHECIDA";
+export type OrigemSimulacao = "MANUAL" | "ASSISTENTE_IA";
 
 export interface SimulacaoRequest {
   valorInicial: number;
@@ -26,12 +27,14 @@ export interface CenarioSimulacao {
   destaque: string | null;
   valorInicial: number;
   aporteMensal: number;
+  prazoMeses: number;
 }
 
 export interface SimulacaoResponse {
   id: string;
   cenarios: CenarioSimulacao[];
-  origem: "MANUAL";
+  origem: OrigemSimulacao;
+  perfil: PerfilSimulacao;
   fonteDados: string;
   tipoDado: TipoDadoSimulacao;
   dataReferencia: string;
@@ -40,6 +43,41 @@ export interface SimulacaoResponse {
   disponivelParaDecisao: boolean;
   textoEntrada: string | null;
   createdAt: string;
+}
+
+export interface SimulacaoHistorico {
+  id: string;
+  createdAt: string;
+  origem: OrigemSimulacao;
+  perfil: PerfilSimulacao;
+  valorInicial: number | null;
+  aporteMensal: number | null;
+  prazoMeses: number | null;
+  quantidadeCenarios: number;
+  melhorProduto: string | null;
+  melhorValorFinalLiquido: number | null;
+}
+
+export interface SimulacaoResumoCenario {
+  produto: string;
+  tipoProduto: TipoProduto;
+  valorFinalLiquido: number;
+  rentabilidade: number;
+  liquidez: TipoLiquidez;
+  nivelRisco: string;
+}
+
+export interface SimulacaoResumo {
+  id: string;
+  createdAt: string;
+  origem: OrigemSimulacao;
+  perfil: PerfilSimulacao;
+  valorInicial: number;
+  aporteMensal: number;
+  prazoMeses: number;
+  cenarios: SimulacaoResumoCenario[];
+  textoCompartilhavel: string;
+  aviso: string;
 }
 
 export interface ChatRequest {

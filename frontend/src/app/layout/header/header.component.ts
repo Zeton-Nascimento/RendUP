@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit {
     this.depositando.set(true);
     this.erroDeposito.set(null);
     this.saldoService
-      .depositar({ valor })
+      .depositar({ valor, confirmar: true })
       .pipe(finalize(() => this.depositando.set(false)))
       .subscribe({
         next: (resposta) => {

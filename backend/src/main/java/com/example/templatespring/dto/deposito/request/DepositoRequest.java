@@ -13,4 +13,6 @@ public class DepositoRequest {
     @NotNull(message = "Valor do depósito é obrigatório.")
     @DecimalMin(value = "0.01", message = "Valor do depósito deve ser maior que zero.")
     private BigDecimal valor;
+
+    private boolean confirmar;
 }
