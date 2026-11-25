@@ -43,6 +43,7 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
   readonly produtoEmEdicao = signal<ProdutoFinanceiro | null>(null);
   readonly produtoParaInativar = signal<ProdutoFinanceiro | null>(null);
   readonly produtoParaAtivar = signal<ProdutoFinanceiro | null>(null);
+  readonly produtoParaAtualizar = signal<ProdutoFinanceiro | null>(null);
 
   readonly tipos: Array<{ label: string; valor: TipoProduto }> = [
     { label: "CDB", valor: "CDB" },
@@ -102,16 +103,30 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
     this.normalizarCamposDinamicos();
     if (!this.formularioValido) return;
 
+    const produto = this.produtoEmEdicao();
+    const request = this.formularioAtualizado();
+    if (produto) {
+      this.produtoParaAtualizar.set(produto);
+      return;
+    }
+
+    this.executarSalvamento(request, null);
+  }
+
+  cancelarAtualizacao(): void {
+    this.produtoParaAtualizar.set(null);
+  }
+
+  confirmarAtualizacao(): void {
+    const produto = this.produtoParaAtualizar();
+    if (!produto || this.salvando()) return;
+    this.produtoParaAtualizar.set(null);
+    this.executarSalvamento(this.formularioAtualizado(), produto);
+  }
+
+  private executarSalvamento(request: ProdutoFinanceiroAdminRequest, produto: ProdutoFinanceiro | null): void {
     this.salvando.set(true);
     this.limparMensagens();
-    const produto = this.produtoEmEdicao();
-    const request = {
-      ...this.form,
-      nome: this.form.nome.trim(),
-      descricao: this.form.descricao.trim(),
-      taxas: this.form.taxas?.trim() || null,
-      tributacao: this.form.tributacao?.trim() || null,
-    };
     const chamada = produto
       ? this.produtoService.atualizarAdmin(produto.id, request)
       : this.produtoService.criarAdmin(request);
@@ -124,6 +139,17 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
       },
       error: (err) => this.erro.set(this.extrairErro(err, "Não foi possível salvar o produto.")),
     });
+  }
+
+  private formularioAtualizado(): ProdutoFinanceiroAdminRequest {
+    this.normalizarCamposDinamicos();
+    return {
+      ...this.form,
+      nome: this.form.nome.trim(),
+      descricao: this.form.descricao.trim(),
+      taxas: this.form.taxas?.trim() || null,
+      tributacao: this.form.tributacao?.trim() || null,
+    };
   }
 
   editarProduto(produto: ProdutoFinanceiro): void {
@@ -199,7 +225,7 @@ export class AdminProdutosComponent implements OnInit, OnDestroy {
     this.produtoParaAtivar.set(null);
     this.salvando.set(true);
     this.limparMensagens();
-    this.produtoService.atualizarAdmin(produto.id, this.mapearProdutoParaRequest(produto, true))
+    this.produtoService.ativarAdmin(produto.id)
       .pipe(finalize(() => this.salvando.set(false)))
       .subscribe({
         next: () => {

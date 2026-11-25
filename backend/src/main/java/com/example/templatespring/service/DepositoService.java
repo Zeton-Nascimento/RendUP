@@ -71,6 +71,12 @@ public class DepositoService {
     }
 
     private void validarValor(DepositoRequest request) {
+        if (request == null || !request.isConfirmar()) {
+            throw new ResponseStatusException(
+                    BAD_REQUEST,
+                    "A confirmação do depósito é obrigatória.");
+        }
+
         if (request == null || request.getValor() == null) {
             throw new ResponseStatusException(BAD_REQUEST, "Valor do depósito é obrigatório.");
         }

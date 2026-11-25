@@ -119,7 +119,9 @@ public class ProdutoFinanceiroService {
     }
 
     @Transactional
-    public ProdutoFinanceiroResponse atualizarProduto(UUID id, ProdutoFinanceiroRequest request) {
+    public ProdutoFinanceiroResponse atualizarProduto(
+            UUID id, ProdutoFinanceiroRequest request, boolean confirmar) {
+        exigirConfirmacao(confirmar, "alteração");
         ProdutoFinanceiroRequest validado = validator.validar(request);
         ProdutoFinanceiro produto = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(PRODUTO_NAO_ENCONTRADO));
@@ -131,7 +133,8 @@ public class ProdutoFinanceiroService {
     }
 
     @Transactional
-    public void desativarProduto(UUID id) {
+    public void desativarProduto(UUID id, boolean confirmar) {
+        exigirConfirmacao(confirmar, "inativação");
         ProdutoFinanceiro produto = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(PRODUTO_NAO_ENCONTRADO));
         if (!produto.isAtivo()) {
@@ -141,6 +144,27 @@ public class ProdutoFinanceiroService {
         produto.setAtivo(false);
         produto.setUpdatedAt(LocalDateTime.now());
         repository.save(produto);
+    }
+
+    @Transactional
+    public ProdutoFinanceiroResponse ativarProduto(UUID id, boolean confirmar) {
+        exigirConfirmacao(confirmar, "ativação");
+        ProdutoFinanceiro produto = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(PRODUTO_NAO_ENCONTRADO));
+        if (!produto.isAtivo()) {
+            produto.setAtivo(true);
+            produto.setUpdatedAt(LocalDateTime.now());
+            repository.save(produto);
+        }
+        return ProdutoFinanceiroMapper.toResponse(produto);
+    }
+
+    private void exigirConfirmacao(boolean confirmar, String operacao) {
+        if (!confirmar) {
+            throw new ResponseStatusException(
+                    BAD_REQUEST,
+                    "A confirmação da " + operacao + " do produto é obrigatória.");
+        }
     }
 
     @Transactional

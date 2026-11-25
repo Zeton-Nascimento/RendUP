@@ -34,6 +34,10 @@ export const routes: Routes = [
         loadComponent: () => import("./pages/simulador/simulador.component").then((m) => m.SimuladorComponent),
       },
       {
+        path: "simulacoes",
+        loadComponent: () => import("./pages/simulacoes/simulacoes.component").then((m) => m.SimulacoesComponent),
+      },
+      {
         path: "perfil",
         loadComponent: () => import("./pages/perfil/perfil.component").then((m) => m.PerfilComponent),
       },

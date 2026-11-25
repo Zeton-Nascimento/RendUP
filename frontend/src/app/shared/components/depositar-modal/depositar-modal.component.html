@@ -35,6 +35,13 @@
       (ngModelChange)="valor.set($event)"
     />
 
+    @if (valor(); as valorInformado) {
+      <div class="confirmation-summary" role="status">
+        <strong>Confirme esta operação</strong>
+        <span>Você adicionará {{ valorInformado | currency: "BRL" }} ao seu saldo disponível.</span>
+      </div>
+    }
+
     @if (erro(); as mensagem) {
       <p class="modal-error" role="alert">{{ mensagem }}</p>
     }

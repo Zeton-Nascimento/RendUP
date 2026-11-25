@@ -4,4 +4,5 @@ export interface SaldoResponse {
 
 export interface DepositoRequest {
   valor: number;
+  confirmar: boolean;
 }

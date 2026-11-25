@@ -57,11 +57,15 @@ export class ProdutoService {
   }
 
   atualizarAdmin(id: string, request: ProdutoFinanceiroAdminRequest) {
-    return this.http.put<ProdutoFinanceiro>(`${this.base}/${id}`, request);
+    return this.http.put<ProdutoFinanceiro>(`${this.base}/${id}`, request, { params: { confirmar: true } });
   }
 
   desativarAdmin(id: string) {
-    return this.http.delete<void>(`${this.base}/${id}`);
+    return this.http.delete<void>(`${this.base}/${id}`, { params: { confirmar: true } });
+  }
+
+  ativarAdmin(id: string) {
+    return this.http.post<ProdutoFinanceiro>(`${this.base}/${id}/ativar`, null, { params: { confirmar: true } });
   }
 
   importarCatalogoAdmin(itens: ItemCatalogoProdutoImportRequest[]) {

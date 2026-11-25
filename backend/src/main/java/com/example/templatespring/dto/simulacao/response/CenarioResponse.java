@@ -25,4 +25,5 @@ public class CenarioResponse {
     private String destaque;
     private BigDecimal valorInicial;
     private BigDecimal aporteMensal;
+    private Integer prazoMeses;
 }

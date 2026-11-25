@@ -85,15 +85,26 @@ public class ProdutoFinanceiroController {
     @PutMapping("/{id}")
     public ProdutoFinanceiroResponse atualizarProduto(
             @PathVariable UUID id,
-            @Valid @RequestBody ProdutoFinanceiroRequest request) {
-        return service.atualizarProduto(id, request);
+            @Valid @RequestBody ProdutoFinanceiroRequest request,
+            @RequestParam(defaultValue = "false") boolean confirmar) {
+        return service.atualizarProduto(id, request, confirmar);
     }
 
     @PreAuthorize("hasAuthority('PRODUTO_GERIR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desativarProduto(@PathVariable UUID id) {
-        service.desativarProduto(id);
+    public void desativarProduto(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "false") boolean confirmar) {
+        service.desativarProduto(id, confirmar);
+    }
+
+    @PreAuthorize("hasAuthority('PRODUTO_GERIR')")
+    @PostMapping("/{id}/ativar")
+    public ProdutoFinanceiroResponse ativarProduto(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "false") boolean confirmar) {
+        return service.ativarProduto(id, confirmar);
     }
 
     @PreAuthorize("hasAuthority('PRODUTO_GERIR')")

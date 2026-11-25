@@ -1,5 +1,6 @@
 package com.example.templatespring.entity.enums;
 
 public enum OrigemSimulacao {
-    MANUAL
+    MANUAL,
+    ASSISTENTE_IA
 }

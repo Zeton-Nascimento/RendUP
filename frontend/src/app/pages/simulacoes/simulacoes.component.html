@@ -1,0 +1,70 @@
+<main class="historico-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">SIMULAÇÕES SALVAS</span>
+      <h1>Histórico de simulações</h1>
+      <p>Recupere seus cenários e copie um resumo seguro para compartilhar.</p>
+    </div>
+    <a routerLink="/simulador" class="primary-button">Nova simulação</a>
+  </header>
+
+  @if (erro(); as mensagem) {
+    <section class="status error" role="alert">
+      <span>{{ mensagem }}</span>
+      <button type="button" class="secondary-button" (click)="carregarHistorico()">Tentar novamente</button>
+    </section>
+  } @else if (carregando()) {
+    <section class="empty-card"><p>Carregando seu histórico...</p></section>
+  } @else if (historico().length === 0) {
+    <section class="empty-card">
+      <span class="empty-icon" aria-hidden="true">⌁</span>
+      <h2>Nenhuma simulação salva</h2>
+      <p>Depois de simular, seus cenários aparecerão aqui para serem recuperados.</p>
+      <a routerLink="/simulador" class="primary-button">Criar simulação</a>
+    </section>
+  } @else {
+    <section class="history-list" aria-label="Histórico de simulações">
+      @for (simulacao of historico(); track simulacao.id) {
+        <article class="history-card">
+          <div class="history-main">
+            <div class="history-heading">
+              <div>
+                <span class="history-date">{{ formatarData(simulacao.createdAt) }}</span>
+                <h2>{{ simulacao.melhorProduto || "Simulação" }}</h2>
+              </div>
+              <span class="origin-badge">{{ origemLabel(simulacao.origem) }}</span>
+            </div>
+
+            <div class="history-details">
+              <span><small>Perfil</small>{{ perfilLabel(simulacao.perfil) }}</span>
+              <span><small>Valor inicial</small>{{ formatarMoeda(simulacao.valorInicial) }}</span>
+              <span><small>Aporte mensal</small>{{ formatarMoeda(simulacao.aporteMensal) }}</span>
+              <span><small>Prazo</small>{{ simulacao.prazoMeses || "-" }} meses</span>
+              <span><small>Cenários</small>{{ simulacao.quantidadeCenarios }}</span>
+            </div>
+
+            @if (simulacao.melhorValorFinalLiquido !== null) {
+              <p class="result-highlight">Melhor resultado líquido: <strong>{{ formatarMoeda(simulacao.melhorValorFinalLiquido) }}</strong></p>
+            }
+          </div>
+
+          <div class="history-actions">
+            <a
+              class="secondary-button"
+              [routerLink]="['/simulador']"
+              [queryParams]="{ simulacaoId: simulacao.id }"
+            >Abrir simulação</a>
+            <button type="button" class="share-button" (click)="compartilhar(simulacao.id)">Compartilhar resumo</button>
+            @if (compartilhadoId() === simulacao.id) {
+              <span class="success-message" role="status">Resumo copiado.</span>
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
+
+  @if (erroCompartilhamento(); as mensagem) {
+    <p class="share-error" role="alert">{{ mensagem }}</p>
+  }
+</main>

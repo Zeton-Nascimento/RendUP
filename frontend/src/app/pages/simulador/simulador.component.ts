@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { finalize } from "rxjs";
 
@@ -13,7 +14,7 @@ import { AssistenteIaComponent } from "./assistente-ia.component";
 @Component({
   selector: "app-simulador",
   standalone: true,
-  imports: [CommonModule, FormsModule, AssistenteIaComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AssistenteIaComponent],
   templateUrl: "./simulador.component.html",
   styleUrl: "./simulador.component.scss",
 })
@@ -72,6 +73,11 @@ export class SimuladorComponent implements OnInit {
         next: (pagina) => {
           const produtos = pagina.content ?? [];
           this.produtos.set(produtos);
+          const simulacaoId = this.route.snapshot.queryParamMap.get("simulacaoId");
+          if (simulacaoId) {
+            this.carregarSimulacaoSalva(simulacaoId);
+            return;
+          }
           const produtoId = this.route.snapshot.queryParamMap.get("produtoId");
           if (produtoId && produtos.some((produto) => produto.id === produtoId)) {
             this.produtosSelecionados = [produtoId];
@@ -80,6 +86,32 @@ export class SimuladorComponent implements OnInit {
         error: (err) => {
           this.produtos.set([]);
           this.erroProdutos.set(String(err?.error?.erro ?? "Não foi possível carregar os produtos."));
+        },
+      });
+  }
+
+  private carregarSimulacaoSalva(id: string): void {
+    this.carregando.set(true);
+    this.erro.set(null);
+    this.simulacaoService
+      .buscarPorId(id)
+      .pipe(finalize(() => this.carregando.set(false)))
+      .subscribe({
+        next: (simulacao) => {
+          const primeiro = simulacao.cenarios[0];
+          if (!primeiro) {
+            this.erro.set("A simulação recuperada não possui cenários disponíveis.");
+            return;
+          }
+          this.resultado.set(simulacao);
+          this.valorInicial = primeiro.valorInicial;
+          this.aporteMensal = primeiro.aporteMensal;
+          this.prazoMeses = primeiro.prazoMeses || primeiro.evolucaoMensal.length;
+          this.perfil = simulacao.perfil;
+          this.produtosSelecionados = simulacao.cenarios.map((cenario) => cenario.produtoId);
+        },
+        error: (err) => {
+          this.erro.set(String(err?.error?.erro ?? "Não foi possível recuperar essa simulação."));
         },
       });
   }
@@ -218,6 +250,7 @@ export class SimuladorComponent implements OnInit {
     this.valorInicial = primeiro.valorInicial;
     this.aporteMensal = primeiro.aporteMensal;
     this.prazoMeses = primeiro.evolucaoMensal.length;
+    this.perfil = simulacao.perfil;
     this.produtosSelecionados = simulacao.cenarios.map((cenario) => cenario.produtoId);
   }
 

@@ -2,7 +2,14 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { environment } from "../../environments/environment";
-import type { ChatRequest, ChatResponse, SimulacaoRequest, SimulacaoResponse } from "../models/simulacao.models";
+import type {
+  ChatRequest,
+  ChatResponse,
+  SimulacaoHistorico,
+  SimulacaoRequest,
+  SimulacaoResponse,
+  SimulacaoResumo,
+} from "../models/simulacao.models";
 
 @Injectable({ providedIn: "root" })
 export class SimulacaoService {
@@ -15,6 +22,14 @@ export class SimulacaoService {
 
   buscarPorId(id: string) {
     return this.http.get<SimulacaoResponse>(`${this.base}/${id}`);
+  }
+
+  listarHistorico() {
+    return this.http.get<SimulacaoHistorico[]>(this.base);
+  }
+
+  obterResumo(id: string) {
+    return this.http.get<SimulacaoResumo>(`${this.base}/${id}/resumo`);
   }
 
   chatIA(request: ChatRequest) {
