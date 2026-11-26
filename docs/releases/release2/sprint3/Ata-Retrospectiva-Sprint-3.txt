@@ -8,6 +8,8 @@ Data: 26/11/2026
 
 O escopo ficou estável do início ao fim. As onze histórias planejadas foram mantidas e o Burndown fechou com 65 pontos concluídos e nenhum ponto restante.
 
+O gráfico de Velocity confirma esse resultado: a Sprint 3 começou com 65 pontos comprometidos e terminou com os mesmos 65 concluídos. Foi a maior entrega da equipe até agora. A Sprint 1 concluiu 57 pontos, de 44 planejados, e a Sprint 2 concluiu 39, de 39. A média das três Sprints ficou em 53,67 pontos, e a Sprint 3 terminou cerca de 11 pontos acima dela.
+
 Cada história foi desenvolvida em uma branch própria e integrada por pull request. Foram nove PRs na main entre 20/11 e 26/11 (#16 a #24), o que atende à ação da Sprint 2 de integrar as alterações com mais frequência.
 
 A idempotência foi feita uma vez, no IdempotenciaService, e reaproveitada no depósito, na contratação e no resgate, em vez de cada operação ter o seu próprio controle.
@@ -22,7 +24,7 @@ A maior parte das integrações aconteceu na segunda metade da Sprint. Começar 
 
 Os contratos de API podem ser combinados por escrito antes da implementação, para facilitar a integração entre frontend e backend.
 
-3. AÇÕES PARA A PRÓXIMA SPRINT
+3. AÇÕES PARA A PRÓXIMA SPRINT:
 
 Integrar a primeira parte de cada história até o terceiro dia útil da Sprint e abrir o PR dos testes junto com o PR da funcionalidade.
 Responsável: todos os integrantes da equipe.
@@ -36,8 +38,10 @@ Fazer uma demonstração parcial no meio da Sprint para validar o caminho da sol
 Responsável: Zeton Brandon (SM), na facilitação.
 Prazo: metade da próxima Sprint.
 
-4. RESULTADO ESPERADO
+4. RESULTADO ESPERADO:
 
 Manter o ritmo de entregas da Sprint 3, com as histórias e os testes integrados ao longo da Sprint.
+
+Usar a média de 53,67 pontos do Velocity como referência para definir quantos pontos a equipe assume no planejamento da próxima Sprint.
 
 Começar a próxima Release com a jornada financeira da Release 2 estável e coberta por testes.
