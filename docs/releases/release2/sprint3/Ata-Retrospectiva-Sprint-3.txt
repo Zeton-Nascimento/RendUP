@@ -1,0 +1,43 @@
+RETROSPECTIVA 03 — Sprint
+
+Projeto: RendUP – Sistema de Investimentos
+Sprint: 3
+Data: 26/11/2026
+
+1. O QUE FOI BOM?
+
+O escopo ficou estável do início ao fim. As onze histórias planejadas foram mantidas e o Burndown fechou com 65 pontos concluídos e nenhum ponto restante.
+
+Cada história foi desenvolvida em uma branch própria e integrada por pull request. Foram nove PRs na main entre 20/11 e 26/11 (#16 a #24), o que atende à ação da Sprint 2 de integrar as alterações com mais frequência.
+
+A idempotência foi feita uma vez, no IdempotenciaService, e reaproveitada no depósito, na contratação e no resgate, em vez de cada operação ter o seu próprio controle.
+
+Os testes Cypress cobriram as dez histórias funcionais com 30 cenários (CT-043 a CT-072), todos aprovados, e a Sprint passou a ter testes de API contra o backend real para simulação, histórico, idempotência, depósito e saldo.
+
+O assistente de IA continua útil quando o provedor falha: a simulação calculada pelo sistema permanece na tela e o investidor recebe uma mensagem de fallback.
+
+2. O QUE PODEMOS MELHORAR?
+
+A maior parte das integrações aconteceu na segunda metade da Sprint. Começar a integrar mais cedo deixaria mais tempo para testar e ajustar antes da Review.
+
+Os contratos de API podem ser combinados por escrito antes da implementação, para facilitar a integração entre frontend e backend.
+
+3. AÇÕES PARA A PRÓXIMA SPRINT
+
+Integrar a primeira parte de cada história até o terceiro dia útil da Sprint e abrir o PR dos testes junto com o PR da funcionalidade.
+Responsável: todos os integrantes da equipe.
+Prazo: durante toda a próxima Sprint.
+
+Registrar os contratos de API (rotas, campos, permissões e respostas) antes de iniciar cada história.
+Responsável: responsáveis pelo frontend e backend.
+Prazo: antes do início da implementação de cada história.
+
+Fazer uma demonstração parcial no meio da Sprint para validar o caminho da solução.
+Responsável: Zeton Brandon (SM), na facilitação.
+Prazo: metade da próxima Sprint.
+
+4. RESULTADO ESPERADO
+
+Manter o ritmo de entregas da Sprint 3, com as histórias e os testes integrados ao longo da Sprint.
+
+Começar a próxima Release com a jornada financeira da Release 2 estável e coberta por testes.

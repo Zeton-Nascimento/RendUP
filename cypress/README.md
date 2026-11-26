@@ -1,4 +1,4 @@
-# Testes da Release 2 e Sprint 2
+# Testes da Release 2 — Sprints 1, 2 e 3
 
 Esta pasta reúne os testes automatizados do RendUP. Ela mantém os testes criados na Sprint 1 e também contém os novos testes da Release 2, feitos com Cypress e Cucumber.
 
@@ -36,15 +36,45 @@ US-014: sincronizar o catálogo com uma fonte externa mockada, no arquivo `sincr
 
 Os arquivos de teste mantêm os identificadores CT-033 até CT-042 para facilitar a rastreabilidade com o plano de testes.
 
+## Testes da Sprint 3
+
+Os cenários da Sprint 3 foram adicionados em arquivos Cucumber separados, sem substituir os testes anteriores. Eles mantêm os IDs CT-043 até CT-072 e usam os IDs de US da organização atual do Jira:
+
+US-020: origem e metodologia dos resultados, em `metodologia-resultados.feature`.
+
+US-021: assistente de IA para refinar a simulação, em `assistente-ia.feature`.
+
+US-018: confirmação de operações críticas, em `operacoes-criticas.feature`.
+
+US-024: prévia e contratação de investimento, em `contratacao.feature`.
+
+US-025: prévia e confirmação de resgate, em `resgate.feature`.
+
+US-026: consolidação de regras financeiras e tributárias, em `regras-financeiras.feature`.
+
+US-019: simulação e comparação de cenários, em `simulacao.feature`.
+
+US-022: recuperação e compartilhamento de simulações, em `simulacoes.feature`.
+
+US-017: idempotência das operações financeiras, em `operacoes-idempotentes.feature`.
+
+US-023: depósito e consulta de saldo, em `saldo.feature`.
+
+Os passos desses cenários ficam em `cypress/support/step_definitions/sprint3.steps.js`. As evidências da Sprint 3 são salvas em `release2-sprint3/`, mantendo a pasta de evidências da Sprint 2 separada.
+
+Também foi criado `cypress/api/sprint3-api.cy.js` para as verificações reais de API de simulação, histórico, resumo compartilhável, idempotência, depósito e saldo.
+
 ## Arquivos importantes
 
 `cypress.cucumber.config.cjs` configura a execução dos arquivos `.feature`.
 
 `cypress/e2e/features/` contém os cenários escritos em Gherkin.
 
-`cypress/support/step_definitions/sprint2.steps.js` contém os passos usados pelos cenários Cucumber, os dados mockados e o registro das screenshots.
+`cypress/support/step_definitions/sprint2.steps.js` mantém os passos da Sprint 2, os dados mockados e o registro das screenshots.
 
-`cypress/api/sprint2-api.cy.js` contém os testes que fazem chamadas reais ao backend.
+`cypress/support/step_definitions/sprint3.steps.js` contém os passos, mocks e registros de evidência da Sprint 3.
+
+`cypress/api/sprint2-api.cy.js` e `cypress/api/sprint3-api.cy.js` contêm os testes que fazem chamadas reais ao backend.
 
 `cypress.api.config.cjs` configura os testes de API.
 
@@ -75,14 +105,14 @@ Para os testes de API, o backend deve estar disponível em `http://localhost:808
 Em um terminal, inicie o backend:
 
 ```bash
-cd backend-novo-sprint1
+cd backend
 ./mvnw spring-boot:run
 ```
 
 Em outro terminal, inicie o frontend:
 
 ```bash
-cd frontend-novo-sprint1
+cd frontend
 npm install
 npm start
 ```
@@ -94,7 +124,7 @@ cd cypress
 npm install
 ```
 
-Para executar os cenários Cucumber da Sprint 2:
+Para executar todos os cenários Cucumber existentes, incluindo as Sprints 2 e 3:
 
 ```bash
 npm run test:cucumber
@@ -104,6 +134,30 @@ Para executar os testes de API da Sprint 2:
 
 ```bash
 npm run test:api:sprint2
+```
+
+Para executar os cenários Cucumber da Sprint 3:
+
+```bash
+npm run test:cucumber:sprint3
+```
+
+Para executar apenas o smoke da Sprint 3:
+
+```bash
+npm run test:smoke:sprint3
+```
+
+Para executar apenas a regressão da Sprint 3:
+
+```bash
+npm run test:regressao:sprint3
+```
+
+Para executar a API da Sprint 3:
+
+```bash
+npm run test:api:sprint3
 ```
 
 Para executar os testes da Sprint 1:
@@ -146,6 +200,8 @@ cd .\cypress
 npm install
 npm run test:cucumber
 npm run test:api:sprint2
+npm run test:cucumber:sprint3
+npm run test:api:sprint3
 ```
 
 Para executar os testes da Sprint 1:
@@ -167,6 +223,13 @@ npm run test:api:sprint2
 
 Sem essas variáveis, os testes que precisam de administrador aparecem como pendentes.
 
+Para executar somente o smoke e a regressão da Sprint 3:
+
+```powershell
+npm run test:smoke:sprint3
+npm run test:regressao:sprint3
+```
+
 Para executar o teste opcional de inativação administrativa da Sprint 1, use as mesmas variáveis e rode:
 
 ```powershell
@@ -177,7 +240,11 @@ npm run test:api
 
 `@R2` e `@S2` identificam os cenários da Release 2 e da Sprint 2.
 
-`@US-011` até `@US-015` relacionam cada cenário à sua história de usuário.
+`@R2` e `@S3` identificam os cenários da Release 2 e da Sprint 3.
+
+`@US-011` até `@US-015` relacionam os cenários da Sprint 2 às histórias do plano.
+
+`@US-017`, `@US-018`, `@US-019`, `@US-020`, `@US-021`, `@US-022`, `@US-023`, `@US-024`, `@US-025` e `@US-026` relacionam os cenários da Sprint 3 às histórias organizadas no Jira.
 
 `@smoke` identifica os cenários mais importantes para uma verificação rápida.
 
@@ -192,6 +259,8 @@ Para executar uma tag específica:
 ```bash
 npx cypress run --config-file cypress.cucumber.config.cjs --env tags="@smoke"
 npx cypress run --config-file cypress.cucumber.config.cjs --env tags="@regressao"
+npx cypress run --config-file cypress.cucumber.config.cjs --env tags="@S3 and @smoke"
+npx cypress run --config-file cypress.cucumber.config.cjs --env tags="@S3 and @regressao"
 ```
 
 ## Onde ficam as evidências
@@ -208,15 +277,17 @@ Os relatórios Cucumber ficam em:
 
 `cypress/evidence/`
 
-O registro manual da regressão fica em:
+O registro da regressão anterior fica em:
 
 `cypress/evidence/regressao-release2-sprint2.txt`
+
+O relatório HTML e o JSON são recriados pela execução Cucumber em `cypress/evidence/`. As evidências específicas dos casos da Sprint 3 ficam em `cypress/screenshots/release2-sprint3/` e os vídeos da execução em `cypress/videos/`.
 
 Se quiser manter as evidências de execuções anteriores, use `trashAssetsBeforeRuns=false` no comando do Cypress.
 
 ## Observações
 
-Os testes de interface usam mocks.
+Os testes de interface da Sprint 2 e da Sprint 3 usam mocks para isolar a interface. Os testes de API usam o backend real.
 
 Os testes de API precisam do backend e do banco de dados iniciados.
 
