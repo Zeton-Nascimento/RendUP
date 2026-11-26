@@ -24,7 +24,7 @@ A maior parte das integrações aconteceu na segunda metade da Sprint. Começar 
 
 Os contratos de API podem ser combinados por escrito antes da implementação, para facilitar a integração entre frontend e backend.
 
-3. AÇÕES PARA A PRÓXIMA SPRINT
+3. AÇÕES PARA A PRÓXIMA SPRINT:
 
 Integrar a primeira parte de cada história até o terceiro dia útil da Sprint e abrir o PR dos testes junto com o PR da funcionalidade.
 Responsável: todos os integrantes da equipe.
@@ -38,7 +38,7 @@ Fazer uma demonstração parcial no meio da Sprint para validar o caminho da sol
 Responsável: Zeton Brandon (SM), na facilitação.
 Prazo: metade da próxima Sprint.
 
-4. RESULTADO ESPERADO
+4. RESULTADO ESPERADO:
 
 Manter o ritmo de entregas da Sprint 3, com as histórias e os testes integrados ao longo da Sprint.
 
