@@ -293,7 +293,10 @@ Given("a tela administrativa possui um produto ativo", () => {
     loads += 1;
     req.reply({ statusCode: 200, body: page([loads > 1 ? { ...cdb, ativo: false } : cdb]) });
   }).as("adminProducts");
-  cy.intercept("DELETE", `${API}/produtos/${cdb.id}`, { statusCode: 204, body: null }).as("deactivateProduct");
+  cy.intercept({ method: "DELETE", url: "**/api/v1/produtos/**" }, {
+    statusCode: 204,
+    body: null,
+  }).as("deactivateProduct");
 });
 
 When("confirmo a inativação do produto", () => {
