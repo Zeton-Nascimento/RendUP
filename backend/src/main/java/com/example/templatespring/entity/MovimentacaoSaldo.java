@@ -36,6 +36,10 @@ public class MovimentacaoSaldo {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "investimento_id")
+    private Investimento investimento;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private TipoMovimentacaoSaldo tipo;

@@ -158,43 +158,278 @@ p {
 
 .welcome-card,
 .quick-card {
+  position: relative;
+  overflow: hidden;
   display: grid;
   align-content: start;
   gap: 13px;
-  padding: 24px;
+  padding: 26px;
 }
 
 .welcome-card h2,
 .quick-card h2 {
-  font-size: 21px;
+  font-size: 22px;
+  letter-spacing: -0.45px;
+}
+
+.welcome-card {
+  min-height: 354px;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 20px;
+  border-color: rgba(249, 115, 22, 0.22);
+  background:
+    radial-gradient(circle at 86% 48%, rgba(249, 115, 22, 0.16), transparent 27%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+}
+
+.welcome-card::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.5));
+  content: "";
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.card-heading,
+.quick-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.welcome-card h2 {
+  max-width: 460px;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.08;
+  letter-spacing: -1px;
+}
+
+.welcome-card p {
+  max-width: 430px;
+  font-size: 14px;
+}
+
+.catalog-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 3px;
+}
+
+.catalog-highlights span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.catalog-highlights svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }
 
 .welcome-card .secondary-button {
   width: fit-content;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: 8px;
+  padding-inline: 15px;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.welcome-card .secondary-button:hover {
+  border-color: rgba(249, 115, 22, 0.42);
+  background: rgba(249, 115, 22, 0.1);
+  transform: translateY(-1px);
+}
+
+.welcome-card .secondary-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.catalog-visual {
+  position: relative;
+  min-height: 260px;
+  align-self: stretch;
+  opacity: 0.95;
+}
+
+.visual-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-28deg);
+}
+
+.orbit-one {
+  width: 168px;
+  height: 238px;
+}
+
+.orbit-two {
+  width: 220px;
+  height: 112px;
+  border-color: rgba(167, 139, 250, 0.23);
+  transform: translate(-50%, -50%) rotate(34deg);
+}
+
+.visual-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid rgba(249, 115, 22, 0.55);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.34), rgba(249, 115, 22, 0.08));
+  box-shadow: 0 0 0 9px rgba(249, 115, 22, 0.05), 0 18px 45px rgba(0, 0, 0, 0.28);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.visual-core svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: #ffd5bd;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+  transform: rotate(-45deg);
+}
+
+.quick-card {
+  gap: 14px;
+  padding: 24px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.048), rgba(255, 255, 255, 0.018));
+}
+
+.shortcut-badge {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(249, 115, 22, 0.28);
+  border-radius: 9px;
+  color: var(--primary);
+  background: rgba(249, 115, 22, 0.09);
+  font-size: 16px;
+}
+
+.quick-intro {
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.quick-links {
+  display: grid;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .quick-link {
-  display: flex;
+  display: grid;
+  grid-template-columns: 31px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  min-height: 53px;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
   color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
   text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
 .quick-link:hover {
-  background: var(--panel-2);
-  color: var(--primary);
+  border-color: rgba(249, 115, 22, 0.35);
+  background: rgba(249, 115, 22, 0.08);
+  color: var(--text);
+  transform: translateX(2px);
 }
 
-.quick-link span {
+.quick-link-icon {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border-radius: 9px;
   color: var(--primary);
-  font-size: 20px;
+  background: rgba(249, 115, 22, 0.1);
+}
+
+.quick-link-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.quick-link-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.quick-link-copy strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quick-link-copy small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quick-link-arrow {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 17px;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.quick-link:hover .quick-link-arrow {
+  color: var(--primary);
+  transform: translateX(2px);
 }
 
 @media (max-width: 760px) {
@@ -206,5 +441,25 @@ p {
   .stats-grid,
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .welcome-card {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-visual {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .welcome-card,
+  .quick-card {
+    padding: 20px;
+  }
+
+  .welcome-card h2 {
+    font-size: 25px;
   }
 }

@@ -1,0 +1,145 @@
+@if (carregando()) {
+  <section class="state-card" role="status">Carregando investimento...</section>
+} @else if (sucesso(); as concluido) {
+  @if (resultado(); as resumo) {
+    <main class="success-page">
+      <section class="success-card" role="status">
+        <span class="success-icon">✓</span>
+        <span class="eyebrow">OPERAÇÃO CONCLUÍDA</span>
+        <h1>Resgate confirmado</h1>
+        <p>O valor líquido foi creditado no seu saldo disponível.</p>
+        <dl class="success-details">
+          <div><dt>Valor bruto</dt><dd>{{ formatarMoeda(resumo.valorBruto) }}</dd></div>
+          <div><dt>Imposto</dt><dd class="negative">- {{ formatarMoeda(resumo.imposto) }}</dd></div>
+          @if (resumo.descontoAntecipacao > 0) {
+            <div><dt>Desconto antecipado</dt><dd class="negative">- {{ formatarMoeda(resumo.descontoAntecipacao) }}</dd></div>
+          }
+          <div><dt>Valor líquido</dt><dd class="highlight">{{ formatarMoeda(resumo.valorLiquido) }}</dd></div>
+          <div><dt>Novo saldo disponível</dt><dd>{{ formatarMoeda(resumo.saldoDisponivel) }}</dd></div>
+        </dl>
+        <div class="actions">
+          <a routerLink="/dashboard" class="secondary-button">Voltar ao dashboard</a>
+          <a routerLink="/produtos" class="primary-button">Ver produtos</a>
+        </div>
+      </section>
+    </main>
+  }
+} @else if (investimento(); as item) {
+  <main class="resgate-page">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/dashboard">Dashboard</a>
+      <span aria-hidden="true">›</span>
+      <span>Consultar resgate</span>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <span class="eyebrow">OPERAÇÃO FINANCEIRA</span>
+        <h1>Consultar prévia e confirmar resgate</h1>
+        <p>{{ item.nomeProduto }} · valor resgatável: {{ formatarMoeda(item.valorResgatavel) }}</p>
+      </div>
+    </header>
+
+    @if (erro(); as mensagem) {
+      <div class="error-banner" role="alert">{{ mensagem }}</div>
+    }
+
+    <section class="resgate-grid">
+      <article class="panel product-panel">
+        <span class="section-kicker">INVESTIMENTO</span>
+        <h2>{{ item.nomeProduto }}</h2>
+        <dl class="product-data">
+          <div><dt>Status</dt><dd>{{ item.status === "ATIVO" ? "Ativo" : "Resgatado" }}</dd></div>
+          <div><dt>Valor aplicado</dt><dd>{{ formatarMoeda(item.valorAplicado) }}</dd></div>
+          <div><dt>Valor atual</dt><dd>{{ formatarMoeda(item.valorAtual) }}</dd></div>
+          <div><dt>Liquidez</dt><dd>{{ formatarLiquidez(item.liquidez) }}</dd></div>
+          <div><dt>Carência</dt><dd>{{ item.carenciaDias > 0 ? item.carenciaDias + " dias" : "Sem carência" }}</dd></div>
+          <div><dt>Vencimento</dt><dd>{{ formatarData(item.dataVencimento) }}</dd></div>
+        </dl>
+        @if (item.bloqueado) {
+          <div class="warning-box">Este investimento possui bloqueio judicial e não pode ser resgatado.</div>
+        }
+      </article>
+
+      <article class="panel form-panel">
+        <span class="section-kicker">ETAPA 1</span>
+        <h2>Escolha o resgate</h2>
+        <label class="radio-item">
+          <input type="radio" name="tipoResgate" value="total" [(ngModel)]="tipoResgate" (change)="valorResgate = item.valorResgatavel" />
+          Resgate total
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="tipoResgate" value="parcial" [(ngModel)]="tipoResgate" (change)="valorResgate = null" />
+          Resgate parcial
+        </label>
+        <label for="valorResgate">Valor do resgate</label>
+        <input
+          id="valorResgate"
+          type="number"
+          min="0.01"
+          [max]="item.valorResgatavel"
+          step="0.01"
+          [(ngModel)]="valorResgate"
+          [disabled]="tipoResgate === 'total'"
+        />
+        <span class="hint">Limite disponível: {{ formatarMoeda(item.valorResgatavel) }}</span>
+        <button type="button" class="primary-button full" (click)="visualizarPrevia()" [disabled]="consultandoPrevia()">
+          {{ consultandoPrevia() ? "Calculando..." : "Visualizar prévia" }}
+        </button>
+      </article>
+    </section>
+
+    @if (previa(); as resumo) {
+      <section class="panel preview-panel" aria-live="polite">
+        <div class="preview-heading">
+          <div>
+            <span class="section-kicker">ETAPA 2</span>
+            <h2>Prévia do resgate</h2>
+            <p>Confira o valor bruto, os descontos, o prazo e o valor líquido antes de confirmar.</p>
+          </div>
+          <span class="preview-status" [class.invalid]="!resumo.validoParaConfirmacao">
+            {{ resumo.validoParaConfirmacao ? "Pronta para confirmação" : "Resgate impedido" }}
+          </span>
+        </div>
+
+        @if (resumo.erros.length > 0) {
+          <div class="validation-box" role="alert">
+            @for (erro of resumo.erros; track erro) { <div>{{ erro }}</div> }
+          </div>
+        }
+
+        <div class="preview-grid">
+          <div class="preview-item"><span>Valor bruto</span><strong>{{ formatarMoeda(resumo.valorBruto) }}</strong></div>
+          <div class="preview-item"><span>Imposto estimado</span><strong class="negative">- {{ formatarMoeda(resumo.impostoEstimado) }}</strong></div>
+          <div class="preview-item"><span>Desconto antecipação</span><strong class="negative">- {{ formatarMoeda(resumo.descontoAntecipacao) }}</strong></div>
+          <div class="preview-item"><span>Valor líquido</span><strong class="highlight">{{ formatarMoeda(resumo.valorLiquido) }}</strong></div>
+          <div class="preview-item"><span>Saldo remanescente</span><strong>{{ formatarMoeda(resumo.saldoRemanescente) }}</strong></div>
+          <div class="preview-item"><span>Vencimento</span><strong>{{ formatarData(resumo.dataVencimento) }}</strong></div>
+          <div class="preview-item"><span>Liquidez</span><strong>{{ formatarLiquidez(resumo.liquidez) }}</strong></div>
+          <div class="preview-item"><span>Carência</span><strong>{{ resumo.carenciaDias > 0 ? resumo.carenciaDias + " dias" : "Sem carência" }}</strong></div>
+        </div>
+
+        @if (resumo.validoParaConfirmacao) {
+          <label class="confirmation-check">
+            <input type="checkbox" [(ngModel)]="aceiteCiencia" />
+            <span>Confirmo que li os descontos, impostos, liquidez e condições do resgate.</span>
+          </label>
+          @if (!aceiteCiencia) {
+            <span class="confirmation-hint">Marque a caixa acima para confirmar o resgate.</span>
+          }
+          <div class="actions preview-actions">
+            <button type="button" class="secondary-button" (click)="alterarResgate()">Alterar valor</button>
+            <button type="button" class="primary-button" (click)="confirmarResgate()" [disabled]="processando()">
+              {{ processando() ? "Processando..." : "Confirmar resgate" }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  </main>
+} @else {
+  <section class="state-card error" role="alert">
+    {{ erro() || "Não foi possível carregar o investimento." }}
+    <button type="button" class="secondary-button" (click)="voltar()">Voltar</button>
+  </section>
+}

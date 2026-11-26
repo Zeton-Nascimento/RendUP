@@ -1,5 +1,7 @@
 package com.example.templatespring.entity.enums;
 
 public enum TipoMovimentacaoSaldo {
-    DEPOSITO
+    DEPOSITO,
+    CONTRATACAO,
+    RESGATE
 }

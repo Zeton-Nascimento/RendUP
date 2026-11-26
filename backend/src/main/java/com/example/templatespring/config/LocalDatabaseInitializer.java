@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
     private final UsuarioRepository usuarioRepository;
     private final ProdutoFinanceiroRepository produtoFinanceiroRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional
@@ -49,6 +51,53 @@ public class LocalDatabaseInitializer implements CommandLineRunner {
         cargoRepository.save(cargoAdmin);
         garantirUsuarioAdmin(cargoAdmin);
         garantirProdutosParaDemonstracao();
+        atualizarColunaDeBloqueioDoInvestimento();
+        atualizarRestricaoDeStatusDoInvestimento();
+        atualizarRestricaoDeMovimentacaoSaldo();
+    }
+
+    private void atualizarColunaDeBloqueioDoInvestimento() {
+        jdbcTemplate.execute("""
+                alter table if exists investimento
+                add column if not exists bloqueado boolean
+                """);
+        jdbcTemplate.update("""
+                update investimento
+                set bloqueado = false
+                where bloqueado is null
+                """);
+        jdbcTemplate.execute("""
+                alter table if exists investimento
+                alter column bloqueado set default false
+                """);
+        jdbcTemplate.execute("""
+                alter table if exists investimento
+                alter column bloqueado set not null
+                """);
+    }
+
+    private void atualizarRestricaoDeStatusDoInvestimento() {
+        jdbcTemplate.execute("""
+                alter table if exists investimento
+                drop constraint if exists investimento_status_check
+                """);
+        jdbcTemplate.execute("""
+                alter table if exists investimento
+                add constraint investimento_status_check
+                check (status in ('ATIVO', 'RESGATADO'))
+                """);
+    }
+
+    private void atualizarRestricaoDeMovimentacaoSaldo() {
+        jdbcTemplate.execute("""
+                alter table if exists movimentacao_saldo
+                drop constraint if exists movimentacao_saldo_tipo_check
+                """);
+        jdbcTemplate.execute("""
+                alter table if exists movimentacao_saldo
+                add constraint movimentacao_saldo_tipo_check
+                check (tipo in ('DEPOSITO', 'CONTRATACAO', 'RESGATE'))
+                """);
     }
 
     private Cargo garantirCargo(String nome, String descricao) {

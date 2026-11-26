@@ -23,6 +23,7 @@
         <p>{{ item.descricao }}</p>
       </div>
       <div class="header-actions">
+        <a [routerLink]="['/contratacao', item.id]" class="primary-button">Contratar este produto</a>
         <a [routerLink]="['/simulador']" [queryParams]="{ produtoId: item.id }" class="primary-button">Simular este produto</a>
         <a routerLink="/produtos" class="secondary-button">Voltar ao catálogo</a>
       </div>
