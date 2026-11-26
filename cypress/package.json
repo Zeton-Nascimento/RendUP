@@ -2,21 +2,25 @@
   "name": "qa-cypress-rendup-release2",
   "version": "1.0.0",
   "private": true,
-  "description": "Suítes Cypress e Cucumber para a Release 2 do RendUP",
+  "description": "Suítes Cypress e Cucumber para as Sprints 1, 2 e 3 da Release 2 do RendUP",
   "scripts": {
     "test:e2e": "cypress run --config-file cypress.config.cjs",
     "test:e2e:open": "cypress open --config-file cypress.config.cjs",
     "test:api": "cypress run --config-file cypress.api.config.cjs",
     "test:api:open": "cypress open --config-file cypress.api.config.cjs",
     "test:api:sprint2": "cypress run --config-file cypress.api.config.cjs --spec cypress/api/sprint2-api.cy.js",
+    "test:api:sprint3": "cypress run --config-file cypress.api.config.cjs --spec cypress/api/sprint3-api.cy.js",
     "test:cucumber": "cypress run --config-file cypress.cucumber.config.cjs",
     "test:cucumber:open": "cypress open --config-file cypress.cucumber.config.cjs",
+    "test:cucumber:sprint3": "cypress run --config-file cypress.cucumber.config.cjs --env tags=\"@S3\"",
+    "test:smoke:sprint3": "cypress run --config-file cypress.cucumber.config.cjs --env tags=\"@S3 and @smoke\"",
+    "test:regressao:sprint3": "cypress run --config-file cypress.cucumber.config.cjs --env tags=\"@S3 and @regressao\"",
     "test:regressao": "cypress run --config-file cypress.cucumber.config.cjs --env tags=\"@regressao\"",
     "test:smoke": "cypress run --config-file cypress.cucumber.config.cjs --env tags=\"@smoke\""
   },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^28.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
-    "cypress": "16.1.1"
+    "cypress": "^16.3.0"
   }
 }

@@ -5,12 +5,14 @@ import com.example.templatespring.dto.deposito.response.DepositoResponse;
 import com.example.templatespring.dto.saldo.response.SaldoResponse;
 import com.example.templatespring.entity.MovimentacaoSaldo;
 import com.example.templatespring.entity.enums.TipoMovimentacaoSaldo;
+import com.example.templatespring.entity.enums.TipoOperacaoFinanceira;
 import com.example.templatespring.entity.security.Usuario;
 import com.example.templatespring.repository.MovimentacaoSaldoRepository;
 import com.example.templatespring.repository.UsuarioRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,22 +28,44 @@ public class DepositoService {
     private final UsuarioAutenticadoService usuarioAutenticadoService;
     private final UsuarioRepository usuarioRepository;
     private final MovimentacaoSaldoRepository movimentacaoSaldoRepository;
+    private final IdempotenciaService idempotenciaService;
 
     public DepositoService(
             UsuarioAutenticadoService usuarioAutenticadoService,
             UsuarioRepository usuarioRepository,
-            MovimentacaoSaldoRepository movimentacaoSaldoRepository) {
+            MovimentacaoSaldoRepository movimentacaoSaldoRepository,
+            IdempotenciaService idempotenciaService) {
         this.usuarioAutenticadoService = usuarioAutenticadoService;
         this.usuarioRepository = usuarioRepository;
         this.movimentacaoSaldoRepository = movimentacaoSaldoRepository;
+        this.idempotenciaService = idempotenciaService;
     }
 
     @Transactional
     public DepositoResponse depositar(DepositoRequest request) {
+        return depositar(request, null);
+    }
+
+    @Transactional
+    public DepositoResponse depositar(DepositoRequest request, String chaveIdempotencia) {
         validarValor(request);
 
         Usuario autenticado = usuarioAutenticadoService.get();
-        Usuario usuario = usuarioRepository.findByIdForUpdate(autenticado.getId())
+        if (chaveIdempotencia == null || chaveIdempotencia.isBlank()) {
+            return executarDeposito(autenticado.getId(), request);
+        }
+
+        return idempotenciaService.executar(
+                autenticado.getId(),
+                TipoOperacaoFinanceira.DEPOSITO,
+                chaveIdempotencia,
+                request,
+                DepositoResponse.class,
+                () -> executarDeposito(autenticado.getId(), request));
+    }
+
+    private DepositoResponse executarDeposito(UUID usuarioId, DepositoRequest request) {
+        Usuario usuario = usuarioRepository.findByIdForUpdate(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Usuário não autenticado"));
 
         if (!usuario.isAtivo()) {
