@@ -1,0 +1,124 @@
+@if (carregando()) {
+  <section class="state-card" role="status">Carregando produto...</section>
+} @else if (sucesso(); as contratado) {
+  @if (contratacao(); as resultado) {
+    <main class="success-page">
+      <section class="success-card" role="status">
+        <span class="success-icon">✓</span>
+        <span class="eyebrow">OPERAÇÃO CONCLUÍDA</span>
+        <h1>Investimento contratado</h1>
+        <p>O valor foi debitado do seu saldo e o investimento foi registrado.</p>
+        <dl class="success-details">
+          <div><dt>Produto</dt><dd>{{ resultado.nomeProduto }}</dd></div>
+          <div><dt>Valor aplicado</dt><dd class="highlight">{{ formatarMoeda(resultado.valorAplicado) }}</dd></div>
+          <div><dt>Novo saldo disponível</dt><dd>{{ formatarMoeda(resultado.saldoDisponivel) }}</dd></div>
+          <div><dt>Vencimento estimado</dt><dd>{{ formatarData(resultado.dataVencimento) }}</dd></div>
+        </dl>
+        <div class="actions">
+          <a routerLink="/produtos" class="secondary-button">Voltar ao catálogo</a>
+          <a [routerLink]="['/resgate', resultado.investimentoId]" class="secondary-button">Consultar resgate</a>
+          <a routerLink="/dashboard" class="primary-button">Ir para o dashboard</a>
+        </div>
+      </section>
+    </main>
+  }
+} @else if (produto(); as item) {
+  <main class="contract-page">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a routerLink="/produtos">Produtos</a>
+      <span aria-hidden="true">›</span>
+      <span>Contratar investimento</span>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <span class="eyebrow">NOVA APLICAÇÃO</span>
+        <h1>Visualizar prévia e contratar</h1>
+        <p>Confira as regras e os valores estimados antes de confirmar a aplicação.</p>
+      </div>
+    </header>
+
+    @if (erro(); as mensagem) {
+      <div class="error-banner" role="alert">{{ mensagem }}</div>
+    }
+
+    <section class="contract-grid">
+      <article class="panel product-panel">
+        <div class="badges">
+          <span class="product-badge">{{ formatarTipo(item.tipoProduto) }}</span>
+          <span class="risk-badge">{{ formatarRisco(item.nivelRisco) }} risco</span>
+        </div>
+        <h2>{{ item.nome }}</h2>
+        <p>{{ item.descricao }}</p>
+        <dl class="product-data">
+          <div><dt>Rentabilidade estimada</dt><dd>{{ formatarPercentual(item.rentabilidadePercentual) }}</dd></div>
+          <div><dt>Valor mínimo</dt><dd>{{ formatarMoeda(item.valorMinimo) }}</dd></div>
+          <div><dt>Liquidez</dt><dd>{{ formatarLiquidez(item.liquidez) }}</dd></div>
+          <div><dt>Prazo</dt><dd>{{ item.prazoDias }} dias</dd></div>
+          <div><dt>Taxas</dt><dd>{{ item.taxas || "Não informado" }}</dd></div>
+          <div><dt>Tributação</dt><dd>{{ item.tributacao || "Conforme regra aplicável" }}</dd></div>
+        </dl>
+      </article>
+
+      <article class="panel form-panel">
+        <span class="section-kicker">ETAPA 1</span>
+        <h2>Informe o valor</h2>
+        <p class="muted">Seu saldo disponível: <strong>{{ formatarMoeda(saldoDisponivel()) }}</strong></p>
+        <label for="valor">Valor da aplicação</label>
+        <input id="valor" type="number" min="0.01" step="0.01" [(ngModel)]="valor" />
+        <span class="hint">Mínimo: {{ formatarMoeda(item.valorMinimo) }}</span>
+        <button type="button" class="primary-button full" (click)="visualizarPrevia()" [disabled]="consultandoPrevia()">
+          {{ consultandoPrevia() ? "Calculando..." : "Visualizar prévia" }}
+        </button>
+      </article>
+    </section>
+
+    @if (previa(); as resumo) {
+      <section class="panel preview-panel" aria-live="polite">
+        <div class="preview-heading">
+          <div>
+            <span class="section-kicker">ETAPA 2</span>
+            <h2>Prévia da contratação</h2>
+            <p>Revise os valores, regras e consequências antes de confirmar.</p>
+          </div>
+          <span class="preview-status" [class.invalid]="!resumo.validoParaConfirmacao">
+            {{ resumo.validoParaConfirmacao ? "Pronta para confirmação" : "Não disponível" }}
+          </span>
+        </div>
+
+        @if (resumo.erros.length > 0) {
+          <div class="validation-box" role="alert">
+            @for (erro of resumo.erros; track erro) { <div>{{ erro }}</div> }
+          </div>
+        }
+
+        <div class="preview-grid">
+          <div class="preview-item"><span>Valor aplicado</span><strong>{{ formatarMoeda(resumo.valor) }}</strong></div>
+          <div class="preview-item"><span>Saldo após contratação</span><strong>{{ formatarMoeda(resumo.saldoDisponivel - (resumo.valor || 0)) }}</strong></div>
+          <div class="preview-item"><span>Valor bruto estimado</span><strong>{{ formatarMoeda(resumo.valorBrutoEstimado) }}</strong></div>
+          <div class="preview-item"><span>Imposto estimado</span><strong>{{ formatarMoeda(resumo.impostoEstimado) }}</strong></div>
+          <div class="preview-item"><span>Valor líquido estimado</span><strong class="highlight">{{ formatarMoeda(resumo.valorLiquidoEstimado) }}</strong></div>
+          <div class="preview-item"><span>Vencimento</span><strong>{{ formatarData(resumo.dataVencimento) }}</strong></div>
+          <div class="preview-item"><span>Liquidez</span><strong>{{ formatarLiquidez(resumo.liquidez) }}</strong></div>
+          <div class="preview-item"><span>Risco</span><strong>{{ formatarRisco(resumo.nivelRisco) }}</strong></div>
+        </div>
+
+        @if (resumo.validoParaConfirmacao) {
+          <label class="confirmation-check">
+            <input type="checkbox" [(ngModel)]="aceiteCiencia" />
+            <span>Confirmo que li a liquidez, o prazo, o risco e as regras de tributação deste produto.</span>
+          </label>
+          @if (!aceiteCiencia) {
+            <span class="confirmation-hint">Marque a caixa acima para confirmar a contratação.</span>
+          }
+          <div class="actions preview-actions">
+            <button type="button" class="secondary-button" (click)="voltarParaNovaPrevia()">Alterar valor</button>
+            <button type="button" class="primary-button" (click)="confirmarContratacao()" [disabled]="contratando()">
+              {{ contratando() ? "Contratando..." : "Confirmar contratação" }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  </main>
+}

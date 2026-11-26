@@ -30,6 +30,22 @@ export const routes: Routes = [
           import("./pages/produtos/detalhe/produto-detalhe.component").then((m) => m.ProdutoDetalheComponent),
       },
       {
+        path: "contratacao/:produtoId",
+        loadComponent: () =>
+          import("./pages/contratacao/contratacao.component").then((m) => m.ContratacaoComponent),
+      },
+      {
+        path: "resgate/:investimentoId",
+        loadComponent: () => import("./pages/resgate/resgate.component").then((m) => m.ResgateComponent),
+      },
+      {
+        path: "resgates",
+        loadComponent: () =>
+          import("./pages/resgates-disponiveis/resgates-disponiveis.component").then(
+            (m) => m.ResgatesDisponiveisComponent,
+          ),
+      },
+      {
         path: "simulador",
         loadComponent: () => import("./pages/simulador/simulador.component").then((m) => m.SimuladorComponent),
       },

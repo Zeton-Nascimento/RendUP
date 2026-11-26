@@ -37,17 +37,75 @@
 
   <section class="dashboard-grid">
     <article class="welcome-card">
-      <span class="section-kicker">PRÓXIMO PASSO</span>
-      <h2>Explore o catálogo financeiro</h2>
-      <p>Use os filtros para encontrar produtos compatíveis com o seu perfil e objetivo de investimento.</p>
-      <a routerLink="/produtos" class="secondary-button">Ver produtos</a>
+      <div class="welcome-content">
+        <div class="card-heading">
+          <span class="section-kicker">PRÓXIMO PASSO</span>
+        </div>
+        <h2>Encontre investimentos que fazem sentido para você.</h2>
+        <p>Explore alternativas e compare as condições antes de tomar sua decisão.</p>
+        <div class="catalog-highlights" aria-label="Recursos do catálogo">
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10" /></svg>
+            Filtros inteligentes
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16 5-5 4 3 7-7" /><path d="M16 7h4v4" /></svg>
+            Compare opções
+          </span>
+        </div>
+        <a routerLink="/produtos" class="secondary-button">
+          <span>Explorar catálogo</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13" /><path d="m13 6 6 6-6 6" /></svg>
+        </a>
+      </div>
+      <div class="catalog-visual" aria-hidden="true">
+        <div class="visual-orbit orbit-one"></div>
+        <div class="visual-orbit orbit-two"></div>
+        <div class="visual-core">
+          <svg viewBox="0 0 24 24"><path d="M12 3v18M4.5 8.5 12 3l7.5 5.5v7L12 21l-7.5-5.5z" /><path d="m4.5 8.5 7.5 5 7.5-5M12 13.5V21" /></svg>
+        </div>
+      </div>
     </article>
 
     <article class="quick-card">
-      <span class="section-kicker">ACESSO RÁPIDO</span>
-      <h2>Navegação</h2>
-      <a routerLink="/produtos" class="quick-link"><span>◇</span> Produtos financeiros</a>
-      <a routerLink="/perfil" class="quick-link"><span>♙</span> Meu perfil</a>
+      <div class="quick-heading">
+        <div>
+          <span class="section-kicker">ACESSO RÁPIDO</span>
+          <h2>Navegação</h2>
+        </div>
+        <span class="shortcut-badge" aria-hidden="true">↗</span>
+      </div>
+      <p class="quick-intro">Tudo o que você precisa para acompanhar seus investimentos.</p>
+      <nav class="quick-links" aria-label="Atalhos do dashboard">
+        <a routerLink="/produtos" class="quick-link">
+          <span class="quick-link-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5M12 22V12" /></svg>
+          </span>
+          <span class="quick-link-copy"><strong>Produtos financeiros</strong><small>Compare alternativas</small></span>
+          <span class="quick-link-arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/simulador" class="quick-link">
+          <span class="quick-link-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M7 15l3-4 3 2 5-7" /></svg>
+          </span>
+          <span class="quick-link-copy"><strong>Simulador de investimentos</strong><small>Projete seus resultados</small></span>
+          <span class="quick-link-arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/resgates" class="quick-link">
+          <span class="quick-link-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3v14M7 12l5 5 5-5M5 21h14" /></svg>
+          </span>
+          <span class="quick-link-copy"><strong>Resgatar investimentos</strong><small>Consulte sua carteira</small></span>
+          <span class="quick-link-arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/perfil" class="quick-link">
+          <span class="quick-link-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></svg>
+          </span>
+          <span class="quick-link-copy"><strong>Meu perfil</strong><small>Revise seus dados</small></span>
+          <span class="quick-link-arrow" aria-hidden="true">→</span>
+        </a>
+      </nav>
     </article>
   </section>
 </main>

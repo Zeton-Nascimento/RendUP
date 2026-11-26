@@ -1,0 +1,50 @@
+<main class="resgates-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">OPERAÇÕES FINANCEIRAS</span>
+      <h1>Resgatar investimentos</h1>
+      <p>Consulte os investimentos ativos e veja quanto pode ser resgatado.</p>
+    </div>
+    <button type="button" class="secondary-button" (click)="carregar()" [disabled]="carregando()">Atualizar lista</button>
+  </header>
+
+  @if (erro(); as mensagem) {
+    <section class="state-card error" role="alert">
+      <span>{{ mensagem }}</span>
+      <button type="button" class="secondary-button" (click)="carregar()">Tentar novamente</button>
+    </section>
+  } @else if (carregando()) {
+    <section class="state-card" role="status">Carregando seus investimentos...</section>
+  } @else if (investimentos().length === 0) {
+    <section class="state-card empty-state">
+      <strong>Nenhum investimento disponível para resgate.</strong>
+      <span>Quando você contratar um produto, ele aparecerá nesta área.</span>
+      <a routerLink="/produtos" class="primary-button">Ver produtos</a>
+    </section>
+  } @else {
+    <section class="investments-grid" aria-label="Investimentos disponíveis para resgate">
+      @for (item of investimentos(); track item.investimentoId) {
+        <article class="investment-card">
+          <div class="card-topline">
+            <span class="product-type">{{ item.tipoProduto }}</span>
+            <span class="status-badge">{{ item.status === "ATIVO" ? "Ativo" : item.status }}</span>
+          </div>
+          <h2>{{ item.nomeProduto }}</h2>
+          <dl class="investment-data">
+            <div><dt>Valor aplicado</dt><dd>{{ formatarMoeda(item.valorAplicado) }}</dd></div>
+            <div><dt>Valor atual</dt><dd>{{ formatarMoeda(item.valorAtual) }}</dd></div>
+            <div><dt>Valor resgatável</dt><dd class="highlight">{{ formatarMoeda(item.valorResgatavel) }}</dd></div>
+            <div><dt>Liquidez</dt><dd>{{ formatarLiquidez(item.liquidez) }}</dd></div>
+            <div><dt>Vencimento</dt><dd>{{ formatarData(item.dataVencimento) }}</dd></div>
+          </dl>
+          @if (item.bloqueado) {
+            <div class="warning-text">Bloqueio judicial ativo.</div>
+          }
+          <a [routerLink]="['/resgate', item.investimentoId]" class="primary-button full-button">
+            Consultar resgate
+          </a>
+        </article>
+      }
+    </section>
+  }
+</main>
