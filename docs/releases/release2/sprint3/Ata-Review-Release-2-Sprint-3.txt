@@ -1,0 +1,66 @@
+ATA DE SPRINT REVIEW — RendUP
+
+Sprint nº: 3
+Data: 26/11/2026
+Participantes/Stakeholders: José Lucas, Zeton Brandon e Alissom Silva
+
+1) META DO SPRINT
+
+Entregar a jornada de simulação e as operações financeiras do RendUP. O investidor deveria conseguir simular e comparar produtos, entender a origem e as limitações dos resultados, conversar com o assistente de IA sobre a simulação e fazer depósitos, contratações e resgates com confirmação, sem duplicar valores e mantendo saldo, investimento e movimentação consistentes.
+
+O Burndown da Sprint, de 17/11 a 26/11, fechou com 65 pontos concluídos e 0 pontos restantes.
+
+2) ITENS DEMONSTRADOS
+
+US-017 — Garantir operações financeiras idempotentes
+Status: entregue.
+Observação: depósito, contratação e resgate aceitam o cabeçalho Idempotency-Key. O reenvio com a mesma chave devolve a resposta original, sem repetir a operação, e a mesma chave com outro corpo é rejeitada. CT-067, CT-068 e CT-069 passaram.
+
+US-018 — Confirmar operações críticas antes da execução
+Status: entregue.
+Observação: contratação e resgate exigem marcar a confirmação antes do envio, o depósito abre um modal com resumo e opção de cancelar, e o backend rejeita a operação sem confirmação. CT-049, CT-050 e CT-051 passaram.
+
+US-019 — Simular investimentos e comparar cenários
+Status: entregue.
+Observação: foi apresentada a simulação com até quatro produtos, aporte inicial, aporte mensal, prazo e perfil, com ranking dos cenários. Prazo fora de 1 a 600 meses, produto repetido ou inativo e aporte abaixo do mínimo são rejeitados. CT-061, CT-062 e CT-063 passaram.
+
+US-020 — Informar origem e metodologia dos resultados
+Status: entregue.
+Observação: o resultado mostra fonte dos dados, data de referência, tipo do dado, metodologia e limitação. Como o catálogo é mockado, todo resultado aparece como estimativa e marcado como não disponível para decisão. CT-043, CT-044 e CT-045 passaram.
+
+US-021 — Refinar simulação com assistente de IA
+Status: entregue.
+Observação: o assistente explica a simulação, recalcula quando o investidor pede outro prazo ou valor, recusa perguntas fora do assunto e responde com fallback quando o provedor falha. Há limite de uma mensagem a cada 3 segundos e disclaimer em todas as respostas. CT-046, CT-047 e CT-048 passaram.
+
+US-022 — Recuperar e compartilhar uma simulação
+Status: entregue.
+Observação: o histórico lista as simulações do investidor com a origem (manual ou assistente) e gera um resumo para copiar, sem CPF, e-mail, token ou dados bancários. Simulação de outro usuário não é retornada. CT-064, CT-065 e CT-066 passaram.
+
+US-023 — Depositar e consultar saldo disponível
+Status: entregue.
+Observação: foram mostrados o depósito pelo cabeçalho, a atualização do saldo e o registro da movimentação. Valor zero, negativo, com mais de duas casas decimais ou de usuário inativo é rejeitado sem alterar o saldo. CT-070, CT-071 e CT-072 passaram.
+
+US-024 — Visualizar prévia e contratar investimento
+Status: entregue.
+Observação: a prévia mostra produto, valor, prazo, rentabilidade estimada, taxas, IR, liquidez e risco. Saldo insuficiente, produto inativo, valor abaixo do mínimo e perfil incompatível impedem a contratação. CT-052, CT-053 e CT-054 passaram.
+
+US-025 — Consultar prévia e confirmar resgate
+Status: entregue.
+Observação: a prévia mostra valor bruto, IR, descontos e valor líquido para resgate parcial ou total. Carência vigente, bloqueio judicial, valor acima do disponível e produto com liquidez só no vencimento impedem o resgate. CT-055, CT-056 e CT-057 passaram.
+
+US-026 — Consolidar regras financeiras e tributárias
+Status: entregue.
+Observação: a tela administrativa cadastra e valida as regras por tipo de produto e evento financeiro, com cenários de referência e status aprovada, pendente ou conflitante. Regra ausente, pendente ou conflitante aparece como não pronta para aplicação. CT-058, CT-059 e CT-060 passaram.
+
+US-027 — Validar funcionalidades por meio de testes automatizados com Cypress
+Status: entregue.
+Observação: foram criados os cenários CT-043 a CT-072 em dez arquivos .feature e o arquivo cypress/api/sprint3-api.cy.js, que chama o backend real. Os 30 cenários da Sprint 3 foram executados e aprovados, conforme o Plano de Teste.
+
+
+3) DECISÕES DE BACKLOG
+
+O catálogo continua usando a fonte mockada nesta Release, e os resultados da simulação seguem identificados como estimativa. Dono: equipe de desenvolvimento e PO.
+
+A chave do provedor de IA é informada por variável de ambiente e não fica gravada no repositório. Dono: equipe de desenvolvimento.
+
+Os testes de interface da Sprint 3 usam respostas simuladas da API, e os testes de API usam o backend real, mantendo a separação adotada na Sprint 2. Dono: José Lucas.

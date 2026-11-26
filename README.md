@@ -41,3 +41,12 @@ Existem diversos tipos de investimentos, cada um com características, níveis d
 |**Zeton**             | Scrum Master          | **SM** |
 |**Alissom Silva**     | Product Owner / DevOps| **PO/DevOps** |
 |**José Lucas**        | Analista de Qualidade | **QA** |
+
+
+## Equipe - Release 3
+
+| Integrante           | Papel                 |  Sigla |
+| :------------------- | :-------------------- | :----: |
+|**José Lucas**        | Scrum Master          | **SM** |
+|**Zeton**             | Product Owner / DevOps| **PO/DevOps** |
+|**Alissom Silva**     | Analista de Qualidade | **QA** |
